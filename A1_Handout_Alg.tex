@@ -73,11 +73,15 @@ $r = 0.5$
 In cylindrical coordinates, the surface normal of an arbitrary point is: $\vec{v} = (1, \theta, 0)$. \\
 In cartesian coordinates, this becomes $\vec{v} = (r*cos\theta, 0, r*sin\theta)$ and since $r = 1$ (as it is a unit vector), the final vector is $\vec{v} = (cos\theta, 0, sin\theta)$.
 \vspace{2em}
+
 \section{Cone}
 {\bf [1 point]} Look at the cone with Y-axis rotation = 0 degrees, and X-axis rotation = 0 degrees. How many triangles make up one of the $segmentX$ ``sides'' of the cone when $segmentY=1$? When $segmentY=2$? 3? $n$?
 \vspace{6em}\\
 {\bf [1 point]} What is the surface normal at the tip of the cone? Keep in mind that a singularity does not have a normal; this implies that there will not be a unique normal at the tip of the cone. You can achieve a good shading effect by thinking of $segmentX$ vectors with their base at the tip of the cone, each pointing outward, normal from the face of the triangle assocated with it along the side of the cone. Think about how OpenGL can use this information to make a realistic point at the top of the cone, and draw a simple schematic sketch illustrating the normal for one of the triangles at the tip. (As long as it is clear that you get the idea, you will recieve full credit.)
-\vspace{6em}\\
+\vspace{2em}\\
+The surface normal is in the positive y direction, which can be written as the unit y vector, $\hat{y}$, which is the vector $\vec{v} = (0,1,0)$. This is because all of the vectors that would exist at the singularity could be averaged, and the x and z components would cancel out. This would leave only the positive y components of the vectors, resulting in a single vector pointing in the positive y direction, as shown in the picture below.
+\includegraphics[scale=0.4]{graphicshw1cone} \\
+\vspace{2em}
 {\bf [1 point]} Take the two dimensional line formed by the points $(0, 0.5)$ and $(0.5, -0.5)$ and find its slope $m$.
 \vspace{6em}\\
 {\bf [1 point]} ${{1}\over{m}}$ is the slope perpendicular to this line. Using this slope, we
