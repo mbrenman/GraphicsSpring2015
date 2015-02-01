@@ -55,7 +55,7 @@ decimal places (i.e. 0.333). Show all work; write your answers on this sheet. Th
 
 The number of small squares against an edge is exactly the value of the tessellation parameter.
 
-\vspace{2em}\\
+\vspace{2em}
 {\bf [1 point]} Imagine a unit cube at the origin with tessellation parameter 2. Its front face lies in the +XY plane. What are the normal vectors that correspond with each of the eight triangles that make up this face? (Note: when asked for a normal, you should always give a normalized vector, meaning a vector of length one.)
 \vspace{2em}\\
 
@@ -64,11 +64,17 @@ Each normal vector has the value $
 \vspace{2em}\\
 \section{Cylinder}
 {\bf [1.5 points]} The caps of the cylinder are regular polygons with $N$ sides, where $N$'s value is determined by parameter 2 ($p_2$). You will notice they are cut up like a pizza with $N$ slices, which are isosceles triangles. The vertices of the $N$-gon lie on a perfect circle. What is the equation of the circle that they lie on  in terms of the radius (0.5) and the angle $\theta$?
-\vspace{6em}\\
+\vspace{2em}\\
+Since the circlular caps are centered, we do not have to perform any transformations, so the equation for the caps are:
+
+$r = 0.5$
+
+\vspace{2em}
 {\bf [1.5 points]} What is the surface normal of an arbitrary point along the barrel of the cylinder? It might be easier to think of this problem in cylindrical coordinates, and then transform your answer to cartesian after you have solved it in cylindrical coords.
-\vspace{6em}
-
-
+\vspace{2em} \\
+In cylindrical coordinates, the surface normal of an arbitrary point is: $\vec{v} = (1, \theta, 0)$. \\
+In cartesian coordinates, this becomes $\vec{v} = (r*cos\theta, 0, r*sin\theta)$ and since $r = 1$ (as it is a unit vector), the final vector is $\vec{v} = (cos\theta, 0, sin\theta)$.
+\vspace{2em}
 \section{Cone}
 {\bf [1 point]} Look at the cone with Y-axis rotation = 0 degrees, and X-axis rotation = 0 degrees. How many triangles make up one of the $segmentX$ ``sides'' of the cone when $segmentY=1$? When $segmentY=2$? 3? $n$?
 \vspace{6em}\\
@@ -90,7 +96,9 @@ y & = & r * \cos{\phi}\\
 z & = & r * \sin{\phi}*\sin{\theta}
 \end{eqnarray*}
 {\bf [1 point]} What is the surface normal of the sphere at an arbitrary surface point $(x,y,z)$?
-\vspace{6em}
+\vspace{2em}
+
+\vspace{2em}
 \section{How to Submit}
 
 Hand in a PDF version of your solutions using the following command:
