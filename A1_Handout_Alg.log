@@ -362,22 +362,27 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 35.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1{/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
+)
+Underfull \hbox (badness 10000) in paragraph at lines 53--55
+
+ []
+
+[1{/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 102.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 106.
  [2]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 102.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 106.
 
 (./A1_Handout_Alg.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 102.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 102.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 106.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 106.
 Package rerunfilecheck Info: File `A1_Handout_Alg.out' has not changed.
 (rerunfilecheck)             Checksum: C424925ACC383C058728E676828B5B76;257.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 102.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 106.
  ) 
 Here is how much of TeX's memory you used:
  6205 strings out of 493109
@@ -386,7 +391,7 @@ Here is how much of TeX's memory you used:
  9584 multiletter control sequences out of 15000+600000
  12278 words of font info for 48 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 42i,8n,32p,721b,404s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 42i,8n,32p,721b,314s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb>
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
@@ -396,7 +401,7 @@ sr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr
 ocal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/loca
 l/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local
 /texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on A1_Handout_Alg.pdf (2 pages, 113802 bytes).
+Output written on A1_Handout_Alg.pdf (2 pages, 113883 bytes).
 PDF statistics:
  80 PDF objects out of 1000 (max. 8388607)
  66 compressed objects within 1 object stream
