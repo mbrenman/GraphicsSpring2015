@@ -114,7 +114,28 @@ z & = & r * \sin{\phi}*\sin{\theta}
 \end{eqnarray*}
 {\bf [1 point]} What is the surface normal of the sphere at an arbitrary surface point $(x,y,z)$?
 \vspace{2em}
+The normal of an arbitrary point $(x,y,z)$ on a sphere centered at the origin is the vector $\vec{v} = (x,y,z)$. \\
+To convert to spherical coordinates from that point, we can find $\phi$ as follows: \\
+\begin{eqnarray*}
+x & = & r * \sin{\phi} * \cos{\theta}\\
+x & = & y * \sin{\phi}\\
+\sin{\phi} & = & {{x}\over{y}} \\
+\phi & = & \sin^{-1}{{x}\over{y}} \\
+\end{eqnarray*}
 
+The r value is the magnitude, which can be found by the equation: \\
+
+\[ r = \sqrt{x^{2} + y^{2} + z^{2}} \]
+
+And we can find $\theta$ as follows: 
+
+\begin{eqnarray*}
+z & = & r * \sin{\phi}*\sin{\theta} \\
+z & = & r * \sin{{x}\over{y}}*\sin{\theta} \\
+z & = & \sqrt{x^{2} + y^{2} + z^{2}} * \sin\left({{x}\over{y}}\right)*\sin{\theta} \\
+\sin{\theta} & = & {z * y}\over{x * \sqrt{x^{2} + y^{2} + z^{2}}} \\
+\theta & = & \sin^{-1}\left({{z * y}\over{x * \sqrt{x^{2} + y^{2} + z^{2}}}}\right)
+\end{eqnarray*}
 \vspace{2em}
 \section{How to Submit}
 
