@@ -5,6 +5,7 @@
 %\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
 \setlength{\columnsep}{1cm}
 \usepackage{graphicx}
+\usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{epstopdf}
 \usepackage{fullpage}
@@ -52,16 +53,12 @@ decimal places (i.e. 0.333). Show all work; write your answers on this sheet. Th
 \section{Cube}
  {\bf [1 point]} Take a look at one face of the cube. Change the tessellation parameter. How do the number of small squares against one edge correspond to the tessellation parameter?
 \vspace{2em}\\
-
 The number of small squares against an edge is exactly the value of the tessellation parameter.
-
 \vspace{2em}
 {\bf [1 point]} Imagine a unit cube at the origin with tessellation parameter 2. Its front face lies in the +XY plane. What are the normal vectors that correspond with each of the eight triangles that make up this face? (Note: when asked for a normal, you should always give a normalized vector, meaning a vector of length one.)
 \vspace{2em}\\
-
-Each normal vector has the value $
-
-\vspace{2em}\\
+Each normal vector has the value $\begin{bmatrix} 0 \\ 0\\ 1 \end{bmatrix}$.
+\vspace{2em}
 \section{Cylinder}
 {\bf [1.5 points]} The caps of the cylinder are regular polygons with $N$ sides, where $N$'s value is determined by parameter 2 ($p_2$). You will notice they are cut up like a pizza with $N$ slices, which are isosceles triangles. The vertices of the $N$-gon lie on a perfect circle. What is the equation of the circle that they lie on  in terms of the radius (0.5) and the angle $\theta$?
 \vspace{2em}\\
@@ -77,16 +74,36 @@ In cartesian coordinates, this becomes $\vec{v} = (r*cos\theta, 0, r*sin\theta)$
 \vspace{2em}
 \section{Cone}
 {\bf [1 point]} Look at the cone with Y-axis rotation = 0 degrees, and X-axis rotation = 0 degrees. How many triangles make up one of the $segmentX$ ``sides'' of the cone when $segmentY=1$? When $segmentY=2$? 3? $n$?
-\vspace{6em}\\
+\vspace{2em}\\
+\begin{tabular}{c|c}
+$segmentY$ & \# of triangles \\ \hline
+1 & 1 \\
+2 & 3 \\
+3 & 5 \\
+$n$ & $2n - 1$
+\end{tabular}
+\vspace{2em}\\
 {\bf [1 point]} What is the surface normal at the tip of the cone? Keep in mind that a singularity does not have a normal; this implies that there will not be a unique normal at the tip of the cone. You can achieve a good shading effect by thinking of $segmentX$ vectors with their base at the tip of the cone, each pointing outward, normal from the face of the triangle assocated with it along the side of the cone. Think about how OpenGL can use this information to make a realistic point at the top of the cone, and draw a simple schematic sketch illustrating the normal for one of the triangles at the tip. (As long as it is clear that you get the idea, you will recieve full credit.)
-\vspace{6em}\\
 {\bf [1 point]} Take the two dimensional line formed by the points $(0, 0.5)$ and $(0.5, -0.5)$ and find its slope $m$.
-\vspace{6em}\\
+\vspace{2em}
+\begin{equation*}
+m = \frac{\Delta x}{\Delta y} = \frac{-0.5 - 0.5}{0.5 - 0} = \frac{-1}{0.5} = -2
+\end{equation*}
+\vspace{2em}\\
 {\bf [1 point]} ${{1}\over{m}}$ is the slope perpendicular to this line. Using this slope, we
 can find the vertical and radial/horizontal components of the normal on the cone body. The radial/horizontal component is the component in the XZ plane. What is the {\bf magnitude} of this component in a normalized normal vector?
-\vspace{6em}\\
+\vspace{2em}
+\begin{equation*}
+-\frac{1}{m} = -\frac{1}{-2} = \frac{1}{2} = \frac{v_y}{v_{xz}}\quad \ldots \quad
+v_{xz} = \frac{2}{\sqrt{2^2 + 1^2}} = \frac{2}{\sqrt{5}}
+\end{equation*}
+\vspace{2em}\\
 {\bf [1 point]} The componenet in the $y$ direction is the vertical component. What is the {\bf magnitude} of this component in a normalized normal vector?
-\vspace{6em}
+\vspace{2em}
+\begin{equation*}
+-\frac{1}{m} = -\frac{1}{-2} = \frac{1}{2} = \frac{v_y}{v_x}\quad \ldots \quad
+v_y = \frac{1}{\sqrt{2^2 + 1^2}} = \frac{1}{\sqrt{5}}
+\end{equation*}
 
 \section{Sphere}
 The sphere in the demo is tesselated in the latitude/longitude manner, so the points you want to calculate are straight spherical coordinates. The two parameters can be used as $\theta$ and $\phi$, or longitude and latitude. Recall, that the conversion from spherical to Cartesian coordinates is given by
