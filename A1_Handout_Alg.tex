@@ -54,7 +54,7 @@ decimal places (i.e. 0.333). Show all work; write your answers on this sheet. Th
  {\bf [1 point]} Take a look at one face of the cube. Change the tessellation parameter. How do the number of small squares against one edge correspond to the tessellation parameter?
 \vspace{2em}\\
 The number of small squares against an edge is exactly the value of the tessellation parameter.
-\vspace{2em}
+\vspace{2em} \\
 {\bf [1 point]} Imagine a unit cube at the origin with tessellation parameter 2. Its front face lies in the +XY plane. What are the normal vectors that correspond with each of the eight triangles that make up this face? (Note: when asked for a normal, you should always give a normalized vector, meaning a vector of length one.)
 \vspace{2em}\\
 Each normal vector has the value $\begin{bmatrix} 0 \\ 0\\ 1 \end{bmatrix}$.
@@ -72,9 +72,9 @@ $r = 0.5$
 In cylindrical coordinates, the surface normal of an arbitrary point is: $\vec{v} = (1, \theta, 0)$. \\
 In cartesian coordinates, this becomes $\vec{v} = (r*cos\theta, 0, r*sin\theta)$ and since $r = 1$ (as it is a unit vector), the final vector is $\vec{v} = (cos\theta, 0, sin\theta)$.
 \vspace{2em}
+
 \section{Cone}
-{\bf [1 point]} Look at the cone with Y-axis rotation = 0 degrees, and X-axis rotation = 0 degrees. How many triangles make up one of the $segmentX$ ``sides'' of the cone when $segmentY=1$? When $segmentY=2$? 3? $n$?
-\vspace{2em}\\
+{\bf [1 point]} Look at the cone with Y-axis rotation = 0 degrees, and X-axis rotation = 0 degrees. How many triangles make up one of the $segmentX$ ``sides'' of the cone when $segmentY=1$? When $segmentY=2$? 3? $n$? 
 \begin{tabular}{c|c}
 $segmentY$ & \# of triangles \\ \hline
 1 & 1 \\
@@ -84,12 +84,16 @@ $n$ & $2n - 1$
 \end{tabular}
 \vspace{2em}\\
 {\bf [1 point]} What is the surface normal at the tip of the cone? Keep in mind that a singularity does not have a normal; this implies that there will not be a unique normal at the tip of the cone. You can achieve a good shading effect by thinking of $segmentX$ vectors with their base at the tip of the cone, each pointing outward, normal from the face of the triangle assocated with it along the side of the cone. Think about how OpenGL can use this information to make a realistic point at the top of the cone, and draw a simple schematic sketch illustrating the normal for one of the triangles at the tip. (As long as it is clear that you get the idea, you will recieve full credit.)
+\vspace{2em}\\
+The surface normal is in the positive y direction, which can be written as the unit y vector, $\hat{y}$, which is the vector $\vec{v} = (0,1,0)$. This is because all of the vectors that would exist at the singularity could be averaged, and the x and z components would cancel out. This would leave only the positive y components of the vectors, resulting in a single vector pointing in the positive y direction, as shown in the picture below.
+\includegraphics[scale=0.4]{graphicshw1cone} \\
+\vspace{2em}
 {\bf [1 point]} Take the two dimensional line formed by the points $(0, 0.5)$ and $(0.5, -0.5)$ and find its slope $m$.
 \vspace{2em}
 \begin{equation*}
 m = \frac{\Delta x}{\Delta y} = \frac{-0.5 - 0.5}{0.5 - 0} = \frac{-1}{0.5} = -2
 \end{equation*}
-\vspace{2em}\\
+\vspace{2em}
 {\bf [1 point]} ${{1}\over{m}}$ is the slope perpendicular to this line. Using this slope, we
 can find the vertical and radial/horizontal components of the normal on the cone body. The radial/horizontal component is the component in the XZ plane. What is the {\bf magnitude} of this component in a normalized normal vector?
 \vspace{2em}
