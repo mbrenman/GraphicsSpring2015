@@ -89,184 +89,121 @@ void ply::reload(string _filePath){
 
 void ply::loadGeometry(){
 
-        /*
-		   1.) Update any private or helper variables in the ply.h private section
-		   2.) allocate memory for the vertexList
-		   3.) Populate vertices
-		   4.) allocate memory for the faceList
-		   5.) Populate faceList
-		*/
+	/* You will implement this section of code
+	1. Parse the header
+	2.) Update any private or helper variables in the ply.h private section
+	3.) allocate memory for the vertexList
+	3a.) Populate vertices
+	4.) allocate memory for the faceList
+	4a.) Populate faceList
+	*/
 
 
-	// Parse header   
-	myfile.open(filePath.c_str());
-	if (myfile.is_open()) {
+	ifstream myfile(filePath.c_str()); // load the file
+	if (myfile.is_open()) { // if the file is accessable
+		properties = -2; // set the properties because there are extras labeled
 
-		// Read in an entire line
 		string line;
-		getline(myfile, line);
-		cout << "Reading file: " << filePath << endl;
-		int properties = -2; // because there are two extra lines of property info 
-		bool readingHeader = true;
-		while (getline(myfile, line) && readingHeader){
-			char* copy = new char[(line.length() + 1)];
-			strcpy(copy, line.c_str());
-			char* currentWord = strtok(copy, " ");
-			cout << line << endl;
-			// ====== Parsing Header information ======
-			// Read the size of the vertexList and faceList, property types and
-			// number of properties from the header section of the ply file. 
-			/* Example:
-			element vertex 300
-			element face 600
-			property float x
-			property float y
-			property float z
-			property float confidence
-			property float intensity
-			end_header
-			*/
-			//  would represent a ply file with 300 vertices, 600 faces,
-			//  and 5 properties.  
-			//  There are 7 possible properties: x, y, z, confidence, 
-			//    intesity, nx, ny, and nz.       
-			if (strcmp(currentWord, "element") == 0){
-				currentWord = strtok(NULL, " ");
-				if (strcmp(currentWord, "vertex") == 0){
-					currentWord = strtok(NULL, " ");
-					// Allocate memory for our vertices
-					vertexCount = atoi(currentWord)- 1;
+		char * token_pointer;
+		char * lineCopy = new char[80];
+		int count;
+		bool reading_header = true;
+		// loop for reading the header 
+		while (reading_header && getline(myfile, line)) {
+
+			// get the first token in the line, this will determine which
+			// action to take. 
+			strcpy(lineCopy, line.c_str());
+			token_pointer = strtok(lineCopy, " ");
+			// case when the element label is spotted:
+			if (strcmp(token_pointer, "element") == 0){
+				token_pointer = strtok(NULL, " ");
+
+				// When the vertex token is spotted read in the next token
+				// and use it to set the vertexCount and initialize vertexList
+				if (strcmp(token_pointer, "vertex") == 0){
+					token_pointer = strtok(NULL, " ");
+					vertexCount = atoi(token_pointer);
 					vertexList = new vertex[vertexCount];
-
-					// If the vertex list is not allocated (because of lack of memory) 
-					// then the user is informed and the program exits with a code of 1
-					if (vertexList == NULL){
-						cout << "Cannot allocate memory for Vertex List: System out of memory" << endl;
-						exit(1);
-					}
 				}
 
-				// Executed if the element is faces instead of verteces.
-				else if (strcmp(currentWord, "face") == 0){ // Set the face count
-					currentWord = strtok(NULL, " ");
-					// Allocate memory for our faces
-					faceCount = atoi(currentWord);
+				// When the face label is spotted read in the next token and 
+				// use it to set the faceCount and initialize faceList.
+				if (strcmp(token_pointer, "face") == 0){
+					token_pointer = strtok(NULL, " ");
+					faceCount = atoi(token_pointer);
 					faceList = new face[faceCount];
-
-
-					if (faceList == NULL){
-						cout << "Cannot allocate memory for FaceList: System out of memory" << endl;
-						exit(1);
-					}
-				}
-
-				// If the delimeter is a unrecognized string then an error is
-                // thrown and the program exits with a code of 1
-
-				else{
-					cout << currentWord << " is not a valid input variable" << endl;
-					exit(1);
 				}
 			}
-
-			else if (strcmp(currentWord, "property") == 0){ // Count the properties
-				properties++;
-			}
-			else if (strcmp(currentWord, "end_header") == 0){
-				cout << "found end_header" << endl;
-				readingHeader = false;
-			}
-			delete(copy);
+			// if property label increment the number of properties.
+			if (strcmp(token_pointer, "property") == 0) { properties++; }
+			// if end_header break the header loop and move to reading vertices.
+			if (strcmp(token_pointer, "end_header") == 0) { reading_header = false; }
 		}
-		cout << "Reading Vertices" << endl;
-		bool readingVertices = true;
-		int verticesRead = 0;
-		while (getline(myfile, line) && (verticesRead < vertexCount)){
-			//cout << (vertexCount - verticesRead) << endl;
-			char* copy = new char[line.length() + 1];
-			strcpy(copy, line.c_str());
-			char* currentWord = strtok(copy, " ");
-			if (verticesRead >= vertexCount){
-				readingVertices = false;
-			}
 
-			//
-			if (verticesRead < vertexCount){
-				if (properties >= 0){  // Read in the x vertex
-					vertexList[verticesRead].x = atof(currentWord);
-				}
-				if (properties >= 1){   // Read in the y vertex
-					currentWord = strtok(NULL, " ");
-					vertexList[verticesRead].y = atof(currentWord);
-				}
-				if (properties >= 2){  // Read in the z vertex
-					currentWord = strtok(NULL, " ");
-					vertexList[verticesRead].z = atof(currentWord);
-				}
-				if (properties >= 3){   //read in the confidence of a vertex
-					currentWord = strtok(NULL, " ");
-					vertexList[verticesRead].confidence = atof(currentWord);
-				}
-				if (properties >= 4){ // read in the intensity of a vertex
-					currentWord = strtok(NULL, " ");
-					try { vertexList[verticesRead].intensity = atof(currentWord); }
-					catch (exception e){
-						cout << line << endl; 
-						throw e;
-					}
-				}
-				if (properties >= 5){
-					currentWord = strtok(NULL, " ");
-					vertexList[verticesRead].nx = atof(currentWord);
-				}
-				if (properties >= 6){
-					currentWord = strtok(NULL, " ");
-					vertexList[verticesRead].ny = atof(currentWord);
-				}
-				if (properties >= 7){
-					currentWord = strtok(NULL, " ");
-					vertexList[verticesRead].nz = atof(currentWord);
-				}
-				verticesRead++;
-			}
-			delete(copy);
-		}
-		cout << "Reading Faces" << endl;
-		bool readingFaces = true;
-		int facesRead = 0;
-		while (getline(myfile, line) && readingFaces){
-			//cout << line << endl;
-			char* copy = new char[line.length() + 1];
-			strcpy(copy, line.c_str());
-			char* currentWord = strtok(copy, " ");
-			if (facesRead >= faceCount){
-				readingFaces = false;
-			}
+		// Read in exactly vertexCount number of lines after reading the header
+		// and set the appropriate vertex in the vertexList.
+		for (int i = 0; i < vertexCount; i++){
 
-			if (facesRead < faceCount){
-				// first number is how many faces to read in
-				faceList[facesRead].vertexCount = atoi(currentWord);
-				// Allocate the vertex list with memory 
-				faceList[facesRead].vertexList = new int[faceList[facesRead].vertexCount];
-				// Then we store the vertices until our delimeter is null
-				int count = 0;
-				while (count < faceList[facesRead].vertexCount){
-					currentWord = strtok(NULL, " ");
-					faceList[facesRead].vertexList[count] = atoi(currentWord);
-					count++;
-				}
-				facesRead++;
+			getline(myfile, line);
+			strcpy(lineCopy, line.c_str());
+
+			// depending on how many properties there are set that number of 
+			// elements (x, y, z, confidence, intensity, r, g, b) (max 7) with
+			// the input given
+			if (properties >= 0){
+				vertexList[i].x = atof(strtok(lineCopy, " "));
 			}
-			delete(copy);
+			if (properties >= 1){
+				vertexList[i].y = atof(strtok(NULL, " "));
+			}
+			if (properties >= 2){
+				vertexList[i].z = atof(strtok(NULL, " "));
+			}
+			if (properties >= 3){
+				vertexList[i].confidence = atof(strtok(NULL, " "));
+			}
+			if (properties >= 4){
+				vertexList[i].intensity = atof(strtok(NULL, " "));
+			}
+			if (properties >= 5){
+				vertexList[i].r = atof(strtok(NULL, " "));
+			}
+			if (properties >= 6) {
+				vertexList[i].g = atof(strtok(NULL, " "));
+			}
+			if (properties >= 7) {
+				vertexList[i].b = atof(strtok(NULL, " "));
+			}
 		}
-		myfile.close();
-		scaleAndCenter();
+
+		// Read in the faces (exactly faceCount number of lines) and set the 
+		// appropriate face in the faceList
+		for (int i = 0; i < faceCount; i++){
+
+			getline(myfile, line);
+
+			strcpy(lineCopy, line.c_str());
+			count = atoi(strtok(lineCopy, " "));
+			faceList[i].vertexCount = count; // number of vertices stored 
+			faceList[i].vertexList = new int[count]; // initialize the vertices
+
+			// set the vertices from the input, reading only the number of 
+			// vertices that are specified
+			for (int j = 0; j < count; j++){
+				faceList[i].vertexList[j] = atoi(strtok(NULL, " "));
+			}
+		}
+		delete(lineCopy);
 	}
-	else{
-		cout << "Unable to open file: " << filePath << endl;
+	// if the path is invalid, report then exit.
+	else {
+		//cout << "cannot open file " << myfile << "\n";
+		exit(1);
 	}
-
-}
+	myfile.close();
+	scaleAndCenter();
+};
 
 /*  ===============================================
 Desc: Moves all the geometry so that the object is centered at 0, 0, 0 and 
