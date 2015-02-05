@@ -232,7 +232,7 @@ void ply::loadGeometry(){
 			delete(copy);
 		}
 		cout << "Reading Faces" << endl;
-		bool readingFaces = false;
+		bool readingFaces = true;
 		int facesRead = 0;
 		while (getline(myfile, line) && readingFaces){
 			//cout << line << endl;
@@ -356,7 +356,7 @@ void ply::render(){
 	y2 = -0.5;
 	y3 = 0.5;
 
-	glBegin(GL_TRIANGLES); // sets the shapes that openGL draws and determines
+	/*glBegin(GL_TRIANGLES); // sets the shapes that openGL draws and determines
                            // the number of vertices that are necessary
 	setNormal(x1, y1, z1, x2, y2, z2, x3, y3, z3); // makes sure that each 
                                                    // vertex is correctly 
@@ -364,7 +364,7 @@ void ply::render(){
 	glVertex3f(x1, y1, z1);  // set the three vertices for the triangle
 	glVertex3f(x2, y2, z2);  // the direction of the front face depends 
 	glVertex3f(x3, y3, z3);  // on the order in which you put the vertices
-	glEnd();
+	glEnd();*/
 
 	/* Basic idea
 		Loop through each face, set the normal, output correct vertices
@@ -389,7 +389,20 @@ void ply::render(){
 	start here..
 
 	*/
-
+	glBegin(GL_TRIANGLES); // sets the shapes that openGL draws and determines
+	
+	for (int i = 0; i < faceCount; i++) {
+		face currface = faceList[i];
+		if (currface.vertexList != NULL) {
+			for (int j = 0; j < 3; j++){
+				int index = currface.vertexList[j];
+				vertex v = vertexList[index];
+				//setNormal(x1, y1, z1, x2, y2, z2, x3, y3, z3); // makes sure that each 
+				glVertex3f(v.x, v.y, v.z);  // set the three vertices for the triangle
+			}
+		}
+	}
+	glEnd();
 }
 
 /*  ===============================================
