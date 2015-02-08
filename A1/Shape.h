@@ -10,12 +10,16 @@ public:
 	~Shape() {};
 
 	void setSegments(int x, int y) {
-		m_segmentsX = x;
-		m_segmentsY = y;
+		if (x != m_segmentsX || y != m_segmentsY) {
+			m_segmentsX = x;
+			m_segmentsY = y;
+			recompute();
+		}
 	}
 
 	virtual void draw() {};
 	virtual void drawNormal() {};
+	virtual void recompute() {};
 
 protected:
 	void normalizeNormal (float x, float y, float z) {
