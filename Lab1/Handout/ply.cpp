@@ -214,12 +214,58 @@ Postcondition:
 void ply::scaleAndCenter() {
   int i;
   float max = 0.0f;
+  float max_x, min_x, max_y, min_y, max_z, min_z;
 
+  //set initial max/min values
+  if (vertexCount > 0) {
+	  max_x = vertexList[0].x;
+	  min_x = vertexList[0].x;
 
-  //fill in
+	  max_y = vertexList[0].y;
+	  min_y = vertexList[0].y;
 
+	  max_z = vertexList[0].z;
+	  min_z = vertexList[0].z;
+  }
 
+  //find the max and min values per axis
+  for (i = 1; i < vertexCount; i++){
+	  float curr_x = vertexList[i].x;
+	  if (curr_x > max_x) { max_x = curr_x; }
+	  if (curr_x < min_x) { min_x = curr_x; }
 
+	  float curr_y = vertexList[i].y;
+	  if (curr_y > max_y) { max_y = curr_y; }
+	  if (curr_y < min_y) { min_y = curr_y; }
+
+	  float curr_z = vertexList[i].z;
+	  if (curr_z > max_z) { max_z = curr_z; }
+	  if (curr_z < min_z) { min_z = curr_z; }
+  }
+
+  //find ranges
+  float range_x = max_x - min_x;
+  float range_y = max_y - min_y;
+  float range_z = max_z - min_z;
+
+  //find center offsets
+  float x_off = min_x + (range_x / 2.0f);
+  float y_off = min_y + (range_y / 2.0f);
+  float z_off = min_z + (range_z / 2.0f);
+
+  float scale_factor = (range_x > range_y ? range_x : range_y);
+	    scale_factor = (range_z > scale_factor ? range_z : scale_factor);
+
+  //shift all vertices by their offsets and scale to fit in a unit cube
+  for (i = 0; i < vertexCount; i++){
+	  vertexList[i].x -= x_off;
+	  vertexList[i].y -= y_off;
+	  vertexList[i].z -= z_off;
+  
+	  vertexList[i].x /= scale_factor;
+	  vertexList[i].y /= scale_factor;
+	  vertexList[i].z /= scale_factor;
+  }
 
   //sanity check. The printf should say that the max is 0.5
   for (i = 0; i < vertexCount; i++){
