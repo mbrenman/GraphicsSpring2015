@@ -4,12 +4,6 @@
 #include "Shape.h"
 #include <iostream>
 
-const int NUM_FACES = 6;
-
-enum RECT_SIDES {
-	FRONT, BACK, LEFT, RIGHT, TOP, BOTTOM, NUM_SIDES
-};
-
 class Cube : public Shape {
 public:
 	struct point_info {
@@ -26,16 +20,15 @@ public:
 	~Cube() {};
 
 	void draw() {
-		for (int i = 0; i < NUM_FACES; i++) {
-			drawFace(faces[i]);
+		for (int i = 0; i < NUM_SIDES; i++) {
+			drawFace(faces[i], false);
 		}
-		draw_normal = false;
 	};
 
 	void recompute() {
 		std::cout << "redrawing!" << std::endl;
 		//clear Faces
-		for (int i = 0; i < NUM_FACES; i++) {
+		for (int i = 0; i < NUM_SIDES; i++) {
 			faces[i].clear();
 		}
 
@@ -55,32 +48,46 @@ public:
 			Vector(0.0, 1.0 / m_segmentsY, 0.0),
 			Vector(0.0, 0.0, -1.0 / m_segmentsX), faces[RIGHT]);
 
-		computeFace(Point(0.5, 0.5, 0.5),
+		computeFace(Point(0.5, -0.5, 0.5),
 			Vector(0.0, 0.0, -1.0 / m_segmentsY),
-			Vector(-1.0 / m_segmentsX, 0.0, 0.0), faces[TOP]);
-
-		computeFace(Point(0.5, -0.5, -0.5),
-			Vector(0.0, 0.0, 1.0 / m_segmentsY),
 			Vector(-1.0 / m_segmentsX, 0.0, 0.0), faces[BOTTOM]);
+
+		computeFace(Point(0.5, 0.5, -0.5),
+			Vector(0.0, 0.0, 1.0 / m_segmentsY),
+			Vector(-1.0 / m_segmentsX, 0.0, 0.0), faces[TOP]);
 	
-		for (int i = 0; i < NUM_FACES; i++) {
+		for (int i = 0; i < NUM_SIDES; i++) {
 			std::cout << "face " << i << " size: " << faces[i].size() << std::endl;
 		}
 	};
 
 	void drawNormal() {
-
+		for (int i = 0; i < NUM_SIDES; i++) {
+			drawFace(faces[i], true);
+		}
 	};
 
 private:
-
-	void drawFace(std::vector<point_info> &face) {
+	enum RECT_SIDES {
+		FRONT, BACK, LEFT, RIGHT, TOP, BOTTOM, NUM_SIDES
+	};
+	void drawFace(std::vector<point_info> &face, bool drawingNormals) {
 		for (int i = 0; i < m_segmentsY; i++) {
-			glBegin(GL_TRIANGLE_STRIP);
+			if (drawingNormals) {
+				glBegin(GL_LINES);
+			}
+			else {
+				glBegin(GL_TRIANGLE_STRIP);
+			}
 			for (int j = 0; j < 2 * (m_segmentsX + 1); j++) {
 				//std::cout << "size: " << face.size() << std::endl;
 				//std::cout << (i * 2 * m_segmentsX) + j << std::endl;
-				drawPoint(face.at((i * 2 * (m_segmentsX + 1)) + j));
+				if (drawingNormals) {
+					drawNormalAtVertex(face.at((i * 2 * (m_segmentsX + 1)) + j));
+				}
+				else {
+					drawPoint(face.at((i * 2 * (m_segmentsX + 1)) + j));
+				}
 			}
 			glEnd();
 		}
@@ -88,6 +95,17 @@ private:
 
 	void drawPoint(const point_info &p_info) {
 		Point p = p_info.p;
+		Vector n = p_info.normal;
+		glNormal3f(n.at(0), n.at(1), n.at(2));
+		glVertex3f(p.at(0), p.at(1), p.at(2));
+	};
+
+	void drawNormalAtVertex(const point_info &p_info) {
+		Point p = p_info.p;
+		Vector norm = p_info.normal;
+		glVertex3f(p.at(0), p.at(1), p.at(2));
+
+		p = p + norm;
 		glVertex3f(p.at(0), p.at(1), p.at(2));
 	};
 
@@ -101,6 +119,8 @@ private:
 	void computeStrip(Point startp, Vector vert_vec, Vector horiz_vec, std::vector<point_info> &face){
 		Point p = startp;
 		Vector normal = cross(horiz_vec, vert_vec);
+		normal.normalize();
+		normal = normal * 0.1;
 		for (int i = 0; i <= m_segmentsX; i++) {
 			face.push_back(point_info(p, normal));
 			p = p + vert_vec;
@@ -110,7 +130,7 @@ private:
 		}
 	};
 
-	std::vector<point_info> faces[NUM_FACES];
+	std::vector<point_info> faces[NUM_SIDES];
 };
 
 #endif
