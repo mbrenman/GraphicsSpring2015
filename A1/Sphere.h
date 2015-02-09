@@ -94,27 +94,26 @@ private:
 	void computeStrip(float r, float phi, std::vector<point_info> &face){
 		for (int i = 0; i <= m_segmentsY; i++) {
 			float theta = i * (PI / m_segmentsY);
+			Point p1(r*sin(theta)*cos(phi), r*cos(theta), r*sin(theta)*sin(phi));
+			Point p2(r*sin(theta)*cos(phi + (2 * PI / m_segmentsX)), r*cos(theta), r*sin(theta)*sin(phi + (2 * PI / m_segmentsX)));
+			//Point origin = Point(0.0, 0.0, 0.0);
+			//Vector n1 = (p1 - origin);
+			//Vector n2 = (p2 - origin);
+			//n1.normalize(); n2.normalize();
+
 			if (i == 0 || i == m_segmentsY) {
-				face.push_back(point_info(Point(r*sin(theta)*cos(phi),r*cos(theta),r*sin(theta)*sin(phi)),
-					Vector(0.0, 0.0, 0.0)));
-				face.push_back(point_info(
-					Point(r*sin(theta)*cos(phi + (2 * PI / m_segmentsX)), r*cos(theta), r*sin(theta)*sin(phi + (2 * PI / m_segmentsX))),
-					Vector(0.0, 0.0, 0.0)));
+				face.push_back(point_info(p1, Vector(0.0, 0.0, 0.0)));
+				face.push_back(point_info(p2, Vector(0.0, 0.0, 0.0)));
 			}
 			else {
-				face.push_back(point_info(Point(r*sin(theta)*cos(phi), r*cos(theta), r*sin(theta)*sin(phi)),
-					Vector(0.0, 0.0, 0.0)));
-				face.push_back(point_info(
-					Point(r*sin(theta)*cos(phi + (2 * PI / m_segmentsX)), r*cos(theta), r*sin(theta)*sin(phi + (2 * PI / m_segmentsX))),
-					Vector(0.0, 0.0, 0.0)));
+				face.push_back(point_info(p1, sphereBodyVector(p1)));
+				face.push_back(point_info(p2, sphereBodyVector(p2)));
 			}
 		}
 	};
 
 	Vector sphereBodyVector(Point p) {
-		Vector normal = Vector(p.at(0), 0, p.at(2));
-		normal.normalize();
-		normal = Vector(normal.at(0), 0.5, normal.at(2));
+		Vector normal = Vector(p.at(0), p.at(1), p.at(2));
 		normal.normalize();
 		normal = normal * 0.1;
 		return normal;
