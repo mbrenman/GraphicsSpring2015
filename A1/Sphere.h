@@ -38,11 +38,7 @@ public:
 		}
 		body.clear();
 
-		m_hmatrix = rot_mat(Vector(0.0, 1.0, 0.0), -(2 * PI) / m_segmentsX);
-		Point startp(0.5, 0.0, 0.0);
-		Point nextp(0.5*cos(2 * PI / m_segmentsX), 0.0, 0.5*sin(2 * PI / m_segmentsX));
-		
-		computeBody(startp, nextp, body);
+		computeBody(body);
 	}
 private:
 	void drawFace(std::vector<point_info> &face, bool drawingNormals) {
@@ -83,7 +79,7 @@ private:
 		glVertex3f(p.at(0), p.at(1), p.at(2));
 	};
 
-	void computeBody(Point startp, Point nextp, std::vector< std::vector<point_info> > &body) {		
+	void computeBody(std::vector< std::vector<point_info> > &body) {		
 		for (int i = 0; i < m_segmentsX; i++) {
 			std::vector< point_info > face;
 			computeStrip(0.5, i * (2 * PI / m_segmentsX), face);
@@ -96,10 +92,6 @@ private:
 			float theta = i * (PI / m_segmentsY);
 			Point p1(r*sin(theta)*cos(phi), r*cos(theta), r*sin(theta)*sin(phi));
 			Point p2(r*sin(theta)*cos(phi + (2 * PI / m_segmentsX)), r*cos(theta), r*sin(theta)*sin(phi + (2 * PI / m_segmentsX)));
-			//Point origin = Point(0.0, 0.0, 0.0);
-			//Vector n1 = (p1 - origin);
-			//Vector n2 = (p2 - origin);
-			//n1.normalize(); n2.normalize();
 
 			if (i == 0 || i == m_segmentsY) {
 				face.push_back(point_info(p1, Vector(0.0, 0.0, 0.0)));
@@ -120,7 +112,6 @@ private:
 	}
 
 	std::vector< std::vector<point_info> > body;
-	Matrix m_hmatrix;
 };
 
 #endif
