@@ -83,45 +83,31 @@ private:
 		glVertex3f(p.at(0), p.at(1), p.at(2));
 	};
 
-	void computeBody(Point startp, Point nextp, std::vector< std::vector<point_info> > &body) {
-		Point topp(0.0, 0.5, 0.0);
-		Vector rot_vec = nextp - startp;
-		Vector tess_vec1, tess_vec2;
-		
+	void computeBody(Point startp, Point nextp, std::vector< std::vector<point_info> > &body) {		
 		for (int i = 0; i < m_segmentsX; i++) {
-			//Point upp2(0.5*cos(2 * PI / m_segmentsX)*cos(0.5*PI / m_segmentsY), 0.5*sin(2 * PI / m_segmentsX)*sin(0.5 * PI / m_segmentsY), 0.0);
-			//Point upp(0.5*cos(0.5*PI / m_segmentsY), 0.5*sin(0.5 * PI / m_segmentsY), 0.0);
-
-			//Vector upVec(0.0, 1.0, 0.0);
-			//Vector startInVec = Point(0.0, 0.0, 0.0) - startp;
-			//Vector nextInVec = Point(0.0, 0.0, 0.0) - nextp;
-
-			//tess_vec1 = (startp.at(2) / 0.5) * startInVec - upVec; //startp
-			//tess_vec2 = (nextp.at(2) / 0.5) * startInVec - upVec;
-
-
 			std::vector< point_info > face;
-			computeStrip(startp, nextp, tess_vec1, tess_vec2, face);
-			startp = nextp;
-			rot_vec = m_hmatrix * rot_vec;
-			nextp = nextp + rot_vec;
+			computeStrip(0.5, i * (2 * PI / m_segmentsX), face);
 			body.push_back(face);
 		}
 	};
 
-	void computeStrip(Point startp, Point nextp, Vector tess_vec1, Vector tess_vec2, std::vector<point_info> &face){
-		
+	void computeStrip(float r, float phi, std::vector<point_info> &face){
 		for (int i = 0; i <= m_segmentsY; i++) {
-			if (i == m_segmentsY) {
-				face.push_back(point_info(startp, Vector(0, 0, 0)));
-				face.push_back(point_info(nextp, Vector(0, 0, 0)));
+			float theta = i * (PI / m_segmentsY);
+			if (i == 0 || i == m_segmentsY) {
+				face.push_back(point_info(Point(r*sin(theta)*cos(phi),r*cos(theta),r*sin(theta)*sin(phi)),
+					Vector(0.0, 0.0, 0.0)));
+				face.push_back(point_info(
+					Point(r*sin(theta)*cos(phi + (2 * PI / m_segmentsX)), r*cos(theta), r*sin(theta)*sin(phi + (2 * PI / m_segmentsX))),
+					Vector(0.0, 0.0, 0.0)));
 			}
 			else {
-				face.push_back(point_info(startp, sphereBodyVector(startp)));
-				face.push_back(point_info(nextp, sphereBodyVector(nextp)));
+				face.push_back(point_info(Point(r*sin(theta)*cos(phi), r*cos(theta), r*sin(theta)*sin(phi)),
+					Vector(0.0, 0.0, 0.0)));
+				face.push_back(point_info(
+					Point(r*sin(theta)*cos(phi + (2 * PI / m_segmentsX)), r*cos(theta), r*sin(theta)*sin(phi + (2 * PI / m_segmentsX))),
+					Vector(0.0, 0.0, 0.0)));
 			}
-			startp = startp + tess_vec1;
-			nextp = nextp + tess_vec2;
 		}
 	};
 
