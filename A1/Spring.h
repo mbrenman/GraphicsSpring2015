@@ -10,16 +10,6 @@ const float TUBE_SPD = 0.1;
 
 class Spring : public Shape {
 public:
-	struct point_info {
-		Point p;
-		Vector normal;
-
-		point_info(const Point &_p, const Vector &_norm) {
-			p = _p;
-			normal = _norm;
-		};
-	};
-
 	Spring() {};
 	~Spring() {};
 

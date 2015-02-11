@@ -244,7 +244,7 @@ int main(int argc, char* argv[])
 	glui->add_radiobutton_to_group(group1, "Cylinder");
 	glui->add_radiobutton_to_group(group1, "Cone");
 	glui->add_radiobutton_to_group(group1, "Sphere");
-	glui->add_radiobutton_to_group(group1, "Special1");
+	glui->add_radiobutton_to_group(group1, "Spring");
 	glui->add_button("Quit", 0, (GLUI_Update_CB)exit);
 
 	glui->set_main_gfx_window(main_window);

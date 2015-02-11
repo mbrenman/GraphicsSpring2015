@@ -6,14 +6,8 @@
 
 class Cube : public Shape {
 public:
-	struct point_info {
-		Point p;
-		Vector normal;
-	
-		point_info(const Point &_p, const Vector &_norm) {
-			p = _p;
-			normal = _norm;
-		};
+	enum RECT_SIDES {
+		FRONT, BACK, LEFT, RIGHT, TOP, BOTTOM, NUM_SIDES
 	};
 
 	Cube() {};
@@ -22,6 +16,12 @@ public:
 	void draw() {
 		for (int i = 0; i < NUM_SIDES; i++) {
 			drawFace(faces[i], false);
+		}
+	};
+
+	void drawNormal() {
+		for (int i = 0; i < NUM_SIDES; i++) {
+			drawFace(faces[i], true);
 		}
 	};
 
@@ -61,16 +61,7 @@ public:
 		}
 	};
 
-	void drawNormal() {
-		for (int i = 0; i < NUM_SIDES; i++) {
-			drawFace(faces[i], true);
-		}
-	};
-
 private:
-	enum RECT_SIDES {
-		FRONT, BACK, LEFT, RIGHT, TOP, BOTTOM, NUM_SIDES
-	};
 	void drawFace(std::vector<point_info> &face, bool drawingNormals) {
 		for (int i = 0; i < m_segmentsY; i++) {
 			if (drawingNormals) {

@@ -6,6 +6,16 @@
 
 class Shape {
 public:
+	struct point_info {
+		Point p;
+		Vector normal;
+
+		point_info(const Point &_p, const Vector &_norm) {
+			p = _p;
+			normal = _norm;
+		};
+	};
+
 	Shape() {};
 	~Shape() {};
 
