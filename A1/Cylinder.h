@@ -106,7 +106,7 @@ private:
 
 	void drawNormalAtVertex(const point_info &p_info) {
 		Point p = p_info.p;
-		Vector norm = p_info.normal;
+		Vector norm = 0.1 * p_info.normal;
 		glVertex3f(p.at(0), p.at(1), p.at(2));
 
 		p = p + norm;
@@ -137,13 +137,11 @@ private:
 	Vector cylBodyVector(Point p) {
 		Vector normal = p - Point(0, p.at(1), 0);
 		normal.normalize();
-		normal = normal * 0.1;
 		return normal;
 	}
 
 	void computeCap(Point centerpt, Point edgept1, Point edgept2, std::vector<point_info> &cap, Vector normal){
 		normal.normalize();
-		normal = normal * 0.1;
 		cap.clear();
 		cap.push_back(point_info(centerpt, normal));
 		Vector rot_vec = edgept2 - edgept1;

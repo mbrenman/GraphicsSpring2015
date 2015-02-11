@@ -98,7 +98,7 @@ private:
 
 	void drawNormalAtVertex(const point_info &p_info) {
 		Point p = p_info.p;
-		Vector norm = p_info.normal;
+		Vector norm = 0.1 * p_info.normal;
 		glVertex3f(p.at(0), p.at(1), p.at(2));
 
 		p = p + norm;
@@ -142,13 +142,11 @@ private:
 		normal.normalize();
 		normal = Vector(normal.at(0), 0.5, normal.at(2));
 		normal.normalize();
-		normal = normal * 0.1;
 		return normal;
 	}
 
 	void computeBase(Point centerpt, Point edgept1, Point edgept2, std::vector<point_info> &base, Vector normal){
 		normal.normalize();
-		normal = normal * 0.1;
 		base.clear();
 		base.push_back(point_info(centerpt, normal));
 		Vector rot_vec = edgept2 - edgept1;

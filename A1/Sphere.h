@@ -72,7 +72,7 @@ private:
 
 	void drawNormalAtVertex(const point_info &p_info) {
 		Point p = p_info.p;
-		Vector norm = p_info.normal;
+		Vector norm = 0.1 * p_info.normal;
 		glVertex3f(p.at(0), p.at(1), p.at(2));
 
 		p = p + norm;
@@ -87,27 +87,20 @@ private:
 		}
 	};
 
-	void computeStrip(float r, float phi, std::vector<point_info> &face){
+	void computeStrip(float r, float theta, std::vector<point_info> &face){
 		for (int i = 0; i <= m_segmentsY; i++) {
-			float theta = i * (PI / m_segmentsY);
-			Point p1(r*sin(theta)*cos(phi), r*cos(theta), r*sin(theta)*sin(phi));
-			Point p2(r*sin(theta)*cos(phi + (2 * PI / m_segmentsX)), r*cos(theta), r*sin(theta)*sin(phi + (2 * PI / m_segmentsX)));
+			float phi = i * (PI / m_segmentsY);
+			Point p1(r*sin(phi)*cos(theta), r*cos(phi), r*sin(phi)*sin(theta));
+			Point p2(r*sin(phi)*cos(theta + (2 * PI / m_segmentsX)), r*cos(phi), r*sin(phi)*sin(theta + (2 * PI / m_segmentsX)));
 
-			if (i == 0 || i == m_segmentsY) {
-				face.push_back(point_info(p1, Vector(0.0, 0.0, 0.0)));
-				face.push_back(point_info(p2, Vector(0.0, 0.0, 0.0)));
-			}
-			else {
-				face.push_back(point_info(p1, sphereBodyVector(p1)));
-				face.push_back(point_info(p2, sphereBodyVector(p2)));
-			}
+			face.push_back(point_info(p1, sphereBodyVector(p1)));
+			face.push_back(point_info(p2, sphereBodyVector(p2)));
 		}
 	};
 
 	Vector sphereBodyVector(Point p) {
 		Vector normal = Vector(p.at(0), p.at(1), p.at(2));
 		normal.normalize();
-		normal = normal * 0.1;
 		return normal;
 	}
 

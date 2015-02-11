@@ -102,7 +102,7 @@ private:
 
 	void drawNormalAtVertex(const point_info &p_info) {
 		Point p = p_info.p;
-		Vector norm = p_info.normal;
+		Vector norm = 0.1 * p_info.normal;
 		glVertex3f(p.at(0), p.at(1), p.at(2));
 
 		p = p + norm;
@@ -120,7 +120,6 @@ private:
 		Point p = startp;
 		Vector normal = cross(horiz_vec, vert_vec);
 		normal.normalize();
-		normal = normal * 0.1;
 		for (int i = 0; i <= m_segmentsX; i++) {
 			face.push_back(point_info(p, normal));
 			p = p + vert_vec;
