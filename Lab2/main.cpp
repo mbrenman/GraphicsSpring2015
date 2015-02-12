@@ -145,6 +145,7 @@ void myGlutMouse(int button, int button_state, int x, int y )
 		break;
     // zoom out on right-click
 	}
+	glutPostRedisplay();
     // do some scrolling
 
 }
