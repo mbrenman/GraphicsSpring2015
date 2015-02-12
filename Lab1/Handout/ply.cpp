@@ -377,10 +377,12 @@ void ply::render(){
 	for (int i = 0; i < faceCount; i++) {
 		face currface = faceList[i];
 		if (currface.vertexList != NULL) {
+			setNormal(vertexList[currface.vertexList[0]].x, vertexList[currface.vertexList[0]].y, vertexList[currface.vertexList[0]].z,
+				vertexList[currface.vertexList[1]].x, vertexList[currface.vertexList[1]].y, vertexList[currface.vertexList[1]].z,
+				vertexList[currface.vertexList[2]].x, vertexList[currface.vertexList[2]].y, vertexList[currface.vertexList[2]].z);
 			for (int j = 0; j < 3; j++){
 				int index = currface.vertexList[j];
 				vertex v = vertexList[index];
-				//setNormal(x1, y1, z1, x2, y2, z2, x3, y3, z3); // makes sure that each 
 				glVertex3f(v.x, v.y, v.z);  // set the three vertices for the triangle
 			}
 		}
