@@ -14,7 +14,7 @@ public:
 	every time we hit an end point call glEnd() and, if its not the last point, a new glBegin().
 
 	This allow allows us to put drawFace() in Shape.h as a generic function that iterates through the
-	points of any side given.
+	points of any side given (now called drawPart() ).
 	*/
 
 	struct point_info {
@@ -58,6 +58,12 @@ protected:
 		v.normalize();
 		glNormal3dv(v.unpack());
 	};
+
+	/*
+		These are now generic functions for drawing a set of a specific type of primitive.
+		Performs far fewer calculations than the old version. There is a noticeable performance
+		speed-up, particularly when running Spring with high segments.
+	*/
 
 	void drawPart(std::vector<point_info> &face, int primitive, bool drawingNormals) {
 		int i = 0;
