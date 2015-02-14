@@ -55,10 +55,6 @@ public:
 		computeFace(Point(0.5, 0.5, -0.5),
 			Vector(0.0, 0.0, 1.0 / m_segmentsY),
 			Vector(-1.0 / m_segmentsX, 0.0, 0.0), faces[TOP]);
-	
-		for (int i = 0; i < NUM_SIDES; i++) {
-			std::cout << "face " << i << " size: " << faces[i].size() << std::endl;
-		}
 	};
 
 private:
