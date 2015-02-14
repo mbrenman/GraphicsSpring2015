@@ -116,9 +116,9 @@ private:
 	void computeStrip(Point startp, Vector vert_vec, Vector horiz_vec, std::vector<point_info> &face){
 		Point p = startp;
 		for (int i = 0; i <= m_segmentsY; i++) {
-			face.push_back(point_info(p, cylBodyVector(p)));
+			face.push_back(point_info(p, cylBodyVector(p), false));
 			p = p + vert_vec;
-			face.push_back(point_info(p, cylBodyVector(p)));
+			face.push_back(point_info(p, cylBodyVector(p), i == m_segmentsY ? true : false));
 			p = p - vert_vec;
 			p = p + horiz_vec;
 		}
@@ -133,10 +133,10 @@ private:
 	void computeCap(Point centerpt, Point edgept1, Point edgept2, std::vector<point_info> &cap, Vector normal){
 		normal.normalize();
 		cap.clear();
-		cap.push_back(point_info(centerpt, normal));
+		cap.push_back(point_info(centerpt, normal, false));
 		Vector rot_vec = edgept2 - edgept1;
 		for (int i = 0; i <= m_segmentsX; i++){
-			cap.push_back(point_info(edgept1, normal));
+			cap.push_back(point_info(edgept1, normal, i == m_segmentsX ? true : false));
 			edgept1 = edgept1 + rot_vec;
 			rot_vec = m_rmatrix * rot_vec;
 		}
