@@ -31,6 +31,8 @@ void solarSystem::render(){
 		glPopMatrix();
 	// Add more planets, moons, and rings here!	
 
+
+
 	//Planet 1
 		glPushMatrix();
 			glRotatef(rotation,0,1,0);
@@ -66,15 +68,15 @@ void solarSystem::render(){
 
 			//Planet 3 Moon
 			glPushMatrix();
-				glRotatef(rotation * moonOrbitSpeed * 0.5,1,1,1);
-				glTranslatef(1, 1, 0);
+				glRotatef(rotation * moonOrbitSpeed * 1,0,0,1);
+				glTranslatef(1, 0, 0);
 				glColor3f(0.05f,0.99f,0.76f);
 				glutSolidSphere(.25,15,15);
 
 
 				//Planet 3 Moon Moon
 				glPushMatrix();
-					glRotatef(rotation * moonOrbitSpeed * 1.4,1,0,0);
+					glRotatef(rotation * moonOrbitSpeed * 4,1,0,0);
 					glTranslatef(0, 0, 1);
 					glColor3f(0.30f,0.29f,0.76f);
 					glutSolidSphere(.1,15,15);
