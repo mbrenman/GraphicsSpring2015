@@ -4,6 +4,7 @@
         New to this version: also renders the silhouette!
   Author: Paul Nixon
   ===================================================== */
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <string>
 #include <fstream>

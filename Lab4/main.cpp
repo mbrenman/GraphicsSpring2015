@@ -6,6 +6,7 @@
         Purpose: Driver for 3D program to load .ply models 
         ===================================================== */
 
+#define _CRT_SECURE_NO_WARNINGS
 #include <string.h>
 #include <iostream>
 #include <fstream>
@@ -26,7 +27,7 @@ int  scale = 100;
         use it to 
 */
 GLUI_EditText* filenameTextField = NULL;
-string filenamePath = "../data/dragon.ply";
+string filenamePath = "./data/dragon.ply";
 
 /****************************************/
 /*         PLY Object                   */
