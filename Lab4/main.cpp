@@ -166,7 +166,6 @@ void callback_load(int id) {
 
 int main(int argc, char* argv[])
 {
-        
         atexit(onExit);
 
         /****************************************/

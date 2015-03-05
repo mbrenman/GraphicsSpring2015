@@ -15,9 +15,13 @@
 #include "geometry.h"
 #include <math.h>
 #include "Algebra.h"
-
+#include <map>
 
 using namespace std;
+
+
+
+map<string, edge> edgeMap;
 
 /*  ===============================================
       Desc: Default constructor for a ply object
@@ -82,7 +86,6 @@ void ply::reload(string _filePath){
           (including edgeList, this calls scaleAndCenter and findEdges)
       =============================================== */ 
 void ply::loadGeometry(){
-
   /* You will implement this section of code
         1. Parse the header
         2.) Update any private or helper variables in the ply.h private section
@@ -192,7 +195,6 @@ void ply::loadGeometry(){
     }
     // if the path is invalid, report then exit.
     else {
-		cout << "cannot open file " << filePath.c_str() << "\n";
         exit(1);
     }
     myfile.close();
@@ -282,9 +284,78 @@ void ply::render(){
 
 //loads data structures so edges are known
 void ply::findEdges(){
-    //edges, if you want to use this data structure
-    //TODO add all the edges to the edgeList and make sure they have both faces
+	for (int i = 0; i < faceCount; i++) {
+		int *vlist = faceList[i].vertexList;
+	
+		addVerticesToMap(vlist[0], vlist[1], i);
+//		addVerticesToMap(vlist[1], vlist[2], i);
+//		addVerticesToMap(vlist[2], vlist[0], i);
+	}
+
+/*	//sanity check. All edges should have 2 faces
+	for (map<string, edge>::const_iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
+		edge e = it->second;
+		//if (e.faces[0] == -1 || e.faces[1] == -1) {
+		//	exit(1);
+		//}
+	}
+	*/
 } 
+
+void ply::addVerticesToMap(int vert1index, int vert2index, int faceindex) {
+
+	string edgeKey = getEdgeHash(vertexList[vert1index], vertexList[vert2index]);
+
+	if (edgeMap.count(edgeKey)) {
+		edge e = edgeMap[edgeKey]; //THIS IS THE PROBLEM
+		e.faces[1] = faceindex;
+	}
+	else {
+		edge e;
+		e.vertices[0] = vert1index;
+		e.vertices[1] = vert2index;
+		e.faces[0] = faceindex;
+	}
+}
+
+string ply::getEdgeHash(vertex v1, vertex v2) {
+	string hash = "";
+	vertex first, second;
+	if (vertexCompare(v1, v2)) {
+		first = v1;
+		second = v2;
+	}
+	else {
+		first = v2;
+		second = v1;
+	}
+
+	hash = to_string(v1.x)
+		+ "," + to_string(v1.y)
+		+ "," + to_string(v1.z)
+		+ "," + to_string(v2.x)
+		+ "," + to_string(v2.y)
+		+ "," + to_string(v2.z);
+
+	return hash;
+}
+
+bool ply::vertexCompare(vertex v1, vertex v2) {
+	if (v1.x > v2.x) {
+		return true;
+	}
+	else if (v1.x == v2.x) {
+		if (v1.y > v2.y){
+			return true;
+		}
+		else if (v1.y == v2.y) {
+			if (v1.z > v2.z) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
 /* Desc: Renders the silhouette
  * Precondition: Edges are known

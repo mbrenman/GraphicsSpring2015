@@ -84,6 +84,10 @@ class ply : public entity{
                                                 float x2, float y2, float z2,
                                                 float x3, float y3, float z3);
 
+
+				bool vertexCompare(vertex v1, vertex v2);
+				void addVerticesToMap(int vert1index, int vert2index, int faceindex);
+				string getEdgeHash(vertex v1, vertex v2);
                 /*      ===============================================
                         Data
                         These variables are useful to store information
