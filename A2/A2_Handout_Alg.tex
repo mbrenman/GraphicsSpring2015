@@ -12,6 +12,7 @@
 \usepackage{titlesec}
 \usepackage{hyperref}
 \usepackage{framed}
+\usepackage{amsmath}
 
 \definecolor{light-gray}{gray}{0.45}
 \titleformat{\section}
@@ -36,13 +37,9 @@ Project due:  {\bf Monday March 16th} at 11:59pm}
 %\subsection{}
 
 \begin{verbatim}
-Your Names: _____________________________
+Your Names: Matt Brenman & Matt Cardarelli
 
-            _____________________________
-
-Your CS Logins: _________________________
-
-                _________________________
+Your CS Logins: mbrenm01 & mcarda01
 \end{verbatim}
 
 \section{Instructions}
@@ -66,6 +63,49 @@ Each of these functions returns the rotation matrix about the $x$, $y$, or $z$ a
 
 \begin{framed}
 \vspace{20em}
+
+Point to rotate:
+\begin{equation*}
+	\begin{bmatrix}
+	1 \\
+	1 \\
+	1 \\
+	1 
+	\end{bmatrix}
+\end{equation*}
+
+Rotation angle is 45 degrees.
+
+Rotation around x axis:
+\begin{equation*}
+	\begin{bmatrix}
+	1 \\
+	0 \\
+	\sqrt{2} \\
+	1 
+	\end{bmatrix}
+\end{equation*}
+
+Rotation around y axis:
+\begin{equation*}
+	\begin{bmatrix}
+	\sqrt{2} \\
+	1 \\
+	0 \\
+	1 
+	\end{bmatrix}
+\end{equation*}
+
+Rotation around z axis:
+\begin{equation*}
+	\begin{bmatrix}
+	0 \\
+	\sqrt{2} \\
+	1 \\
+	1 
+	\end{bmatrix}
+\end{equation*}
+
 \end{framed}
 
 \section{Arbitrary Rotation}
@@ -81,7 +121,35 @@ where $M_1$ rotates the arbitrary axis about the $y$ axis, $M_2$ rotates the arb
 \end{framed}
 
 \begin{framed}
-\vspace{20em}
+
+$M_1$ is a rotation matrix around the y axis (defined above), and $\theta$ is found as follows:
+
+$$\theta = tan^{-1}\left(\frac{a_z}{a_x}\right)$$
+
+The resulting vector of the first operation, $a'$, lies in the $xy$-plane, so the $z$-component of $a'$ is 0.
+
+
+$M_2$ is a rotation matrix around the z axis (defined above), and $\theta'$ is found as follows:
+
+$$\theta' = -tan^{-1}\left(\frac{a'_y}{a'_x}\right)$$
+
+Then, we have bent space such that the x-axis is now lined up with the vector of rotation, so we can use the rotation matrix around the x-axis for $M_3$, using $\lambda$ for the rotation value.
+
+
+
+
+% $M_1$ is a rotation matrix around the y axis (defined above), and $\theta$ is found as follows:
+
+% $$\theta = cos^{-1}\left(\frac{\hat{x}\cdot\vec{a}_{xz}}{||\hat{x}||\ ||\vec{a}_{xz}||}\right)$$
+
+% where $\vec{a}_{xz}$ is the component of $a$ in the $xz$-plane.
+
+% (Note: The dot product in the numerator simplifies to the x component of $\vec{a}_{xz}$, and the denominator simplifies to $||\vec{a}_{xz}||$)
+
+% The resulting vector of the first operation, $a'$, lies in the $xy$-plane, so the $z$-component of $a'$ is 0.
+
+% For $M_2$, we perform the same operation, recalculating $\theta$, around the z axis, which is defined above. $\theta$ is calculated the same way, but the magnitude of the vector may be different, resulting in a different value for $\theta$.
+
 \end{framed}
 
 
@@ -91,7 +159,16 @@ where $M_1$ rotates the arbitrary axis about the $y$ axis, $M_2$ rotates the arb
 \end{framed}
 
 \begin{framed}
-\vspace{10em}
+
+We would have to translate by 
+$\begin{bmatrix}
+	-h_x \\
+	-h_y \\
+	-h_z \\
+	1 
+	\end{bmatrix}$
+, which would set the arbitrary point to act as the origin. Then we could use the formulas derived in the previous problem, and then re-translate by $h$.
+
 \end{framed}
 
 
@@ -103,15 +180,30 @@ Each $M_i$ corresponds to a step described in lecture. Here, $p$ is a point in w
 \noindent {\bf [1/2 pt. each]} Briefly write out what each matrix is responsible for doing. Then write what values they have. Make sure to get the order correct (that is, matrix $M_4$ corresponds to only one of the steps described in lecture.)\\
 
 $M_1:$
-\vspace{3em}
+ The translation step in the negative-eye direction.
+\vspace{1em}
 
-$M_2:$\\\\
+
+$M_2:$
+ The rotation step, which is going from local to world view.
+\vspace{1em}
 
 
 $M_3:$
-\vspace{3em}
+ The scaling step, which scales x by $\frac{2}{width}$, y by $\frac{2}{height}$, and z by $\frac{1}{far}$
+\vspace{1em}
+
 
 $M_4:$
+ The unhinge step, which is the following matrix ($c=-\frac{near}{far}$)
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & 0 \\
+	0 & 1 & 0 & 0 \\
+	0 & 0 & \frac{1}{c+1} & \frac{-c}{c+1} \\
+	0 & 0 & -1 & 0
+	\end{bmatrix}
+ $$
 \vspace{3em}
 
 \end{framed}
@@ -120,8 +212,36 @@ $M_4:$
 \noindent {\bf [1/2 pt. each]} How (mathematically) will you translate the camera's eye point $E$:
 \begin{enumerate}
 \item One unit right? $E' = $\\
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & -1 \\
+	0 & 1 & 0 & 0 \\
+	0 & 0 & 1 & 0 \\
+	0 & 0 & 0 & 1
+	\end{bmatrix}
+ $$
+
+
 \item One unit down? $E' = $\\
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & 0 \\
+	0 & 1 & 0 & 1 \\
+	0 & 0 & 1 & 0 \\
+	0 & 0 & 0 & 1
+	\end{bmatrix}
+ $$
+
 \item One unit forward? $E' = $\\
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & 0 \\
+	0 & 1 & 0 & 0 \\
+	0 & 0 & 1 & -1 \\
+	0 & 0 & 0 & 1
+	\end{bmatrix}
+ $$
+
 \end{enumerate}
 \end{framed}
 
@@ -131,8 +251,13 @@ $M_4:$
 \noindent {\bf [1/2 pt. each]} How (mathematically) will you use the $u$, $v$, and $w$ vectors, in conjunction with a rotation angle $\theta$, to get new $u$, $v$, and $w$ vectors when:
 \begin{enumerate}
 \item Adjusting the ``spin'' in a clockwise direction by $\theta$ radians?\\
+Use a rotation matrix around the w axis with a rotation angle $\theta$
+
 \item Adjusting (rotating) the ``pitch'' to face upwards by $\theta$ radians?\\
+Use a rotation matrix around the u axis with a rotation angle $\theta$
+
 \item Adjusting the ``yaw'' to face right by $\theta$ radians?\\
+Use a rotation matrix around the v axis with a rotation angle $\theta$
 \end{enumerate}
 \end{framed}
 
@@ -142,11 +267,39 @@ $M_4:$
 \end{framed}
 
 \begin{framed}
-\vspace{10em}
+$M_T$ = 
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & x \\
+	0 & 1 & 0 & y \\
+	0 & 0 & 1 & z \\
+	0 & 0 & 0 & 1
+	\end{bmatrix}
+ $$
+
+$M_T^{-1}$ = 
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & -x \\
+	0 & 1 & 0 & -y \\
+	0 & 0 & 1 & -z \\
+	0 & 0 & 0 & 1
+	\end{bmatrix}
+ $$
+
 \end{framed}
 
 
 {\bf Extra credit:} Will this same technique work for scale and rotation matrices? If so, write out the inverse scale and inverse rotation matrices. If not, explain why not. What about the perspective �unhinging� transformation? Will this technique be as efficient? Explain.
+
+\begin{framed}
+For the scaling matrix, negating the scaling components does not give you the inverse, but using the reciprocal does (except for when you scale any dimension to zero).
+\vspace{1em}
+For the rotation matrix, this also does not work, but a rotation inverse is also its transpose, which is much faster to compute.
+\vspace{1em}
+This technique would work for the unhinging transformation, and it should be more efficient.
+\end{framed}
+
 
 \section{How to Submit}
 
