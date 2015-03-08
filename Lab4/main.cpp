@@ -27,7 +27,7 @@ int  scale = 100;
         use it to 
 */
 // GLUI_EditText* filenameTextField = NULL;
-string filenamePath = "./data/dragon.ply";
+string filenamePath = "./data/bunny.ply";
 
 /****************************************/
 /*         PLY Object                   */

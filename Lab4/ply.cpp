@@ -269,9 +269,6 @@ void ply::render(){
     glTranslatef(getXPosition(),getYPosition(),getZPosition());
     glScalef(getXScale(),getYScale(),getZScale());
     // For each of our faces
-    // glBegin(GL_TRIANGLES);
-    glLineWidth(2.5); 
-    glColor3f(1.0, 0.0, 0.0);
     
     glBegin(GL_TRIANGLES);
           for(int i = 0; i < faceCount; i++) {
