@@ -15,13 +15,10 @@
 #include "geometry.h"
 #include <math.h>
 #include "Algebra.h"
-#include <map>
+
 
 using namespace std;
 
-
-
-map<string, edge> edgeMap;
 
 /*  ===============================================
       Desc: Default constructor for a ply object
@@ -38,8 +35,15 @@ ply::ply(string _filePath){
 		vertexCount = 0;
 		faceCount = 0;
 		edgeCount = 0;
+
+        //This is needed or else the first insert seg faults
+        edgeMap.clear();
+
         // Call helper function to load geometry
         loadGeometry();
+
+        cout << "edgeMap size: " << edgeMap.size() << endl;
+        return;
 }
 
 /*  ===============================================
@@ -198,7 +202,13 @@ void ply::loadGeometry(){
         exit(1);
     }
     myfile.close();
+    
+    cout << "ABOUT TO FIND EDGES" << endl;
+
     findEdges();
+
+    cout << "edgeMap size: " << edgeMap.size() << endl;
+
     scaleAndCenter();
 };
 
@@ -259,6 +269,10 @@ void ply::render(){
     glTranslatef(getXPosition(),getYPosition(),getZPosition());
     glScalef(getXScale(),getYScale(),getZScale());
     // For each of our faces
+    // glBegin(GL_TRIANGLES);
+    glLineWidth(2.5); 
+    glColor3f(1.0, 0.0, 0.0);
+    
     glBegin(GL_TRIANGLES);
           for(int i = 0; i < faceCount; i++) {
             // All of our faces are actually triangles for PLY files
@@ -277,10 +291,20 @@ void ply::render(){
                 glVertex3f(vertexList[index].x,vertexList[index].y,vertexList[index].z);
             }
         }
+
+            
         glEnd();        
         glPopMatrix();
 }
 
+bool ply::edgeShouldShow(face f1, face f2)
+{
+    Vector look = Vector(lookX, 1, lookZ);
+    Vector f1norm = Vector(f1.normX, f1.normY, f1.normZ);
+    Vector f2norm = Vector(f2.normX, f2.normY, f2.normZ);
+
+    return (dot(look, f1norm) > 0 && dot(look, f2norm) < 0) || (dot(look, f1norm) < 0 && dot(look, f2norm) > 0);
+}
 
 //loads data structures so edges are known
 void ply::findEdges(){
@@ -288,18 +312,24 @@ void ply::findEdges(){
 		int *vlist = faceList[i].vertexList;
 	
 		addVerticesToMap(vlist[0], vlist[1], i);
-//		addVerticesToMap(vlist[1], vlist[2], i);
-//		addVerticesToMap(vlist[2], vlist[0], i);
+		addVerticesToMap(vlist[1], vlist[2], i);
+		addVerticesToMap(vlist[2], vlist[0], i);
 	}
 
-/*	//sanity check. All edges should have 2 faces
-	for (map<string, edge>::const_iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
-		edge e = it->second;
-		//if (e.faces[0] == -1 || e.faces[1] == -1) {
-		//	exit(1);
-		//}
+    cout << edgeMap.size() << endl;
+
+    int wrong = 0;
+	// sanity check. All edges should have 2 faces
+	for (map<string, edge*>::const_iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
+		edge *e = it->second;
+		if (e->faces[0] == -1 || e->faces[1] == -1) {
+			// cout << "OH NO!" << endl;
+            // exit(1);
+            wrong++;
+		}
 	}
-	*/
+    cout << endl << "wrong: " << wrong << endl;
+	
 } 
 
 void ply::addVerticesToMap(int vert1index, int vert2index, int faceindex) {
@@ -307,14 +337,22 @@ void ply::addVerticesToMap(int vert1index, int vert2index, int faceindex) {
 	string edgeKey = getEdgeHash(vertexList[vert1index], vertexList[vert2index]);
 
 	if (edgeMap.count(edgeKey)) {
-		edge e = edgeMap[edgeKey]; //THIS IS THE PROBLEM
-		e.faces[1] = faceindex;
+        
+        cout << "found" << endl;
+
+		edge *e = edgeMap[edgeKey]; //THIS IS THE PROBLEM
+		e->faces[1] = faceindex;
 	}
 	else {
-		edge e;
-		e.vertices[0] = vert1index;
-		e.vertices[1] = vert2index;
-		e.faces[0] = faceindex;
+
+        cout << "not" << endl;
+
+		edge *e = new edge();
+		e->vertices[0] = vert1index;
+		e->vertices[1] = vert2index;
+		e->faces[0] = faceindex;
+
+        edgeMap[edgeKey] = e;
 	}
 }
 
@@ -330,12 +368,12 @@ string ply::getEdgeHash(vertex v1, vertex v2) {
 		second = v1;
 	}
 
-	hash = to_string(v1.x)
-		+ "," + to_string(v1.y)
-		+ "," + to_string(v1.z)
-		+ "," + to_string(v2.x)
-		+ "," + to_string(v2.y)
-		+ "," + to_string(v2.z);
+	hash = to_string(first.x)
+		+ "," + to_string(first.y)
+		+ "," + to_string(first.z)
+		+ "," + to_string(second.x)
+		+ "," + to_string(second.y)
+		+ "," + to_string(second.z);
 
 	return hash;
 }
@@ -366,6 +404,19 @@ void ply::renderSilhouette(){
     
     //TODO Iterate through the edgeList, and if you want to draw an edge,
     //call glVertex3f once for each vertex in that edge.  
+
+            for (map<string, edge*>::const_iterator it = edgeMap.begin(); it != edgeMap.end(); ++it) {
+                edge *e = it->second;
+                if (e->faces[0] != -1 && e->faces[1] != -1) {
+                    if (edgeShouldShow(faceList[e->faces[0]], faceList[e->faces[1]])){
+                        int vert1index = e->vertices[0];
+                        int vert2index = e->vertices[1];
+                        glVertex3f(vertexList[vert1index].x,vertexList[vert1index].y,vertexList[vert1index].z);
+                        glVertex3f(vertexList[vert2index].x,vertexList[vert2index].y,vertexList[vert2index].z);
+                    }
+                }
+            }
+
     glEnd();
     glPopMatrix();
 } 
