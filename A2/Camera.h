@@ -43,9 +43,7 @@ private:
 Point m_eye;
 
 //Rotation
-double m_rotV;
-double m_rotU;
-double m_rotW;
+Matrix m_rotmat;
 
 };
 #endif

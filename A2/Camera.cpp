@@ -49,21 +49,19 @@ Matrix Camera::GetModelViewMatrix() {
 			   				  0, 0, 1, -m_eye.at(2),
 			   				  0, 0, 0, 1);
 
-	m = translate;
+	m = m_rotmat * translate;
 
 	return m;
 }
 
 void Camera::RotateV(double angle) {
-	m_rotV = angle;
 }
 
 void Camera::RotateU(double angle) {
-	m_rotU = angle;
+	Rotate(m_eye, Vector(0, 0, 1), angle);
 }
 
 void Camera::RotateW(double angle) {
-	m_rotW = angle;
 }
 
 void Camera::Translate(const Vector &v) {
@@ -71,6 +69,22 @@ void Camera::Translate(const Vector &v) {
 
 
 void Camera::Rotate(Point p, Vector axis, double degrees) {
+	double theta, thetaprime;
+	Matrix my, mz, mx, imz, imy;
+	Vector axisprime;
+	theta = atan2(axis.at(2), axis.at(0));
+	my = rotY_mat(theta);
+
+	axisprime = my * axis;
+	thetaprime = atan2(axisprime.at(1), axisprime.at(0));
+	mz = rotZ_mat(thetaprime);
+
+	mx = rotX_mat(DEG_TO_RAD(degrees));
+
+	imz = inv_rotZ_mat(thetaprime);
+	imy = inv_rotZ_mat(theta);
+
+	m_rotmat = imy * imz * mx * mz * my;
 }
 
 
