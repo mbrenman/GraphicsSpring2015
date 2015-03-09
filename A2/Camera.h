@@ -36,6 +36,17 @@ int GetScreenHeight();
 
 double GetFilmPlanDepth();
 double GetScreenWidthRatio();
+
+private:
+
+//Translation
+Point m_eye;
+
+//Rotation
+double m_rotV;
+double m_rotU;
+double m_rotW;
+
 };
 #endif
 
