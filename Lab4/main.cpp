@@ -26,8 +26,8 @@ int  scale = 100;
 /* This is a textbox that we can edit, we
         use it to 
 */
-GLUI_EditText* filenameTextField = NULL;
-string filenamePath = "./data/dragon.ply";
+// GLUI_EditText* filenameTextField = NULL;
+string filenamePath = "./data/bunny.ply";
 
 /****************************************/
 /*         PLY Object                   */
@@ -150,13 +150,13 @@ void onExit()
          ========================================== */
 void callback_load(int id) {
         
-        if (filenameTextField == NULL) {
-                return;
-        }
+        // if (filenameTextField == NULL) {
+                // return;
+        // }
         // 
-        cout << "Loading new ply file from: " << filenameTextField->get_text() << endl;
+        // cout << "Loading new ply file from: " << filenameTextField->get_text() << endl;
         // Reload our model
-        myPLY->reload(filenameTextField->get_text());
+        // myPLY->reload(filenameTextField->get_text());
         // Print out the attributes
         myPLY->printAttributes();
 }
@@ -229,8 +229,8 @@ int main(int argc, char* argv[])
                 ->set_int_limits(1, 1000);
 
 
-        filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
-        filenameTextField->set_w(300);
+        // filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
+        // filenameTextField->set_w(300);
         glui->add_button("Load PLY", 0, callback_load);
 
 

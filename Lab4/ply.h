@@ -12,6 +12,7 @@
 #include <string>
 #include "geometry.h"
 #include "entity.h"
+#include <map>
 
 using namespace std;
 
@@ -88,6 +89,7 @@ class ply : public entity{
 				bool vertexCompare(vertex v1, vertex v2);
 				void addVerticesToMap(int vert1index, int vert2index, int faceindex);
 				string getEdgeHash(vertex v1, vertex v2);
+                                bool edgeShouldShow(face f1, face f2);
                 /*      ===============================================
                         Data
                         These variables are useful to store information
@@ -116,6 +118,8 @@ class ply : public entity{
                 //an array of linked lists representing edges
                 //the array is indexed by the lower-numbered vertex in the edge.
                 edge* edgeList;
+
+                map<string, edge*> edgeMap;
 };
 
 #endif

@@ -1,0 +1,310 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage[margin=0.75in]{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\setlength{\columnsep}{1cm}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{fullpage}
+\usepackage[usenames]{color}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{framed}
+\usepackage{amsmath}
+
+\definecolor{light-gray}{gray}{0.45}
+\titleformat{\section}
+{\color{black}\normalfont\Large\bfseries}
+{\color{black}\thesection}{1em}{}
+
+\titleformat{\subsection}
+{\color{light-gray}\normalfont\large\bfseries}
+{\color{light-gray}\thesubsection}{1em}{}
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{\Huge{\bf Assignment 2: Camera}}
+\author{Comp175: Introduction to Computer Graphics -- Spring 2015}
+\date{Algorithm due:  {\bf Monday March 10th} at 11:59pm\\
+Project due:  {\bf Monday March 16th} at 11:59pm}                            
+               % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+
+\begin{verbatim}
+Your Names: Matt Brenman & Matt Cardarelli
+
+Your CS Logins: mbrenm01 & mcarda01
+\end{verbatim}
+
+\section{Instructions}
+Complete this assignment only with your teammate. You may use a
+calculator or computer algebra system. All your answers should be given in simplest form.
+When a numerical answer is required, provide a reduced fraction (i.e. 1/3) or at least three
+decimal places (i.e. 0.333). Show all work; write your answers on this sheet. This algorithm handout is worth 3\% of your final grade for the class.
+
+\vspace{-0.4cm}
+\section{Axis-Aligned Rotation}
+
+Even though you won't have to implment Algebra.h, you will need to know (in principle) how to do these operatoins. For example, you should know how to create a rotation matrix...
+
+{\tt Matrix rotX\_mat(const double radians)}\\
+{\tt Matrix rotY\_mat(const double radians)}\\
+{\tt Matrix rotZ\_mat(const double radians)}\\\\
+Each of these functions returns the rotation matrix about the $x$, $y$, or $z$ axis (respectively) by the specified angle.
+\begin{framed}
+\noindent {\bf [1 point]} Using a sample data point (e.g., (1, 1, 1)), find out what happens to this point when it is rotated by 45 \emph{degrees} using each of these matrices.
+\end{framed}
+
+\begin{framed}
+\vspace{20em}
+
+Point to rotate:
+\begin{equation*}
+	\begin{bmatrix}
+	1 \\
+	1 \\
+	1 \\
+	1 
+	\end{bmatrix}
+\end{equation*}
+
+Rotation angle is 45 degrees.
+
+Rotation around x axis:
+\begin{equation*}
+	\begin{bmatrix}
+	1 \\
+	0 \\
+	\sqrt{2} \\
+	1 
+	\end{bmatrix}
+\end{equation*}
+
+Rotation around y axis:
+\begin{equation*}
+	\begin{bmatrix}
+	\sqrt{2} \\
+	1 \\
+	0 \\
+	1 
+	\end{bmatrix}
+\end{equation*}
+
+Rotation around z axis:
+\begin{equation*}
+	\begin{bmatrix}
+	0 \\
+	\sqrt{2} \\
+	1 \\
+	1 
+	\end{bmatrix}
+\end{equation*}
+
+\end{framed}
+
+\section{Arbitrary Rotation}
+Performing a rotation about an arbitrary axis can be seen as a composition of rotations around the bases. If you can rotate all of space around the bases until you align the arbitrary axis with the $x$ axis, then you can treat the rotation about the arbitrary axis as a rotation around $x$. Once you have transformed space with that rotation around $x$, then you need to rotate space back so that the arbitrary axis is in its original orientation. We can do this because rotation is a rigid-body transformation.\\\\
+To rotate a point p, this series of rotations looks like:
+\[p' = M^{-1}_1\cdot M^{-1}_2 \cdot M_3 \cdot M_2 \cdot M_1 \cdot p\]
+where $M_1$ rotates the arbitrary axis about the $y$ axis, $M_2$ rotates the arbitrary axis to lie on the $x$ axis, and $M_3$ rotates the desired amount about the $x$ axis.
+
+\subsection{Rotation about the origin}
+\begin{framed}
+\noindent{\bf [1.5 points]} Assuming we want to rotate $p=(p_x,p_y,p_z,1)$ about a vector $a = \langle a_x,a_y,a_z,0\rangle$ by $\lambda$ radians, how would you calculate $M_1$, $M_2$, and $M_3$ in terms of the functions {\tt rotX\_mat}, {\tt rotY\_mat}, and {\tt rotZ\_mat}?\\\\
+\emph{Hint: This is tough! You can (and should) compute angles to use along the way. You can accomplish arbitrary rotation with {\tt arctan} and/or {\tt arcos}, for instance. Approach this problem step by step, it's not extremely math heavy. You should need only one {\tt sqrt} call.}
+\end{framed}
+
+\begin{framed}
+
+$M_1$ is a rotation matrix around the y axis (defined above), and $\theta$ is found as follows:
+
+$$\theta = tan^{-1}\left(\frac{a_z}{a_x}\right)$$
+
+The resulting vector of the first operation, $a'$, lies in the $xy$-plane, so the $z$-component of $a'$ is 0.
+
+
+$M_2$ is a rotation matrix around the z axis (defined above), and $\theta'$ is found as follows:
+
+$$\theta' = -tan^{-1}\left(\frac{a'_y}{a'_x}\right)$$
+
+Then, we have bent space such that the x-axis is now lined up with the vector of rotation, so we can use the rotation matrix around the x-axis for $M_3$, using $\lambda$ for the rotation value.
+
+
+
+
+% $M_1$ is a rotation matrix around the y axis (defined above), and $\theta$ is found as follows:
+
+% $$\theta = cos^{-1}\left(\frac{\hat{x}\cdot\vec{a}_{xz}}{||\hat{x}||\ ||\vec{a}_{xz}||}\right)$$
+
+% where $\vec{a}_{xz}$ is the component of $a$ in the $xz$-plane.
+
+% (Note: The dot product in the numerator simplifies to the x component of $\vec{a}_{xz}$, and the denominator simplifies to $||\vec{a}_{xz}||$)
+
+% The resulting vector of the first operation, $a'$, lies in the $xy$-plane, so the $z$-component of $a'$ is 0.
+
+% For $M_2$, we perform the same operation, recalculating $\theta$, around the z axis, which is defined above. $\theta$ is calculated the same way, but the magnitude of the vector may be different, resulting in a different value for $\theta$.
+
+\end{framed}
+
+
+\subsection{Rotation about an arbitrary point}
+\begin{framed}
+\noindent{\bf [1 point]} The equation you just derived rotates a point $p$ about the origin. How can you make this operation rotate about an arbitrary point $h$?
+\end{framed}
+
+\begin{framed}
+
+We would have to translate by 
+$\begin{bmatrix}
+	-h_x \\
+	-h_y \\
+	-h_z \\
+	1 
+	\end{bmatrix}$
+, which would set the arbitrary point to act as the origin. Then we could use the formulas derived in the previous problem, and then re-translate by $h$.
+
+\end{framed}
+
+
+\section{Camera Transformation}
+To transform a point $p$ from world space to screen space we use the \emph{normalizing transformation}. The normalizing transformation is composed of four matrices\footnote{Technically, there are five matrices. The last step is the 2D viewport transform, which is omitted here because OpenGL takes care of this step for us.}, as shown here:
+\[p' = M_1 \cdot M_2 \cdot M_3 \cdot M_4 \cdot p\]
+Each $M_i$ corresponds to a step described in lecture. Here, $p$ is a point in world space, and we would like to construct a point $p'$ relative to the camera's coordinate system, so that $p'$ is its resulting position on the screen (with its $z$ coordinate holding the depth buffer information). You can assume that the camera is positioned at $(x,y,z,1)$, it has look vector $look$ and up vector $up$, height angle $\theta_h$, width angle $\theta_w$, near plane $near$ and far plane $far$.
+\begin{framed}
+\noindent {\bf [1/2 pt. each]} Briefly write out what each matrix is responsible for doing. Then write what values they have. Make sure to get the order correct (that is, matrix $M_4$ corresponds to only one of the steps described in lecture.)\\
+
+$M_1:$
+ The translation step in the negative-eye direction.
+\vspace{1em}
+
+
+$M_2:$
+ The rotation step, which is going from local to world view.
+\vspace{1em}
+
+
+$M_3:$
+ The scaling step, which scales x by $\frac{2}{width}$, y by $\frac{2}{height}$, and z by $\frac{1}{far}$
+\vspace{1em}
+
+
+$M_4:$
+ The unhinge step, which is the following matrix ($c=-\frac{near}{far}$)
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & 0 \\
+	0 & 1 & 0 & 0 \\
+	0 & 0 & \frac{1}{c+1} & \frac{-c}{c+1} \\
+	0 & 0 & -1 & 0
+	\end{bmatrix}
+ $$
+\vspace{3em}
+
+\end{framed}
+\noindent For the assignment you need to perform rotation operations on the camera in its own virtual $uvw$ coordinate system, e.g. spinning the camera about its $v$-axis. Additionally, you will need to perform translation operations on the camera in world space.
+\begin{framed}
+\noindent {\bf [1/2 pt. each]} How (mathematically) will you translate the camera's eye point $E$:
+\begin{enumerate}
+\item One unit right? $E' = $\\
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & -1 \\
+	0 & 1 & 0 & 0 \\
+	0 & 0 & 1 & 0 \\
+	0 & 0 & 0 & 1
+	\end{bmatrix}
+ $$
+
+
+\item One unit down? $E' = $\\
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & 0 \\
+	0 & 1 & 0 & 1 \\
+	0 & 0 & 1 & 0 \\
+	0 & 0 & 0 & 1
+	\end{bmatrix}
+ $$
+
+\item One unit forward? $E' = $\\
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & 0 \\
+	0 & 1 & 0 & 0 \\
+	0 & 0 & 1 & -1 \\
+	0 & 0 & 0 & 1
+	\end{bmatrix}
+ $$
+
+\end{enumerate}
+\end{framed}
+
+\noindent You can either move in and out of the camera coordinate space to perform these transformations, or you can do arbitrary rotations in world space. Both answers are acceptable.
+
+\begin{framed}
+\noindent {\bf [1/2 pt. each]} How (mathematically) will you use the $u$, $v$, and $w$ vectors, in conjunction with a rotation angle $\theta$, to get new $u$, $v$, and $w$ vectors when:
+\begin{enumerate}
+\item Adjusting the ``spin'' in a clockwise direction by $\theta$ radians?\\
+Use a rotation matrix around the w axis with a rotation angle $\theta$
+
+\item Adjusting (rotating) the ``pitch'' to face upwards by $\theta$ radians?\\
+Use a rotation matrix around the u axis with a rotation angle $\theta$
+
+\item Adjusting the ``yaw'' to face right by $\theta$ radians?\\
+Use a rotation matrix around the v axis with a rotation angle $\theta$
+\end{enumerate}
+\end{framed}
+
+\section{Inverting Transformations}
+\begin{framed}
+\noindent {\bf [1 point]} Computing a full matrix inverse isn't always the most efficient way of inverting a transformation if you know all the components. Write out fully (i.e., write out all the elements) a 4x4 translation matrix $M_T$ and its inverse, $M^{-1}_T$. Our claim should become obvious to you.
+\end{framed}
+
+\begin{framed}
+$M_T$ = 
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & x \\
+	0 & 1 & 0 & y \\
+	0 & 0 & 1 & z \\
+	0 & 0 & 0 & 1
+	\end{bmatrix}
+ $$
+
+$M_T^{-1}$ = 
+ $$
+	\begin{bmatrix}
+	1 & 0 & 0 & -x \\
+	0 & 1 & 0 & -y \\
+	0 & 0 & 1 & -z \\
+	0 & 0 & 0 & 1
+	\end{bmatrix}
+ $$
+
+\end{framed}
+
+
+{\bf Extra credit:} Will this same technique work for scale and rotation matrices? If so, write out the inverse scale and inverse rotation matrices. If not, explain why not. What about the perspective �unhinging� transformation? Will this technique be as efficient? Explain.
+
+\begin{framed}
+For the scaling matrix, negating the scaling components does not give you the inverse, but using the reciprocal does (except for when you scale any dimension to zero).
+\vspace{1em}
+For the rotation matrix, this also does not work, but a rotation inverse is also its transpose, which is much faster to compute.
+\vspace{1em}
+This technique would work for the unhinging transformation, and it should be more efficient.
+\end{framed}
+
+
+\section{How to Submit}
+
+Hand in a PDF version of your solutions using the following command:
+\begin{center}
+ {\tt provide comp175 a2-alg}
+ \end{center}
+\end{document}  
