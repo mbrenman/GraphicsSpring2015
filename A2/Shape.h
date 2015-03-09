@@ -3,6 +3,7 @@
 
 #include <GL/glui.h>
 #include "Algebra.h"
+#include <iostream>
 
 class Shape {
 public:

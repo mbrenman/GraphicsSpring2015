@@ -1,4 +1,4 @@
-#ifndef COHE_H
+#ifndef CONE_H
 #define CONE_H
 
 #include "Shape.h"
@@ -30,7 +30,8 @@ public:
 		}
 		body.clear();
 
-		m_rmatrix = rot_mat(Vector(0.0, 1.0, 0.0), -(2 * PI) / m_segmentsX);
+		Vector v = Vector(0.0, 1.0, 0.0);
+		m_rmatrix = rot_mat(v, -(2 * PI) / m_segmentsX);
 
 		Point startp(0.5, -0.5, 0.0);
 		Point nextp(0.5*cos(2 * PI / m_segmentsX), -0.5, 0.5*sin(2 * PI / m_segmentsX));
