@@ -3,7 +3,12 @@
 
 Camera::Camera() {
 	//Translation
-	m_eye = Point(0.0, 0.0, 0.0);
+	Orient(Point(0, 0, 1), Vector(0, 0, -1), Vector(0, 1, 0));
+	SetViewAngle(0.0);
+	SetFarPlane(1.0);
+	SetNearPlane(0.001);
+	SetScreenSize(1, 1);
+	SetViewAngle(0.0);
 }
 
 Camera::~Camera() {
