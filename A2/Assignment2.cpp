@@ -4,6 +4,7 @@
 #include "Cylinder.h"
 #include "Cone.h"
 #include "Sphere.h"
+#include "Spring.h"
 #include "Camera.h"
 
 
@@ -55,6 +56,7 @@ Cube* cube = new Cube();
 Cylinder* cylinder = new Cylinder();
 Cone* cone = new Cone();
 Sphere* sphere = new Sphere();
+Spring* spring = new Spring();
 Shape* shape = cube;
 Camera* camera = new Camera();
 
@@ -75,7 +77,7 @@ void callback_obj(int id) {
 		shape = sphere;
 		break;
 	case SHAPE_SPECIAL1:
-		shape = cube;
+		shape = spring;
 		break;
 	default:
 		shape = cube;
