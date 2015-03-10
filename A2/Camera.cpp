@@ -23,29 +23,30 @@ void Camera::Orient(Point& eye, Vector& look, Vector& up) {
 }
 
 Matrix Camera::GetProjectionMatrix() {
-	Matrix m;
+	Matrix scale, unhinge;
+	double width_angle, height_angle;
+	double scale_h, scale_w;
+	double c = -m_near / m_far;
 
-	// Matrix scaling = Matrix(2/m_width, 0, 0, 0,
-	// 						0, 2/m_height, 0, 0,
-	// 						0, 0, 1/m_far, 0,
-	// 						0, 0, 0, 1);
+	height_angle = DEG_TO_RAD(m_angle);
+	width_angle = height_angle / GetScreenWidthRatio();
 
-	Matrix scaling = Matrix(1/atan((m_angle) / 2) * m_far, 0, 0, 0,
-							0, 1/atan((m_angle / GetScreenWidthRatio()) / 2) * m_far, 0, 0,
-							0, 0, 1/m_far, 0,
-							0, 0, 0, 1);
+	scale_h = 1 / (tan(height_angle / 2) * m_far);
+	scale_w = 1 / (tan(width_angle / 2) * m_far);
 
+	scale = Matrix(
+		scale_w, 0, 0, 0,
+		0, scale_h, 0, 0,
+		0, 0, 1 / m_far, 0,
+		0, 0, 0, 1);
 
+	unhinge = Matrix(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, -1/(c+1), c/(c + 1),
+		0, 0, -1, 0);
 
-	// double c = (-1 * m_near) / m_far;
-	// Matrix unhinge = Matrix(1, 0, 0, 0,
-	// 						0, 1, 0, 0,
-	// 						0, 0, (-1 / (c + 1)), ((c / c + 1)),
-	// 						0, 0, -1, 0);
-
-	m = scaling;
-
-	return m;
+	return unhinge * scale;
 }
 
 
@@ -74,7 +75,6 @@ Matrix Camera::GetModelViewMatrix() {
 			   				  0, 0, 1, -m_eye.at(2),
 			   				  0, 0, 0, 1);
 
-
 	Vector w = m_look;
 	w.negate();
 	w.normalize();
@@ -90,8 +90,6 @@ Matrix Camera::GetModelViewMatrix() {
 							0, 0, 0, 1);
 
 	m = toWorld * translate;
-
-
 
 	return m;
 }
@@ -143,7 +141,7 @@ Vector Camera::GetUpVector() {
 }
 
 double Camera::GetViewAngle() {
-	return 0;
+	return m_angle;
 }
 
 double Camera::GetNearPlane() {
