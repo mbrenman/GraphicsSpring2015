@@ -2,8 +2,10 @@
 #include <iostream>
 
 Camera::Camera() {
-	//Translation
-	Orient(Point(0, 0, 1), Vector(0, 0, -1), Vector(0, 1, 0));
+	Point p = Point(0, 0, 1);
+	Vector lookV = Vector(0, 0, -1);
+	Vector upV = Vector(0, 1, 0);
+	Orient(p, lookV, upV);
 	SetViewAngle(0.0);
 	SetFarPlane(1.0);
 	SetNearPlane(0.001);
@@ -133,6 +135,7 @@ void Camera::RotateW(double angle) {
 }
 
 void Camera::Translate(const Vector &v) {
+	m_eye = m_eye + v;
 }
 
 void Camera::Rotate(Point p, Vector axis, double degrees) {
