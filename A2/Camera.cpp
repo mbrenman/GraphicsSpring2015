@@ -131,7 +131,7 @@ void Camera::RotateW(double angle) {
 	w.negate();
 	w.normalize();
 
-	Rotate(m_eye, w, angle);
+	Rotate(m_eye, w, -angle);
 }
 
 void Camera::Translate(const Vector &v) {
