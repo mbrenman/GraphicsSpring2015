@@ -41,10 +41,8 @@ private:
 
 //Translation
 Point m_eye;
-
-//Rotation
-Matrix m_rotmat;
-
+Vector m_up;
+Vector m_look;
 };
 #endif
 

@@ -4,11 +4,6 @@
 Camera::Camera() {
 	//Translation
 	m_eye = Point(0.0, 0.0, 0.0);
-
-	//Rotation
-	m_rotV = 0;
-	m_rotU = 0;
-	m_rotW = 0;
 }
 
 Camera::~Camera() {
@@ -16,11 +11,15 @@ Camera::~Camera() {
 
 void Camera::Orient(Point& eye, Point& focus, Vector& up) {
 	m_eye = eye;
+	m_look = focus - eye;
+	m_up = up;
 }
 
 
 void Camera::Orient(Point& eye, Vector& look, Vector& up) {
 	m_eye = eye;
+	m_look = look;
+	m_up = up;
 }
 
 Matrix Camera::GetProjectionMatrix() {
@@ -49,7 +48,22 @@ Matrix Camera::GetModelViewMatrix() {
 			   				  0, 0, 1, -m_eye.at(2),
 			   				  0, 0, 0, 1);
 
-	m = m_rotmat * translate;
+
+	Vector w = m_look;
+	w.negate();
+	w.normalize();
+
+	Vector u = cross(m_up, w);
+	u.normalize();
+
+	Vector v = cross(w, u);
+
+	Matrix toWorld = Matrix(u.at(0), u.at(1), u.at(2), 0,
+							v.at(0), v.at(1), v.at(2), 0,
+							w.at(0), w.at(1), w.at(2), 0,
+							0, 0, 0, 1);
+
+	m = toWorld * translate;
 
 	return m;
 }
@@ -58,7 +72,6 @@ void Camera::RotateV(double angle) {
 }
 
 void Camera::RotateU(double angle) {
-	Rotate(m_eye, Vector(0, 0, 1), angle);
 }
 
 void Camera::RotateW(double angle) {
@@ -69,22 +82,22 @@ void Camera::Translate(const Vector &v) {
 
 
 void Camera::Rotate(Point p, Vector axis, double degrees) {
-	double theta, thetaprime;
-	Matrix my, mz, mx, imz, imy;
-	Vector axisprime;
-	theta = atan2(axis.at(2), axis.at(0));
-	my = rotY_mat(theta);
+	// double theta, thetaprime;
+	// Matrix my, mz, mx, imz, imy;
+	// Vector axisprime;
+	// theta = atan2(axis.at(2), axis.at(0));
+	// my = rotY_mat(theta);
 
-	axisprime = my * axis;
-	thetaprime = atan2(axisprime.at(1), axisprime.at(0));
-	mz = rotZ_mat(thetaprime);
+	// axisprime = my * axis;
+	// thetaprime = atan2(axisprime.at(1), axisprime.at(0));
+	// mz = rotZ_mat(thetaprime);
 
-	mx = rotX_mat(DEG_TO_RAD(degrees));
+	// mx = rotX_mat(DEG_TO_RAD(degrees));
 
-	imz = inv_rotZ_mat(thetaprime);
-	imy = inv_rotZ_mat(theta);
+	// imz = inv_rotZ_mat(thetaprime);
+	// imy = inv_rotZ_mat(theta);
 
-	m_rotmat = imy * imz * mx * mz * my;
+	// m_rotmat = imy * imz * mx * mz * my;
 }
 
 
@@ -94,13 +107,11 @@ Point Camera::GetEyePoint() {
 }
 
 Vector Camera::GetLookVector() {
-	Vector v;
-	return v;
+	return m_look;
 }
 
 Vector Camera::GetUpVector() {
-	Vector v;
-	return v;
+	return m_up;
 }
 
 double Camera::GetViewAngle() {
