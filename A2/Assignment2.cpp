@@ -281,9 +281,9 @@ int main(int argc, char* argv[])
 	lookz_widget->set_float_limits(-5, 5);
 
 	GLUI_Spinner* clipN_widget = glui->add_spinner_to_panel(camera_panel, "Near:", GLUI_SPINNER_FLOAT, &clipNear);
-	clipN_widget->set_float_limits(0, 10);
+	clipN_widget->set_float_limits(0, 100);
 	GLUI_Spinner* clipF_widget = glui->add_spinner_to_panel(camera_panel, "Far:", GLUI_SPINNER_FLOAT, &clipFar);
-	clipF_widget->set_float_limits(0, 100);
+	clipF_widget->set_float_limits(0, 1000);
 
 	glui->add_column(true);
 

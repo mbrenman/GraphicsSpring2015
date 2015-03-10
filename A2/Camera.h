@@ -39,10 +39,14 @@ double GetScreenWidthRatio();
 
 private:
 
-//Translation
+//ModelView
 Point m_eye;
 Vector m_up;
 Vector m_look;
+
+//Projection
+double m_width, m_height, m_near, m_far;
+double m_angle;
 };
 #endif
 

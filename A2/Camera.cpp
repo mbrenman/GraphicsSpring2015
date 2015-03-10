@@ -24,20 +24,46 @@ void Camera::Orient(Point& eye, Vector& look, Vector& up) {
 
 Matrix Camera::GetProjectionMatrix() {
 	Matrix m;
+
+	// Matrix scaling = Matrix(2/m_width, 0, 0, 0,
+	// 						0, 2/m_height, 0, 0,
+	// 						0, 0, 1/m_far, 0,
+	// 						0, 0, 0, 1);
+
+	Matrix scaling = Matrix(1/atan((m_angle) / 2) * m_far, 0, 0, 0,
+							0, 1/atan((m_angle / GetScreenWidthRatio()) / 2) * m_far, 0, 0,
+							0, 0, 1/m_far, 0,
+							0, 0, 0, 1);
+
+
+
+	// double c = (-1 * m_near) / m_far;
+	// Matrix unhinge = Matrix(1, 0, 0, 0,
+	// 						0, 1, 0, 0,
+	// 						0, 0, (-1 / (c + 1)), ((c / c + 1)),
+	// 						0, 0, -1, 0);
+
+	m = scaling;
+
 	return m;
 }
 
 
 void Camera::SetViewAngle (double viewAngle) {
+	m_angle = viewAngle;
 }
 
 void Camera::SetNearPlane (double nearPlane) {
+	m_near = nearPlane;
 }
 
 void Camera::SetFarPlane (double farPlane) {
+	m_far = farPlane;
 }
 
 void Camera::SetScreenSize (int screenWidth, int screenHeight) {
+	m_width = screenWidth;
+	m_height = screenHeight;
 }
 
 Matrix Camera::GetModelViewMatrix() {
@@ -64,6 +90,8 @@ Matrix Camera::GetModelViewMatrix() {
 							0, 0, 0, 1);
 
 	m = toWorld * translate;
+
+
 
 	return m;
 }
@@ -119,19 +147,19 @@ double Camera::GetViewAngle() {
 }
 
 double Camera::GetNearPlane() {
-	return 0;
+	return m_near;
 }
 
 double Camera::GetFarPlane() {
-	return 0;
+	return m_far;
 }
 
 int Camera::GetScreenWidth() {
-	return 0;
+	return m_width;
 }
 
 int Camera::GetScreenHeight() {
-	return 0;
+	return m_height;
 }
 
 double Camera::GetFilmPlanDepth() {
@@ -139,5 +167,5 @@ double Camera::GetFilmPlanDepth() {
 }
 
 double Camera::GetScreenWidthRatio() {
-	return 0;
+	return m_width / m_height;
 }
