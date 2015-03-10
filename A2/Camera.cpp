@@ -68,8 +68,6 @@ void Camera::SetScreenSize (int screenWidth, int screenHeight) {
 }
 
 Matrix Camera::GetModelViewMatrix() {
-	Matrix m;
-
 	Matrix translate = Matrix(1, 0, 0, -m_eye.at(0),
 			   				  0, 1, 0, -m_eye.at(1), 
 			   				  0, 0, 1, -m_eye.at(2),
@@ -89,9 +87,7 @@ Matrix Camera::GetModelViewMatrix() {
 							w.at(0), w.at(1), w.at(2), 0,
 							0, 0, 0, 1);
 
-	m = toWorld * translate;
-
-	return m;
+	return toWorld * translate;
 }
 
 void Camera::RotateV(double angle) {
