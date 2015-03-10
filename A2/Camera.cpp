@@ -44,7 +44,7 @@ Matrix Camera::GetProjectionMatrix() {
 	double c = -m_near / m_far;
 
 	height_angle = DEG_TO_RAD(m_angle);
-	width_angle = height_angle / GetScreenWidthRatio();
+	width_angle = height_angle * GetScreenWidthRatio();
 
 	scale_h = 1 / (tan(height_angle / 2) * m_far);
 	scale_w = 1 / (tan(width_angle / 2) * m_far);
