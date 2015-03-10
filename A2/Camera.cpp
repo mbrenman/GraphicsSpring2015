@@ -9,6 +9,11 @@ Camera::Camera() {
 	SetNearPlane(0.001);
 	SetScreenSize(1, 1);
 	SetViewAngle(0.0);
+	m_rotate = Matrix(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1);
 }
 
 Camera::~Camera() {
@@ -92,39 +97,63 @@ Matrix Camera::GetModelViewMatrix() {
 							w.at(0), w.at(1), w.at(2), 0,
 							0, 0, 0, 1);
 
-	return toWorld * translate;
+	return m_rotate * toWorld * translate;
 }
 
 void Camera::RotateV(double angle) {
+	Vector w = m_look;
+	w.negate();
+	w.normalize();
+
+	Vector u = cross(m_up, w);
+	u.normalize();
+
+	Vector v = cross(w, u);
+
+	Rotate(m_eye, v, -angle);
 }
 
-void Camera::RotateU(double angle) {
+void Camera::RotateU(double -angle) {
+	Vector w = m_look;
+	w.negate();
+	w.normalize();
+
+	Vector u = cross(m_up, w);
+	u.normalize();
+
+	Rotate(m_eye, u, -angle);
 }
 
 void Camera::RotateW(double angle) {
+	Vector w = m_look;
+	w.negate();
+	w.normalize();
+
+	Rotate(m_eye, w, angle);
 }
 
 void Camera::Translate(const Vector &v) {
 }
 
-
 void Camera::Rotate(Point p, Vector axis, double degrees) {
-	// double theta, thetaprime;
-	// Matrix my, mz, mx, imz, imy;
-	// Vector axisprime;
-	// theta = atan2(axis.at(2), axis.at(0));
-	// my = rotY_mat(theta);
+	double theta, thetaprime;
+	Matrix my, mz, mx, imz, imy, mall;
+	Point plook, plookprime, pup, pupprime;
+	Vector axisprime;
+	theta = atan2(axis.at(2), axis.at(0));
+	my = rotY_mat(theta);
 
-	// axisprime = my * axis;
-	// thetaprime = atan2(axisprime.at(1), axisprime.at(0));
-	// mz = rotZ_mat(thetaprime);
+	axisprime = my * axis;
+	thetaprime = atan2(axisprime.at(1), axisprime.at(0));
+	mz = rotZ_mat(thetaprime);
 
-	// mx = rotX_mat(DEG_TO_RAD(degrees));
+	mx = rotX_mat(DEG_TO_RAD(degrees));
 
-	// imz = inv_rotZ_mat(thetaprime);
-	// imy = inv_rotZ_mat(theta);
+	imz = inv_rotZ_mat(thetaprime);
+	imy = inv_rotY_mat(theta);
 
-	// m_rotmat = imy * imz * mx * mz * my;
+	mall = imy * imz * mx * mz * my;
+	m_rotate = m_rotate * mall;
 }
 
 
