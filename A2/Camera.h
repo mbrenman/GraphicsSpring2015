@@ -48,6 +48,8 @@ Vector m_look;
 double m_width, m_height, m_near, m_far;
 double m_angle;
 Matrix m_rotate;
+
+double m_rotU, m_rotV, m_rotW;
 };
 #endif
 

@@ -16,6 +16,9 @@ Camera::Camera() {
 		0, 1, 0, 0,
 		0, 0, 1, 0,
 		0, 0, 0, 1);
+	m_rotU = 0;
+	m_rotV = 0;
+	m_rotW = 0;
 }
 
 Camera::~Camera() {
@@ -99,39 +102,29 @@ Matrix Camera::GetModelViewMatrix() {
 							w.at(0), w.at(1), w.at(2), 0,
 							0, 0, 0, 1);
 
-	return m_rotate * toWorld * translate;
+	m_rotate = Matrix(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1);
+
+	Rotate(m_eye, v, m_rotV);
+	Rotate(m_eye, w, m_rotW);
+	Rotate(m_eye, u, m_rotU);
+
+	return toWorld * m_rotate * translate;
 }
 
 void Camera::RotateV(double angle) {
-	Vector w = m_look;
-	w.negate();
-	w.normalize();
-
-	Vector u = cross(m_up, w);
-	u.normalize();
-
-	Vector v = cross(w, u);
-
-	Rotate(m_eye, v, -angle);
+	m_rotV = angle;
 }
 
 void Camera::RotateU(double angle) {
-	Vector w = m_look;
-	w.negate();
-	w.normalize();
-
-	Vector u = cross(m_up, w);
-	u.normalize();
-
-	Rotate(m_eye, u, -angle);
+	m_rotU = angle;
 }
 
 void Camera::RotateW(double angle) {
-	Vector w = m_look;
-	w.negate();
-	w.normalize();
-
-	Rotate(m_eye, w, -angle);
+	m_rotW = angle;
 }
 
 void Camera::Translate(const Vector &v) {
@@ -147,7 +140,7 @@ void Camera::Rotate(Point p, Vector axis, double degrees) {
 	my = rotY_mat(theta);
 
 	axisprime = my * axis;
-	thetaprime = atan2(axisprime.at(1), axisprime.at(0));
+	thetaprime = -atan2(axisprime.at(1), axisprime.at(0));
 	mz = rotZ_mat(thetaprime);
 
 	mx = rotX_mat(DEG_TO_RAD(degrees));
