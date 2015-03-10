@@ -115,7 +115,7 @@ void Camera::RotateV(double angle) {
 	Rotate(m_eye, v, -angle);
 }
 
-void Camera::RotateU(double -angle) {
+void Camera::RotateU(double angle) {
 	Vector w = m_look;
 	w.negate();
 	w.normalize();
