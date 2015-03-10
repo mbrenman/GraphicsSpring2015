@@ -6,10 +6,19 @@
 #include "Sphere.h"
 #include "Camera.h"
 
+//Security Camera
+double rotAngle = 0;
+double rotSpeed = .05;
+double maxRot = 10;
+bool securityCamera = false;
 
-// Vector translationAnim = Vector(0, 0, 0);
-// Vector translationDelta = Vector(0, 0, .1);
-
+//Spin
+double x_coord = 0;
+double z_coord = 0;
+double theta = 0;
+double speed = PI / 100;
+double height = 0;
+double dist = 2;
 
 enum OBJ_TYPE {
 	SHAPE_CUBE = 0,
@@ -138,11 +147,23 @@ void myGlutDisplay(void)
 	camera->RotateW(camRotW);
 
 	//Anim
-	// translationAnim = translationAnim + translationDelta;
-	// if (translationAnim.at(2) > 1 || translationAnim.at(2) < -1) {
-	// 	translationDelta.negate();
-	// }
-	// camera->Translate(translationAnim);
+	if (securityCamera) {
+		rotAngle = rotAngle + rotSpeed;
+		if (rotAngle > maxRot || rotAngle < -maxRot) {
+			rotSpeed *= -1;
+		}
+		camera->RotateV(rotAngle);
+	}
+
+	Point origin = Point(0, 0, 0);
+
+	theta += speed;
+	if (theta > PI) { theta -= 2 * PI; }
+	x_coord = dist * cos(theta);
+	z_coord = dist * sin(theta);
+	height = sin(theta);
+	Point new_eye = Point(x_coord, height, z_coord);
+	camera->Orient(new_eye, origin, upV);
 
 	Matrix modelView = camera->GetModelViewMatrix();
 	glMultMatrixd(modelView.unpack());
