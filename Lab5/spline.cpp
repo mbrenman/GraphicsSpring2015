@@ -138,7 +138,31 @@ void spline::draw_spline(int resolution, int output){
 					You Implement this Code  
 
 	*/
-	
+
+	controlPoint *current = head;
+
+	glBegin(GL_LINE_STRIP);
+	glColor3f(1,0,0);
+	while(current != NULL && current->next != NULL) {
+
+		for (int j = 0; j <= resolution; j++) {
+
+			float t = j / (float)resolution;
+
+			float x = calculate_Spline(t, current->x, current->next->x, 10, 10);
+			float y = calculate_Spline(t, current->y, current->next->y, 10, 10);
+			float z = calculate_Spline(t, current->z, current->next->z, 10, 10);
+
+			glVertex3f(x, y, z);
+
+			if (output == 1) {
+				std::cout << "Spline Point: (" << x << ", " << y << ", " << z << ")" << std::endl;
+			}
+		}
+
+		current = current->next;
+	}
+	glEnd();
 }
 
 /*	===============================================
@@ -156,14 +180,10 @@ void spline::draw_spline(int resolution, int output){
 =============================================== */ 
 float spline::calculate_Spline (float t, float S, float G, float Vs, float Vg) {
   
-  	/*  
+  	
+ 	float q = S + (Vs * t) + ((-3.0f * S + 3.0f * G - 2.0f * Vs - Vg) * t * t) + ((2.0f * S - 2.0f * G + Vs + Vg) * t * t * t); 
 
-
-					You Implement this Code  
-
-	*/
-
-	return 0; // For now, just return 0 so this code compiles...
+	return q; // For now, just return 0 so this code compiles...
 }
 
 /*	===============================================
