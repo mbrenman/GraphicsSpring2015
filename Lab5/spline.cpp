@@ -145,13 +145,27 @@ void spline::draw_spline(int resolution, int output){
 	glColor3f(1,0,0);
 	while(current != NULL && current->next != NULL) {
 
+		float x_start_vel = (current->next->x - current->x) / 2;
+		float y_start_vel = (current->next->y - current->y) / 2;
+		float z_start_vel = (current->next->z - current->z) / 2;
+
+		float x_end_vel = 0;
+		float y_end_vel = 0;
+		float z_end_vel = 0;
+		if (current->next->next != NULL) {
+			x_end_vel = (current->next->next->x - current->next->x) / 2;
+			y_end_vel = (current->next->next->y - current->next->y) / 2;
+			z_end_vel = (current->next->next->z - current->next->z) / 2;
+		}
+		
+
 		for (int j = 0; j <= resolution; j++) {
 
 			float t = j / (float)resolution;
 
-			float x = calculate_Spline(t, current->x, current->next->x, 10, 10);
-			float y = calculate_Spline(t, current->y, current->next->y, 10, 10);
-			float z = calculate_Spline(t, current->z, current->next->z, 10, 10);
+			float x = calculate_Spline(t, current->x, current->next->x, x_start_vel, x_end_vel);
+			float y = calculate_Spline(t, current->y, current->next->y, y_start_vel, y_end_vel);
+			float z = calculate_Spline(t, current->z, current->next->z, z_start_vel, z_end_vel);
 
 			glVertex3f(x, y, z);
 
