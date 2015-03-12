@@ -45,7 +45,7 @@ class spline{
 		void update(int _resolution);
 		/*	===============================================
 		Desc:			Adds a point to the linked list of control points
-		Precondition:	If it is the first point, make sure it is the head nad tail.
+		Precondition:	If it is the first point, make sure it is the head and tail.
 						If there is no memory available, terminate the program.
 		Postcondition:	
 		=============================================== */ 
