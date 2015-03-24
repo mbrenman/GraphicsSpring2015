@@ -23,6 +23,7 @@
    distribution.
    */
 
+#define _CRT_SECURE_NO_WARNINGS
 #include <ctype.h>
 
 #include <iostream>
