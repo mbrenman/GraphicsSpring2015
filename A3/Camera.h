@@ -9,7 +9,6 @@ class Camera {
 public:
 Camera();
 ~Camera();
-void Reset();
 void Orient(Point& eye, Point& focus, Vector& up);
 void Orient(Point& eye, Vector& look, Vector& up);
 void SetViewAngle (double viewAngle);
@@ -37,6 +36,20 @@ int GetScreenHeight();
 
 double GetFilmPlanDepth();
 double GetScreenWidthRatio();
+
+private:
+
+//ModelView
+Point m_eye;
+Vector m_up;
+Vector m_look;
+
+//Projection
+double m_width, m_height, m_near, m_far;
+double m_angle;
+Matrix m_rotate;
+
+double m_rotU, m_rotV, m_rotW;
 };
 #endif
 
