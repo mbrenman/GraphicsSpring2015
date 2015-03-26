@@ -336,8 +336,9 @@ void myGlutDisplay(void)
 		// running on the camera.
 		cout << difftime(time(NULL),start) << "s : ";
 		if(difftime(time(NULL),start) <= 2){
-			std::cout << "orthogonal" << endl;
-			camera1->orthogonal(-1,1,-1,1,1,10);	// Get a unit perspective from above
+			std::cout << "panAround" << endl;
+			camera1->panAround(jeep->getXPosition(), jeep->getYPosition(), jeep->getZPosition(),
+				/*fix timer issue*/);	// Get a unit perspective from above
 		}
 		else if(difftime(time(NULL),start) > 2 && difftime(time(NULL),start) <= 6){
 			std::cout << "Close Up" << endl;
@@ -348,9 +349,9 @@ void myGlutDisplay(void)
 		else if(difftime(time(NULL),start) > 6 && difftime(time(NULL),start) <= 10){
 			std::cout << "follow shot" << endl;
 			//camera1->perspective(105,.75,1,10);	// Get the regular perspective
-			camera1->follow(trex->getXPosition(), trex->getYPosition()-2,trex->getZPosition(),
-				0, 0, 0,
-				0, 0, 0); // attach the camera to the t-rex
+			camera1->follow(trex->getXPosition() - 5, trex->getYPosition() + 5, trex->getZPosition() - 5,
+				trex->getXPosition(), trex->getYPosition(),trex->getZPosition(),
+				0, 1, 0); // attach the camera to the t-rex
 		}
 		else if(difftime(time(NULL),start) > 10 && difftime(time(NULL),start) <= 14){
 			std::cout << "spin around" << endl;
@@ -364,6 +365,9 @@ void myGlutDisplay(void)
 			resetScene();
 		}
 	}
+
+	Matrix modelView = camera1->GetModelViewMatrix();
+	glMultMatrixd(modelView.unpack());
 
 	if (filled) {
 		glEnable(GL_POLYGON_OFFSET_FILL);

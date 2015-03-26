@@ -18,7 +18,9 @@ Relevant keywords and OpenGL calls to (understand/complete/create cool effects) 
 
   ===================================================== */
 #include <math.h>
+#include <iostream>
 #include "movieCamera.h"
+#include "Algebra.h"
 
 // Static initializers
 float movieCamera::rotate_around = 0;
@@ -51,6 +53,21 @@ movieCamera::~movieCamera(){
 	=============================================== */ 
 void movieCamera::closeUp(float your_x, float your_y, float your_z, float near, float far){
 
+}
+
+/*
+*/
+void movieCamera::panAround(float focus_x, float focus_y, float focus_z, float t) {
+	float radians = 2 * PI*t;
+	Point eye(
+		2.0 * cos(radians),
+		focus_y,
+		-2.0 * sin(radians)
+		);
+		
+	Point focus(focus_x, focus_y, focus_z);
+	Vector up(0, 1, 0);
+	Orient(eye, focus, up);
 }
 
 /*
@@ -95,6 +112,12 @@ void movieCamera::perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GL
 void movieCamera::follow(float your_x, float your_y, float your_z,
 						float target_x, float target_y, float target_z,
 						float up_x, float up_y, float up_z){
+	Point eye(your_x, your_y, your_z);
+	Point focus(target_x, target_y, target_z);
+	Vector up(up_x, up_y, up_z);
+
+	Orient(eye, focus, up);
+	std::cout << "follow started" << std::endl;
 }
 /*  ===============================================
       Desc: Spin around a point in space at a distance(i.e. "radius")

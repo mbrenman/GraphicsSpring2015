@@ -22,8 +22,9 @@ Use glMatrixMode(GL_PROJECTION) to modify your projection matrix.
 #define MOVIE_CAMERA_H
 
 #include <GL/glui.h>
+#include "Camera.h"
 
-class movieCamera{
+class movieCamera : public Camera {
 
 	public:
 	/*  ===============================================
@@ -44,6 +45,12 @@ class movieCamera{
 	      Postcondition:
     	=============================================== */ 
 		void closeUp(float your_x, float your_y, float your_z, float near, float far);
+		/*  ===============================================
+		Desc:
+		Precondition:
+		Postcondition:
+		=============================================== */
+		void panAround(float your_x, float your_y, float your_z, float t);
 	/*  ===============================================
 	      Desc: 
 	      Precondition:
