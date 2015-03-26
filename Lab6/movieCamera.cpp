@@ -58,11 +58,15 @@ void movieCamera::closeUp(float your_x, float your_y, float your_z, float near, 
 /*
 */
 void movieCamera::panAround(float focus_x, float focus_y, float focus_z, float t) {
-	float radians = 2 * PI*t;
+	RotateW(0);
+	float radians = PI/2 * t - PI/2;
+
+	std::cout << std::fixed << "t: " << t << std::endl;
+
 	Point eye(
-		2.0 * cos(radians),
+		3.0 * cos(radians) + focus_x,
 		focus_y,
-		-2.0 * sin(radians)
+		-2.0 * sin(radians) + focus_z
 		);
 		
 	Point focus(focus_x, focus_y, focus_z);
@@ -70,6 +74,104 @@ void movieCamera::panAround(float focus_x, float focus_y, float focus_z, float t
 	Orient(eye, focus, up);
 }
 
+void movieCamera::frontToDino(float jeep_x, float jeep_y, float jeep_z,
+							  float dino_x, float dino_y, float dino_z,
+							  float t) {
+	std::cout << std::fixed << "t: " << t << std::endl;
+
+	float radians = PI/2 * t - PI/2;
+
+	dino_y += .7; //
+	dino_x += 3;
+
+	Point eye(
+		((1 - t) * (jeep_x + 3.0f)) + (t * dino_x),
+		((1 - t) * (jeep_y)) + (t * dino_y),
+		((1 - t) * (jeep_z)) + (t * dino_z)
+		);
+
+	Point focus(((1 - t) * jeep_x + t * dino_x),
+				((1 - t) * jeep_y + t * dino_y),
+				((1 - t) * jeep_z + t * dino_z));
+	Vector up(0, 1, 0);
+	Orient(eye, focus, up);
+}
+
+void movieCamera::dinoShake(float dino_x, float dino_y, float dino_z, float t)
+{
+	dino_y += .7; //
+	dino_x += 3;
+
+	std::cout << std::fixed << "t: " << t << std::endl;
+
+	float radians1 = 12 * PI * t;
+	float radians2 = 8 * PI * t;
+	float radians3 = 24 * PI * t;
+
+	Point eye(
+		dino_x + 0.25f * sin(radians1),
+		dino_y + 0.25f * sin(radians2),
+		dino_z + 0.25f * sin(radians3)
+		);
+
+	dino_y -= .7; //
+	dino_x -= 3;
+
+	Point focus(dino_x,
+				dino_y,
+				dino_z);
+
+	Vector up(0, 1, 0);
+	Orient(eye, focus, up);
+}
+
+void movieCamera::dinoWalk(float jeep_x, float jeep_y, float jeep_z,
+					  float dino_x, float dino_y, float dino_z,
+					  float t) {
+
+	float radiansStep = 5 * PI * t;
+
+	std::cout << std::fixed << "t: " << t << std::endl;
+
+	//Look from dino's eye (walking)
+	Point eye(
+		dino_x + 3,
+		dino_y + .7 + 0.5 * fabs(sin(radiansStep)),
+		dino_z);
+
+	Point focus(jeep_x,
+				jeep_y,
+				jeep_z);
+
+	RotateW(15 * cos(radiansStep));
+
+	Vector up(0, 1, 0);
+	Orient(eye, focus, up);
+}
+
+void movieCamera::charge(float jeep_x, float jeep_y, float jeep_z,
+					  float dino_x, float dino_y, float dino_z,
+					  float t) {
+	float radiansStep = 5 * PI * (t + 1);
+	float radiansShake = 12 * PI * (t + 1);
+
+	std::cout << std::fixed << "t: " << t << std::endl;
+
+	//Look from dino's eye (walking)
+	Point eye(
+		dino_x + 3,
+		dino_y + .7 + 0.5 * fabs(sin(radiansStep)),
+		dino_z + 0.2 * sin(radiansShake));
+
+	Point focus(jeep_x,
+				jeep_y,
+				jeep_z);
+
+	RotateW(15 * cos(radiansStep));
+
+	Vector up(0, 1, 0);
+	Orient(eye, focus, up);
+}
 /*
 	Change the field of view
 */

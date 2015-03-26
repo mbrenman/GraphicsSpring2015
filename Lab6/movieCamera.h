@@ -51,6 +51,20 @@ class movieCamera : public Camera {
 		Postcondition:
 		=============================================== */
 		void panAround(float your_x, float your_y, float your_z, float t);
+
+		void frontToDino(float jeep_x, float jeep_y, float jeep_z,
+							  float dino_x, float dino_y, float dino_z,
+							  float t);
+
+		void dinoShake(float dino_x, float dino_y, float dino_z, float t);
+		
+		void dinoWalk(float jeep_x, float jeep_y, float jeep_z,
+					  float dino_x, float dino_y, float dino_z,
+					  float t);
+
+		void charge(float jeep_x, float jeep_y, float jeep_z,
+					  float dino_x, float dino_y, float dino_z,
+					  float t);
 	/*  ===============================================
 	      Desc: 
 	      Precondition:

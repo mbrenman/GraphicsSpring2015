@@ -17,8 +17,12 @@
 #include <time.h>
 #include "ply.h"	// Our ply loader
 #include "movieCamera.h"
+#include <chrono>
 
 #define PI 3.14
+
+typedef std::chrono::high_resolution_clock Clock;
+typedef std::chrono::milliseconds milliseconds;
 
 /** These are the live variables passed into GLUI ***/
 int main_window;
@@ -80,7 +84,7 @@ movieCamera* camera1 = new movieCamera();
 	Timer for the animation
 	============================================= */
 time_t start; 
-
+Clock::time_point startTime;
 
 /*  ===============================================
       Desc: 
@@ -226,6 +230,7 @@ void pointer_cb( GLUI_Control* control )
   	std::cout << "And Action!" << std::endl;
   	startTheScene=true;
   	time(&start);
+  	startTime = Clock::now();
   }
   else if(control->get_id() == CUT_ID){
   	startTheScene=false;
@@ -335,31 +340,81 @@ void myGlutDisplay(void)
 		// Output the time to the console, just a a director would have time
 		// running on the camera.
 		cout << difftime(time(NULL),start) << "s : ";
-		if(difftime(time(NULL),start) <= 2){
+		milliseconds ms = std::chrono::duration_cast<milliseconds>(Clock::now() - startTime);
+		double t = (ms.count() / 1000.0f);
+		std::cout << std::fixed << "TTTTt: " << t << std::endl;
+
+		int cut1_end = 4;
+		int cut2_end = 5;
+		int cut3_end = 7;
+		int cut4_end = 15;
+		int cut5_end = 18;
+
+		if(t <= cut1_end){
 			std::cout << "panAround" << endl;
-			camera1->panAround(jeep->getXPosition(), jeep->getYPosition(), jeep->getZPosition(),
-				/*fix timer issue*/);	// Get a unit perspective from above
+
+			double lerp = t / (cut1_end);
+
+			//Pan around the side to front of jeep
+			camera1->panAround(jeep->getXPosition(), jeep->getYPosition(), jeep->getZPosition(), lerp);
+
+				/*fix timer issue*/	// Get a unit perspective from above
 		}
-		else if(difftime(time(NULL),start) > 2 && difftime(time(NULL),start) <= 6){
+		else if(t > cut1_end && t <= cut2_end){
 			std::cout << "Close Up" << endl;
 			// Close up shot on the T-Rex
-			camera1->closeUp(trex->getXPosition(), trex->getYPosition(),trex->getZPosition(),
-							1,10);	
+			// camera1->closeUp(trex->getXPosition(), trex->getYPosition(),trex->getZPosition(),
+			// 				1,10);	
+
+			double lerp = (t - cut1_end) / (cut2_end - cut1_end);
+
+			//Go from front of jeep to dino head
+			camera1->frontToDino(jeep->getXPosition(), jeep->getYPosition(), jeep->getZPosition(),
+								trex->getXPosition(), trex->getYPosition(), trex->getZPosition(), 
+								lerp);
+
 		}
-		else if(difftime(time(NULL),start) > 6 && difftime(time(NULL),start) <= 10){
-			std::cout << "follow shot" << endl;
-			//camera1->perspective(105,.75,1,10);	// Get the regular perspective
-			camera1->follow(trex->getXPosition() - 5, trex->getYPosition() + 5, trex->getZPosition() - 5,
-				trex->getXPosition(), trex->getYPosition(),trex->getZPosition(),
-				0, 1, 0); // attach the camera to the t-rex
+		else if (t > cut2_end && t <= cut3_end){
+			std::cout << "SHAKE" << endl;
+
+			double lerp = (t - cut2_end) / (cut3_end - cut2_end);
+
+			camera1->dinoShake(trex->getXPosition(), trex->getYPosition(), trex->getZPosition(), 
+								lerp);
 		}
-		else if(difftime(time(NULL),start) > 10 && difftime(time(NULL),start) <= 14){
-			std::cout << "spin around" << endl;
-			// Spin around a point in space.
-			// Radius is fixed, but could be adjusted.
-			// Y height may also need to be adjusted.
-			camera1->spinAroundPoint(jeep->getXPosition(),jeep->getYPosition()-2,jeep->getZPosition(),2);
+		else if (t > cut3_end && t <= cut4_end){
+			std::cout << "Walk" << endl;
+
+			double lerp = (t - cut3_end) / (cut4_end - cut3_end);
+
+			camera1->dinoWalk(jeep->getXPosition(), jeep->getYPosition(), jeep->getZPosition(),
+								trex->getXPosition(), trex->getYPosition(), trex->getZPosition(), 
+								lerp);
 		}
+		else if (t > cut4_end && t <= cut5_end){
+			std::cout << "Car Attack" << endl;
+
+			double lerp = (t - cut4_end) / (cut5_end - cut4_end);
+
+			camera1->charge(jeep->getXPosition(), jeep->getYPosition(), jeep->getZPosition(),
+								trex->getXPosition(), trex->getYPosition(), trex->getZPosition(), 
+								lerp);
+		}
+
+		// else if(t > 6 && t <= 10){
+		// 	std::cout << "follow shot" << endl;
+		// 	//camera1->perspective(105,.75,1,10);	// Get the regular perspective
+		// 	camera1->follow(trex->getXPosition() - 5, trex->getYPosition() + 5, trex->getZPosition() - 5,
+		// 		trex->getXPosition(), trex->getYPosition(),trex->getZPosition(),
+		// 		0, 1, 0); // attach the camera to the t-rex
+		// }
+		// else if(t > 10 && t <= 14){
+		// 	std::cout << "spin around" << endl;
+		// 	// Spin around a point in space.
+		// 	// Radius is fixed, but could be adjusted.
+		// 	// Y height may also need to be adjusted.
+		// 	camera1->spinAroundPoint(jeep->getXPosition(),jeep->getYPosition()-2,jeep->getZPosition(),2);
+		// }
 		else{
 			startTheScene=false;
 			resetScene();
