@@ -189,7 +189,7 @@ void startScene(){
 			float trex_hopping = 1.0;
 			trex->setPosition(-5+rexSpeed,(sin(jump)*trex_hopping)+1.25,-6);	// Set position variables (useful for later)	
 			if(wireframe==1){ glColor3f(0.0,0.0,0.0); trex->renderWireFrame(); }
-			if(filled==1)	{ glColor3f(0.25f,0.2f,0.1f); trex->render(); }
+			if(filled==1)	{ glColor3f(0.55f,0.2f,0.1f); trex->render(); }
 		glPopMatrix();
 		
 		// Jeep
