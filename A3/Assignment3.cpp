@@ -248,16 +248,48 @@ struct shapeData {
 typedef std::list<shapeData> list_shapeData;
 
 void flattenScene(SceneNode *root, list_shapeData &list, Matrix cmtm) {
-	Matrix newmat = Matrix(); //loads identity
-	std::vector<SceneTransformation*>::iterator it;
-	/* 
-	iterator initialized outside for loop for gcc compatibility. apparently
-	its an issue.
+	/*
+	iterators are initialized outside for loop for gcc compatibility. apparently
+	its an issue. Also, I intentionally used the prefix ++ operator, it allegedly
+	is more portable. If any of this doesn't work on your computer feel free to
+	modify it.
 	*/
+	std::vector<SceneTransformation*>::iterator it;
+	std::vector<ScenePrimitive*>::iterator itp;
+	std::vector<SceneNode*>::iterator itc;
+
 
 	for (it = root->transformations.begin(); it != root->transformations.end(); ++it) {
 		SceneTransformation *next = *it;
 
+		switch (next->type){
+		case TRANSFORMATION_TRANSLATE:
+			cmtm = cmtm * trans_mat(next->translate);
+			break;
+		case TRANSFORMATION_SCALE:
+			cmtm = cmtm * scale_mat(next->scale);
+			break;
+		case TRANSFORMATION_ROTATE:
+			cmtm = cmtm * rot_mat(next->rotate, next->angle);
+			break;
+		case TRANSFORMATION_MATRIX:
+			cmtm = cmtm * next->matrix;
+			break;
+		}
+	}
+
+	for (itp = root->primitives.begin(); itp != root->primitives.end(); ++itp) {
+		ScenePrimitive *next = *itp;
+		shapeData entry;
+		entry.composite = cmtm;
+		entry.material = next->material;
+		entry.type = next->type;
+		list.push_back(entry);
+	}
+
+	for (itc = root->children.begin(); itc != root->children.end(); ++itc){
+		SceneNode *next = *itc;
+		flattenScene(next, list, cmtm);
 	}
 }
 
