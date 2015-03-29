@@ -17,7 +17,7 @@
 using namespace std;
 
 /** These are the live variables passed into GLUI ***/
-int  wireframe = 0;
+int  wireframe = 1; //modified
 int  fillObj = 1;
 int  segmentsX = 20;
 int  segmentsY = 20;
@@ -321,6 +321,8 @@ void myGlutDisplay(void)
 
 	SceneNode* root = parser->getRootNode();
 	Matrix compositeMatrix;
+	list_shapeData objects;
+	flattenScene(root, objects, Matrix());
 
 	//drawing the axes
 	glEnable(GL_COLOR_MATERIAL);
@@ -340,6 +342,14 @@ void myGlutDisplay(void)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		//TODO: draw wireframe of the scene...
 		// note that you don't need to applyMaterial, just draw the geometry
+		std::list<shapeData>::iterator it;
+		for (it = objects.begin(); it != objects.end(); ++it){
+			shapeData next = *it;
+			glPushMatrix();
+			glMultMatrixd(next.composite.unpack());
+			renderShape(next.type);
+			glPopMatrix();
+		}
 	}
 
     glDisable(GL_COLOR_MATERIAL);
