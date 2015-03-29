@@ -17,7 +17,7 @@
 using namespace std;
 
 /** These are the live variables passed into GLUI ***/
-int  wireframe = 1; //modified
+int  wireframe = 0;
 int  fillObj = 1;
 int  segmentsX = 20;
 int  segmentsY = 20;
@@ -366,6 +366,16 @@ void myGlutDisplay(void)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		//TODO: render the scene...
 		// note that you should always applyMaterial first, then draw the geometry
+
+		std::list<shapeData>::iterator it;
+		for (it = objects.begin(); it != objects.end(); ++it){
+			shapeData next = *it;
+			glPushMatrix();
+			glMultMatrixd(next.composite.unpack());
+			applyMaterial(next.material);
+			renderShape(next.type);
+			glPopMatrix();
+		}
 	}
 	glDisable(GL_LIGHTING);
 	
