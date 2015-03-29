@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <list>
 #include <GL/glui.h>
 #include "Shape.h"
 #include "Cube.h"
@@ -236,6 +237,30 @@ void applyMaterial(const SceneMaterial &material)
 
 /***************************************** myGlutDisplay() *****************/
 
+/* THIS SECTION NOT FINISHED */
+
+struct shapeData {
+	PrimitiveType type;
+	SceneMaterial material;
+	Matrix composite;
+};
+
+typedef std::list<shapeData> list_shapeData;
+
+void flattenScene(SceneNode *root, list_shapeData &list, Matrix cmtm) {
+	Matrix newmat = Matrix(); //loads identity
+	std::vector<SceneTransformation*>::iterator it;
+	/* 
+	iterator initialized outside for loop for gcc compatibility. apparently
+	its an issue.
+	*/
+
+	for (it = root->transformations.begin(); it != root->transformations.end(); ++it) {
+		SceneTransformation *next = *it;
+
+	}
+}
+
 void myGlutDisplay(void)
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -308,6 +333,8 @@ void myGlutDisplay(void)
 
 	glutSwapBuffers();
 }
+
+
 
 void onExit()
 {

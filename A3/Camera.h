@@ -11,6 +11,7 @@ Camera();
 ~Camera();
 void Orient(Point& eye, Point& focus, Vector& up);
 void Orient(Point& eye, Vector& look, Vector& up);
+void Reset();
 void SetViewAngle (double viewAngle);
 void SetNearPlane (double nearPlane);
 void SetFarPlane (double farPlane);

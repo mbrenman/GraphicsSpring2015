@@ -10,7 +10,6 @@ Camera::Camera() {
 	SetFarPlane(1.0);
 	SetNearPlane(0.001);
 	SetScreenSize(1, 1);
-	SetViewAngle(0.0);
 	m_rotate = Matrix(
 		1, 0, 0, 0,
 		0, 1, 0, 0,
@@ -35,6 +34,17 @@ void Camera::Orient(Point& eye, Vector& look, Vector& up) {
 	m_eye = eye;
 	m_look = look;
 	m_up = up;
+}
+
+void Camera::Reset(){
+	Point eye(2.0, 2.0, 2.0);
+	Point focus(0.0, 0.0, 0.0);
+	Vector up(0.0, 1.0, 0.0);
+	Orient(eye, focus, up);
+	SetViewAngle(45.0);
+	SetFarPlane(30.0);
+	SetNearPlane(0.001);
+	SetScreenSize(1, 1);
 }
 
 Matrix Camera::GetProjectionMatrix() {
