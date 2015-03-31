@@ -102,29 +102,39 @@ Matrix Camera::GetModelViewMatrix() {
 							w.at(0), w.at(1), w.at(2), 0,
 							0, 0, 0, 1);
 
-	m_rotate = Matrix(
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, 0, 1);
-
-	Rotate(m_eye, v, m_rotV);
-	Rotate(m_eye, w, m_rotW);
-	Rotate(m_eye, u, m_rotU);
-
-	return toWorld * m_rotate * translate;
+	return toWorld * translate;
 }
 
 void Camera::RotateV(double angle) {
-	m_rotV = angle;
+	Vector w = m_look;
+	w.negate();
+	w.normalize();
+
+	Vector u = cross(m_up, w);
+	u.normalize();
+
+	Vector v = cross(w, u);
+
+	Rotate(m_eye, v, angle);
 }
 
 void Camera::RotateU(double angle) {
-	m_rotU = angle;
+	Vector w = m_look;
+	w.negate();
+	w.normalize();
+
+	Vector u = cross(m_up, w);
+	u.normalize();
+
+	Rotate(m_eye, u, angle);
 }
 
 void Camera::RotateW(double angle) {
-	m_rotW = angle;
+	Vector w = m_look;
+	w.negate();
+	w.normalize();
+	
+	Rotate(m_eye, w, angle);
 }
 
 void Camera::Translate(const Vector &v) {
@@ -133,9 +143,14 @@ void Camera::Translate(const Vector &v) {
 
 void Camera::Rotate(Point p, Vector axis, double degrees) {
 	double theta, thetaprime;
-	Matrix my, mz, mx, imz, imy, mall;
-	Point plook, plookprime, pup, pupprime;
+	Matrix mtrans, my, mz, mx, imz, imy, imtrans, mall;
+	Point porigin, plook, plookprime, pup, pupprime;
 	Vector axisprime;
+
+	porigin = Point(0, 0, 0);
+
+	mtrans = trans_mat(porigin - p);
+
 	theta = atan2(axis.at(2), axis.at(0));
 	my = rotY_mat(theta);
 
@@ -147,9 +162,19 @@ void Camera::Rotate(Point p, Vector axis, double degrees) {
 
 	imz = inv_rotZ_mat(thetaprime);
 	imy = inv_rotY_mat(theta);
+	imtrans = inv_trans_mat(porigin - p);
 
-	mall = imy * imz * mx * mz * my;
-	m_rotate = m_rotate * mall;
+	mall = imtrans * imy * imz * mx * mz * my * mtrans;
+
+	m_look.normalize();
+	plook = m_eye + m_look;
+	plookprime = mall * plook;
+	m_look = plookprime - m_eye;
+
+	m_up.normalize();
+	pup = m_eye + m_up;
+	pupprime = mall * pup;
+	m_up = pupprime - m_eye;
 }
 
 

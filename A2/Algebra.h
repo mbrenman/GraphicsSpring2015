@@ -3,6 +3,8 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <iostream>
+#include <string>
 
 const double EPSILON = 1e-30;
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923
@@ -38,6 +40,14 @@ public:
 	};
 
 	~Point() {};
+
+	void print(std::string name){
+		std::cout << name << ": (" 
+			<< p[0] << ","
+			<< p[1] << ","
+			<< p[2] << ")"
+			<< std::endl;
+	}
 
 	void normalize() {
 		double l = sqrt((p[0] * p[0]) + (p[1] * p[1]) + (p[2] * p[2]));
@@ -141,6 +151,14 @@ public:
 	};
 
 	~Vector() {};
+
+	void print(std::string name){
+		std::cout << name << ": ("
+			<< p[0] << ","
+			<< p[1] << ","
+			<< p[2] << ")"
+			<< std::endl;
+	}
 
 	void normalize() {
 		double l = sqrt((p[0] * p[0]) + (p[1] * p[1]) + (p[2] * p[2]));
