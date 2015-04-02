@@ -193,7 +193,7 @@ Vector generateRay() {
   /*
 			You fill this function in
   */
-  Vector v = Vector(0, 0, -1);
+  Vector v = Vector(0, 0, 1);
   v.normalize();
   return v;
 }
@@ -202,7 +202,7 @@ Point getEyePoint() {
   /*
 			You fill this function in
   */
-  Point p = Point(mouseX, mouseY, 1);
+  Point p = Point(mouseX, mouseY, -1);
   return p;
 }
 
@@ -211,6 +211,9 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
 			You fill this function in
   */
   Point p;
+
+  p = eye + t * ray;
+
   return p;
 }
 
