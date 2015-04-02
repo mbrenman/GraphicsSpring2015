@@ -175,42 +175,22 @@ double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 
 
   return (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
-  /*
-
-
-			You fill this function in
-
-			Take somet time to study Remco's slides
-
-			on Ray-Object intesrection and Ray-Sphere intersection
-
-
-	*/
-	// return -1;
 }
 
 Vector generateRay() {
 
-  /*
-			You fill this function in
-  */
   Vector v = Vector(0, 0, 1);
   v.normalize();
   return v;
 }
 
 Point getEyePoint() {
-  /*
-			You fill this function in
-  */
   Point p = Point(mouseX, mouseY, -1);
   return p;
 }
 
 Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
-  /*
-			You fill this function in
-  */
+
   Point p;
 
   p = eye + t * ray;
@@ -250,19 +230,6 @@ void drawRayFunc(int x, int y){
 			}
 		}
 
-		/*
-
-
-				You can fill this in if it helps you debug
-
-				This is the function you should call insersect in
-
-				and then have some output whether we intersected or
-
-				not with the object
-
-
-		*/
 	}
 }
 
