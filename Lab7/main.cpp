@@ -172,8 +172,8 @@ double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 
   double det = (b * b) - 4 * a * c;
 
-  return det;
 
+  return (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
   /*
 
 
