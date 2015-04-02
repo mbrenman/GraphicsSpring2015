@@ -178,7 +178,7 @@ Vector generateRay() {
   /*
 			You fill this function in
   */
-  Vector v;
+  Vector v = Vector(0, 0, -1);
   v.normalize();
   return v;
 }
@@ -187,7 +187,7 @@ Point getEyePoint() {
   /*
 			You fill this function in
   */
-  Point p;
+  Point p = Point(mouseX, mouseY, 1);
   return p;
 }
 
