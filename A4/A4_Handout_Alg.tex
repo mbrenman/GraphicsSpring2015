@@ -34,13 +34,9 @@
 %\subsection{}
 
 \begin{verbatim}
-Your Names: _____________________________
+Your Names: Matt Brenman & Matt Cardarelli
 
-            _____________________________
-
-Your CS Logins: _________________________
-
-                _________________________
+Your CS Logins: mbrenm01 & mcarda01
 \end{verbatim}
 
 \section{Instructions}
@@ -51,7 +47,7 @@ For this assignment, you need to shoot a ray from the eye point through the cent
 
 \begin{framed}
 \noindent {\bf [1 point]} Given a pixel with screen-space coordinates $x$ and $y$, and the width and height of the screen $x_{max}$ and $y_{max}$, what is the corresponding point, $p_{film}$, on the normalized film plane (note that this means that the film plane is at the distance of 1 from the eye point)? Assume that this is taking place after all of the perspective viewing transformations have been applied except for the unhinging transformation. Remember that a pixel y-value of 0 corresponds to the top of the screen.\\\\\\\\
-$p_{film} =$\\\\\\
+$p_{film} = (-\frac{1}{2} + \frac{w}{w_{max}}, \frac{1}{2} - \frac{h}{h_{max}}, -1)$\\\\\\
 \end{framed}
 
 \begin{framed}
