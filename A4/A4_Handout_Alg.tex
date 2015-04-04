@@ -71,12 +71,64 @@ an intersection point as $(x, y, z) = \langle p_x + \vec{d}_xt, p_y + \vec{d}_yt
 For this exercise, show how you would compute the intersection for two sides of the cube, namely the planes where x=0.5 and x=-0.5.
 
 \begin{framed}
+
+Given two points on a plane and a normal vector, we can define the plane as follows:\\
+
+
+$\vec{n}\cdot(r - r_0) = 0$\\
+
+
+We can define any point on the ray as follows:\\
+
+
+$p_ray = p_{eye} + t\vec{d}$\\
+
+
+By substituting $p_ray$ for a point on the plane, we get the following:\\
+
+
+$\vec{n}\cdot((p_{eye} + t\vec{d}) - r_0) = 0$\\
+
+
+By multiplying out the dot product, we get three equations for the component intersections, as follows:\\
+
+
+$p_{rayx} - r_x + t * d_x = 0$\\
+
+
+$p_{rayy} - r_y + t * d_y = 0$\\
+
+
+$p_{rayz} - r_z + t * d_z = 0$\\
+
+
+Then we solve this system for t. If we get a mathematical impossibility, then there is no intersection (if $d_{comp} = 0$ and $p_{comp} \neq r_{comp}$). Otherwise we can solve for t and then plug into the point on a ray equation.
+
 \noindent {\bf [1 points] Plane x = 0.5} 
-\vskip 27em
+
+Given:\\
+$\vec{n} = <-1, 0, 0>$\\
+$r_0 = <.5, 0, 0>$\\
+
+
+By substituting the equation of any point on a ray, we see that the x component of the system is:\\
+
+
+$p_x - r_x + t*d_x = 0$\\
+
+
+we can solve for t as follows:\\
+
+
+$t = \frac{.5 - p_x}{d_x}$\\
+
+
+Then we plug t into the definition of an intersection point provided in the question.
+
 \end{framed}
 \begin{framed}
-\noindent {\bf [1 points] Plane x = -0.5} 
-\vskip 27em
+\noindent {\bf [1 points] Plane x = -0.5}\\
+This is the exact same thing, except that every instance of $0.5$ is $-0.5$
 \end{framed}
 
 
