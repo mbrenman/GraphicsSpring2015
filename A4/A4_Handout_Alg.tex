@@ -1,0 +1,125 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage[margin=0.75in]{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\setlength{\columnsep}{1cm}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{fullpage}
+\usepackage[usenames]{color}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{framed}
+
+\definecolor{light-gray}{gray}{0.45}
+\titleformat{\section}
+{\color{black}\normalfont\Large\bfseries}
+{\color{black}\thesection}{1em}{}
+
+\titleformat{\subsection}
+{\color{light-gray}\normalfont\large\bfseries}
+{\color{light-gray}\thesubsection}{1em}{}
+
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{\Huge{\bf Algorithm 4: Intersect}}
+\author{Comp175: Introduction to Computer Graphics -- Spring 2015}
+\date{Due:  {\bf Monday April 6th} at 11:59pm}                                           % Activate to display a given date or no date
+
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
+
+\begin{verbatim}
+Your Names: _____________________________
+
+            _____________________________
+
+Your CS Logins: _________________________
+
+                _________________________
+\end{verbatim}
+
+\section{Instructions}
+Complete this assignment only with your teammate. You may use a calculator or computer algebra system. All your answers should be given in simplest form. When a numerical answer is required, provide a reduced fraction (i.e. 1/3) or at least three decimal places (i.e. 0.333). Show all work; write your answers on this sheet. This algorithm handout is worth 3\% of your final grade for the class.
+
+\section{Generating rays}
+For this assignment, you need to shoot a ray from the eye point through the center of each pixel.
+
+\begin{framed}
+\noindent {\bf [1 point]} Given a pixel with screen-space coordinates $x$ and $y$, and the width and height of the screen $x_{max}$ and $y_{max}$, what is the corresponding point, $p_{film}$, on the normalized film plane (note that this means that the film plane is at the distance of 1 from the eye point)? Assume that this is taking place after all of the perspective viewing transformations have been applied except for the unhinging transformation. Remember that a pixel y-value of 0 corresponds to the top of the screen.\\\\\\\\
+$p_{film} =$\\\\\\
+\end{framed}
+
+\begin{framed}
+\noindent {\bf [1 point]} In {\tt Camera}, you transformed a point from world space to screen space by using the normalizing transformation. In {\tt Intersect} and {\tt Ray}, you need to transform $p_{film}$ on the normalized film plane into an untransformed world-space point, $p_{world}$, by performing the viewing transformation. Using only the components of the viewing transformation (and/or their inverses) write the equation for $M_{film-to-world}$, the composite transformation matrix that transforms $p_{film}$ to $p_{world}$, such that $p_{world} = M_{film-to-world} * p_{film}$.\\\\\\\\
+$M_{film-to-world} =$\\\\\\\\\\\\\\
+\end{framed}
+
+\begin{framed}
+\noindent {\bf [1 point]} Given your eye-point $p_{eye}$ and the world-space point on the normalized film plane $p_{world}$ give the equation for the world-space ray you want to shoot into the scene. Specify your ray in the format $p + t\vec{d}$, where $p$ is a point and $\vec{d}$ is a normalized vector. \\\\\\\\
+$r(t) =$\\\\\\
+\end{framed}
+
+\section{Plane-Ray Intersection}
+
+Write out the plane-ray intersect equation in terms of $t$. Use the definition of a ray used in question 1, i.e. $p + t\vec{d}$. To get you started you might want to define
+an intersection point as $(x, y, z) = \langle p_x + \vec{d}_xt, p_y + \vec{d}_yt, p_z + \vec{d}_zt\rangle$, where $p$ is the eyepoint, and $\vec{d}$ is the direction of the ray we are shooting. 
+
+For this exercise, show how you would compute the intersection for two sides of the cube, namely the planes where x=0.5 and x=-0.5.
+
+\begin{framed}
+\noindent {\bf [1 points] Plane x = 0.5} 
+\vskip 27em
+\end{framed}
+\begin{framed}
+\noindent {\bf [1 points] Plane x = -0.5} 
+\vskip 27em
+\end{framed}
+
+
+\section{Cone-Ray Intersection}
+{\it Special Instructions: For this problem, show all your work and circle, box, or bold your final answers.}\\\\
+Write out both of the cone-ray intersect equations in terms of $t$. There are two equations: one for the body of the cone, and one for the bottom cap. For your cone, use the same dimensions that you did in {\tt Shapes}. Use the definition of a ray used in question 1, i.e. $p + t\vec{d}$. To get you started you might want to define
+an intersection point as $(x, y, z) = \langle p_x + \vec{d}_xt, p_y + \vec{d}_yt, p_z + \vec{d}_zt\rangle$, where $p$ is the eyepoint, and $\vec{d}$ is the direction of the ray we are shooting. Looking over the the derivation of the implicit equations for the cylinder in the Raytracing lecture might prove to be useful.\\\\
+Recall that the equation of a circle on the 2D XZ coordinate plane is $x^2 + z^2 = r^2$. Think of our canonical unit cone as an infinite number of ``differential'' circles in the XZ plane stacked on top of one another in the Y direction; the bottommost circle has a radius of 1/2 and the topmost circle has a radius of 0. Then the equation of the unit cone is $x_2 + z_2 = k(y)^2$, where $k$ linearly interpolates the radius of the differential circle from 1/2 at the base to 0 at the top (see the lecture notes for a slightly more intuitive equation for the cone).\\\\
+The intersection points you compute are possible intersection points and need to be
+examined further (such as the $-0.5\le y\le 0.5$ restriction for the body of the cylinder
+in the lecture notes). However for this problem you are NOT required to list these
+restrictions.\\\\
+Note that in your program you will need to find intersection points by finding a value for $t$. If you do not find an explicit formula for $t$ (ie. $t = $some value(s)) for both the cone and the cap then you will have a very hard time writing the program.\\\\
+Finally, the equations you write should not use vectors but should be functions of the individual components of the vectors. By reducing your equations after deriving them, you eliminate unnecessary computation and thereby optimize your code before you even write it!
+
+\section{How to Submit}
+
+Hand in a PDF version of your solutions using the following command:
+\begin{center}
+ {\tt provide comp175 a4-alg}
+\end{center}
+.\\\\\\\\\\\\\\\\\\\\\\\\
+
+\begin{framed}
+\noindent {\bf [3 points] Cone Body} 
+\vskip 27em
+\end{framed}
+\begin{framed}
+\noindent {\bf [2 points] Cone Cap} 
+\vskip 27em
+\end{framed}
+
+%\section{Illuminating Samples}
+%\begin{framed}
+%\noindent {\bf [2 points]} When you are attempting to illuminate a transformed object, you will need to know that object's normal vector in world-space. Assume you know the normal vector in object-space, $\vec{N}_{object}$. Give an equation for the normal vector in world-space, $\vec{N}_{world}$, using the object's modeling transformation $M$ and $\vec{N}_{object}$.
+%\vskip 10em
+%\end{framed}
+
+%\begin{framed}
+%\noindent {\bf [1 point]} In the lighting equation, what does $\vec{N}\cdot\vec{L}$ represent, i.e. what is equivalent to it? What is its purpose?
+%\vskip 10em
+%\end{framed}
+
+
+\end{document}  
