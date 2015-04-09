@@ -19,6 +19,7 @@ void SetScreenSize (int screenWidth, int screenHeight);
 
 Matrix GetProjectionMatrix();
 Matrix GetModelViewMatrix();
+Matrix GetScaleMatrix();
 
 void RotateV(double angle);
 void RotateU(double angle);

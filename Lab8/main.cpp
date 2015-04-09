@@ -56,17 +56,26 @@ int mouseY = 0;
 object* myObject = new object(175);
 Camera camera;
 
+Point getEyePoint();
 
 
 Vector generateRay(int pixelX, int pixelY) {
-	Vector ray;
+	double filmPointX = -0.5 + (pixelX/windowXSize);
+	double filmPointY = -1 * (-0.5 + (pixelY/windowYSize));
+
+	Point filmPoint = Point(filmPointX, filmPointY, 0);
+
+	filmPoint = transpose(invert(camera.GetModelViewMatrix() * camera.GetScaleMatrix())) * filmPoint;
+
+	Vector ray = filmPoint - getEyePoint();
+
 	ray.normalize();
 	return ray;
 }
 
 Point getEyePoint() {
-	Point p = Point(mouseX, mouseY, -1);
-	return p;
+	Point cam_eye = camera.GetEyePoint();
+	return cam_eye;
 }
 
 Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
@@ -76,6 +85,9 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
 
 /* =======================================================^ Mouse and Ray Casting Blocks of Code(above) ^=============================== */
 double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+
+	eyePointP = transformMatrix * eyePointP;
+	rayV = transformMatrix * rayV;	
 
 	double a = dot(rayV, rayV);
 
@@ -342,7 +354,7 @@ void myGlutReshape(int x, int y)
 	glViewport(0, 0, x, y);
 
 	windowXSize = x;
-	windowXSize = y;
+	windowYSize = y;
 
 	camera.SetScreenSize(x, y);
 

@@ -49,9 +49,23 @@ void Camera::Reset(){
 
 Matrix Camera::GetProjectionMatrix() {
 	Matrix scale, unhinge;
+	double c = -m_near / m_far;
+
+	scale = GetScaleMatrix();	
+
+	unhinge = Matrix(
+		1.0, 0, 0, 0,
+		0, 1.0, 0, 0,
+		0, 0, -1.0/(c+1.0), c/(c + 1.0),
+		0, 0, -1.0, 0);
+
+	return unhinge * scale;
+}
+
+Matrix Camera::GetScaleMatrix() {
+	Matrix scale;
 	double width_angle, height_angle;
 	double scale_h, scale_w;
-	double c = -m_near / m_far;
 
 	height_angle = DEG_TO_RAD(m_angle);
 
@@ -64,13 +78,7 @@ Matrix Camera::GetProjectionMatrix() {
 		0, 0, 1.0 / m_far, 0,
 		0, 0, 0, 1);
 
-	unhinge = Matrix(
-		1.0, 0, 0, 0,
-		0, 1.0, 0, 0,
-		0, 0, -1.0/(c+1.0), c/(c + 1.0),
-		0, 0, -1.0, 0);
-
-	return unhinge * scale;
+	return scale;
 }
 
 
