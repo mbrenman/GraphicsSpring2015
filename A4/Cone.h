@@ -39,6 +39,15 @@ public:
 		computeBody(startp, nextp, topp, body);
 		computeBase(Point(0.0, -0.5, 0.0), startp, nextp, base, Vector(0.0, -1.0, 0.0));
 	}
+
+	double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+		return -1;
+	}
+
+	Vector findIsectNormal(Point eyePoint, Vector ray, double dist) {
+		return Vector(0, 0, 0);
+	}
+
 private:
 	void computeBody(Point startp, Point nextp, Point topp, std::vector< std::vector<point_info> > &body) {
 		Vector rot_vec = nextp - startp;

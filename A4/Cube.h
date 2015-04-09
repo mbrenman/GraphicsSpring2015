@@ -57,6 +57,14 @@ public:
 			Vector(-1.0 / m_segmentsX, 0.0, 0.0), faces[TOP]);
 	};
 
+	double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+		return -1;
+	}	
+
+	Vector findIsectNormal(Point eyePoint, Vector ray, double dist) {
+		return Vector(0,0,0);
+	}
+
 private:
 	void computeFace(Point startp, Vector vert_vec, Vector horiz_vec, std::vector<point_info> &face) {
 		for (int i = 0; i < m_segmentsY; i++) {

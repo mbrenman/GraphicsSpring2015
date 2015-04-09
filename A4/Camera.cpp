@@ -6,7 +6,7 @@ Camera::Camera() {
 	Vector lookV = Vector(0, 0, -1);
 	Vector upV = Vector(0, 1, 0);
 	Orient(p, lookV, upV);
-	SetFarPlane(10.0);
+	SetFarPlane(100.0);
 	SetNearPlane(0.001);
 	SetScreenSize(1, 1);
 	SetViewAngle(45.0);

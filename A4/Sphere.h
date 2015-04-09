@@ -31,6 +31,30 @@ public:
 		computeBody(body);
 	}
 
+	double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+		eyePointP = invert(transformMatrix) * eyePointP;
+		rayV = invert(transformMatrix) * rayV;
+
+		double a = dot(rayV, rayV);
+
+		double b = 2 * ((eyePointP.at(0) * rayV.at(0))
+			+ (eyePointP.at(1) * rayV.at(1))
+			+ (eyePointP.at(2) * rayV.at(2)));
+
+		double c = (eyePointP.at(0) * eyePointP.at(0))
+			+ (eyePointP.at(1) * eyePointP.at(1))
+			+ (eyePointP.at(2) * eyePointP.at(2))
+			- (0.5 * 0.5);
+
+		double det = (b * b) - 4 * a * c;
+
+		return (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
+	}
+
+	Vector findIsectNormal(Point eyePoint, Vector ray, double dist) {
+		return Vector(0, 0, 0);
+	}
+
 private:
 	void computeBody(std::vector< std::vector<point_info> > &body) {
 		for (int i = 0; i < m_segmentsX; i++) {

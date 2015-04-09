@@ -47,6 +47,8 @@ Camera* camera = new Camera();
 
 void setupCamera();
 void updateCamera();
+Point getEyePoint();
+Vector generateRay(int pixelX, int pixelY);
 
 void setPixel(GLubyte* buf, int x, int y, int r, int g, int b) {
 	buf[(y*pixelWidth + x) * 3 + 0] = (GLubyte)r;
@@ -137,15 +139,48 @@ void callback_start(int id) {
 	for (int i = 0; i < pixelWidth; i++) {
 		for (int j = 0; j < pixelHeight; j++) {
 			//replace the following code
-			
+			/*
 			if ((i % 5 == 0) && (j % 5 == 0)) {
 				setPixel(pixels, i, j, 255, 0, 0);
 			}
 			else {
 				setPixel(pixels, i, j, 128, 128, 128);
 			}
-			
+			*/
+			Point eyePt = getEyePoint();
+			Vector ray = generateRay(i, j);
 
+			double min_t = -1;
+			Matrix min_matrix;
+			PrimitiveType min_type;
+
+			std::list<shapeData>::iterator it;
+			for (it = objects.begin(); it != objects.end(); ++it){
+				shapeData obj = *it;
+				Shape* curr_shape;
+				switch (obj.type) {
+				case SHAPE_SPHERE:
+					curr_shape = sphere;
+					break;
+				default:
+					curr_shape = NULL;
+					break;
+				}
+				if (curr_shape != NULL) {
+					double t = sphere->Intersect(eyePt, ray, obj.composite);
+					if (t > 0) {
+						min_t = t;
+						min_matrix = obj.composite;
+						min_type = obj.type;
+					}
+				}
+			}
+			if (min_t > 0) {
+				setPixel(pixels, i, j, 255, 255, 255);
+			}
+			else {
+				setPixel(pixels, i, j, 0, 0, 0);
+			}
 		}
 	}
 	glutPostRedisplay();

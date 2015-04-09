@@ -43,6 +43,15 @@ public:
 		computeCap(Point(0.0, 0.5, 0.0), startp + Vector(0.0, 1.0, 0.0),
 			nextp + Vector(0.0, 1.0, 0.0), caps[TOP], Vector(0.0, 1.0, 0.0));
 	}
+
+	double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+		return -1;
+	}
+
+	Vector findIsectNormal(Point eyePoint, Vector ray, double dist) {
+		return Vector(0, 0, 0);
+	}
+
 private:
 	enum CYL_CAPS { TOP, BOTTOM, NUM_CAPS };
 
