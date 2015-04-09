@@ -92,10 +92,10 @@ void callback_start(int id) {
 
 void callback_load(int id) {
 	char curDirName [2048];
-	if (filenameTextField == NULL) {
-		return;
-	}
-	printf ("%s\n", filenameTextField->get_text());
+	// if (filenameTextField == NULL) {
+	// 	return;
+	// }
+	// printf ("%s\n", filenamePath);
 
 	if (parser != NULL) {
 		delete parser;
@@ -175,7 +175,9 @@ void updateCamera()
 	Point guiEye (eyeX, eyeY, eyeZ);
 	Point guiLook(lookX, lookY, lookZ);
 	camera->SetViewAngle(viewAngle);
-	camera->Orient(guiEye, guiLook, camera->GetUpVector());
+
+	Vector up = camera->GetUpVector();
+	camera->Orient(guiEye, guiLook, up);
 	camera->RotateU(camRotU);
 	camera->RotateV(camRotV);
 	camera->RotateW(camRotW);
@@ -241,8 +243,8 @@ int main(int argc, char* argv[])
 
 	GLUI* glui = GLUI_Master.create_glui("GLUI");
 
-	filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
-	filenameTextField->set_w(300);
+	// filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
+	// filenameTextField->set_w(300);
 	glui->add_button("Load", 0, callback_load);
 	glui->add_button("Start!", 0, callback_start);
 	glui->add_checkbox("Isect Only", &isectOnly);
