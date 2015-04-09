@@ -160,7 +160,6 @@ void callback_start(int id) {
 				}
 				if (curr_shape != NULL) {
 					double t = curr_shape->Intersect(eyePt, ray, obj.composite);
-					cout << t << endl;
 					if (t > 0) {
 						min_t = t;
 						min_matrix = obj.composite;
