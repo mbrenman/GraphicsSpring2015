@@ -154,6 +154,9 @@ void callback_start(int id) {
 				case SHAPE_SPHERE:
 					curr_shape = sphere;
 					break;
+				case SHAPE_CONE:
+					curr_shape = cone;
+					break;
 				default:
 					curr_shape = NULL;
 					break;
@@ -168,10 +171,10 @@ void callback_start(int id) {
 				}
 			}
 			if (min_t != -1) {
-				setPixel(pixels, i, j, 255, 255, 255);
+				setPixel(pixels, i, pixelHeight-j-1, 255, 255, 255);
 			}
 			else {
-				setPixel(pixels, i, j, 0, 0, 0);
+				setPixel(pixels, i, pixelHeight-j-1, 0, 0, 0);
 			}
 		}
 	}
