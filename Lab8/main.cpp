@@ -65,8 +65,8 @@ Vector generateRay(int pixelX, int pixelY) {
 }
 
 Point getEyePoint() {
-	Point eye;
-	return eye;
+	Point p = Point(mouseX, mouseY, -1);
+	return p;
 }
 
 Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
@@ -77,13 +77,21 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
 /* =======================================================^ Mouse and Ray Casting Blocks of Code(above) ^=============================== */
 double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 
-	/*
+	double a = dot(rayV, rayV);
 
-	Copy from Lab 7
+	double b = 2 * ((eyePointP.at(0) * rayV.at(0))
+		+ (eyePointP.at(1) * rayV.at(1))
+		+ (eyePointP.at(2) * rayV.at(2)));
+
+	double c = (eyePointP.at(0) * eyePointP.at(0))
+		+ (eyePointP.at(1) * eyePointP.at(1))
+		+ (eyePointP.at(2) * eyePointP.at(2))
+		- (0.5 * 0.5);
+
+	double det = (b * b) - 4 * a * c;
 
 
-	*/
-	return -1;
+	return (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
 }
 
 /* =======================================================v Mouse and Ray Casting Blocks of Code (below) v=============================== */
