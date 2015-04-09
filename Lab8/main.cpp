@@ -211,7 +211,10 @@ void myGlutDisplay(void)
 	Matrix projection = camera.GetProjectionMatrix();
 	glLoadMatrixd(projection.unpack());
 
-	camera.Orient(Point(0, 0, 4), Vector(0, 0, -1), Vector(0, 1, 0));
+	Point e = Point(0, 0, 4);
+	Vector l = Vector(0, 0, -1);
+	Vector u = Vector(0, 1, 0);
+	camera.Orient(e, l, u);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixd(camera.GetModelViewMatrix().unpack());
 
