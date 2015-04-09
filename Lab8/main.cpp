@@ -178,16 +178,20 @@ void myGlutMouse(int button, int button_state, int x, int y)
 			drag = false;
 		}
 		else if ((button_state == GLUT_DOWN) && (drag == false)){
-			drag = true;
+			
 
 			Point eyePointP = getEyePoint();
 			Vector rayV = generateRay(mouseX, mouseY);
 			Vector sphereTransV(spherePosition[0], spherePosition[1], spherePosition[2]);
 			float t = Intersect(eyePointP, rayV, trans_mat(sphereTransV));
+			
+			if (t > 0) {
+				drag = true;
 
-			oldT = t;
-			oldIsectPoint = getIsectPointWorldCoord(eyePointP, rayV, t);
-			oldCenter = spherePosition;
+				oldT = t;
+				oldIsectPoint = getIsectPointWorldCoord(eyePointP, rayV, t);
+				oldCenter = spherePosition;
+			}
 		}
 	}
 
