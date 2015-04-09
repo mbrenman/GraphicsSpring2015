@@ -31,7 +31,7 @@ float lookZ = -2;
 
 /** These are GLUI control panel objects ***/
 int  main_window;
-string filenamePath = "data\\general\\test.xml";
+string filenamePath = "data/general/test.xml";
 GLUI_EditText* filenameTextField = NULL;
 GLubyte* pixels = NULL;
 int pixelWidth = 0, pixelHeight = 0;
@@ -136,18 +136,10 @@ void callback_start(int id) {
 	list_shapeData objects;
 	flattenScene(root, objects, Matrix());
 
+	Point eyePt = getEyePoint();
+
 	for (int i = 0; i < pixelWidth; i++) {
 		for (int j = 0; j < pixelHeight; j++) {
-			//replace the following code
-			/*
-			if ((i % 5 == 0) && (j % 5 == 0)) {
-				setPixel(pixels, i, j, 255, 0, 0);
-			}
-			else {
-				setPixel(pixels, i, j, 128, 128, 128);
-			}
-			*/
-			Point eyePt = getEyePoint();
 			Vector ray = generateRay(i, j);
 
 			double min_t = -1;
@@ -167,7 +159,8 @@ void callback_start(int id) {
 					break;
 				}
 				if (curr_shape != NULL) {
-					double t = sphere->Intersect(eyePt, ray, obj.composite);
+					double t = curr_shape->Intersect(eyePt, ray, obj.composite);
+					cout << t << endl;
 					if (t > 0) {
 						min_t = t;
 						min_matrix = obj.composite;
@@ -175,7 +168,7 @@ void callback_start(int id) {
 					}
 				}
 			}
-			if (min_t > 0) {
+			if (min_t != -1) {
 				setPixel(pixels, i, j, 255, 255, 255);
 			}
 			else {
@@ -189,8 +182,8 @@ void callback_start(int id) {
 Point getEyePoint();
 
 Vector generateRay(int pixelX, int pixelY) {
-	double filmPointX = -1 + (2 * pixelX / screenWidth);
-	double filmPointY = -1 * (-1 + (2 * pixelY / screenHeight));
+	double filmPointX = -1 + (2 * (double)pixelX / (double)pixelWidth);
+	double filmPointY = -1 * (-1 + (2 * (double)pixelY / (double)pixelHeight));
 
 	Point filmPoint = Point(filmPointX, filmPointY, -1);
 	Point eyePoint = Point(0, 0, 0);
