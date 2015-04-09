@@ -65,7 +65,7 @@ Vector generateRay(int pixelX, int pixelY) {
 
 	Point filmPoint = Point(filmPointX, filmPointY, 0);
 
-	filmPoint = transpose(invert(camera.GetModelViewMatrix() * camera.GetScaleMatrix())) * filmPoint;
+	filmPoint = transpose(invert(camera.GetScaleMatrix() * camera.GetModelViewMatrix())) * filmPoint;
 
 	Vector ray = filmPoint - getEyePoint();
 
@@ -86,8 +86,9 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
 /* =======================================================^ Mouse and Ray Casting Blocks of Code(above) ^=============================== */
 double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 
-	eyePointP = transformMatrix * eyePointP;
-	rayV = transformMatrix * rayV;	
+	eyePointP = invert(transformMatrix) * eyePointP;
+	rayV = invert(transformMatrix) * rayV;
+	rayV.normalize();	
 
 	double a = dot(rayV, rayV);
 
@@ -135,6 +136,14 @@ void myGlutMotion(int x, int y)
 
 
 		*/
+
+		Point eyePointP = getEyePoint();
+		Vector rayV = generateRay(mouseX, mouseY);
+
+		Point isect_prime = getIsectPointWorldCoord(eyePointP, rayV, oldT);
+		Point center_prime = isect_prime + (oldCenter - oldIsectPoint);
+
+		spherePosition = center_prime;
 	}
 
 }
@@ -169,12 +178,16 @@ void myGlutMouse(int button, int button_state, int x, int y)
 			drag = false;
 		}
 		else if ((button_state == GLUT_DOWN) && (drag == false)){
-			/*
+			drag = true;
 
-			Insert code here
+			Point eyePointP = getEyePoint();
+			Vector rayV = generateRay(mouseX, mouseY);
+			Vector sphereTransV(spherePosition[0], spherePosition[1], spherePosition[2]);
+			float t = Intersect(eyePointP, rayV, trans_mat(sphereTransV));
 
-
-			*/
+			oldT = t;
+			oldIsectPoint = getIsectPointWorldCoord(eyePointP, rayV, t);
+			oldCenter = spherePosition;
 		}
 	}
 
