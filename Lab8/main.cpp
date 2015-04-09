@@ -60,22 +60,24 @@ Point getEyePoint();
 
 
 Vector generateRay(int pixelX, int pixelY) {
-	double filmPointX = -0.5 + (pixelX/windowXSize);
-	double filmPointY = -1 * (-0.5 + (pixelY/windowYSize));
+	double filmPointX = -1 + (2*pixelX/windowXSize);
+	double filmPointY = -1 * (-1 + (2*pixelY/windowYSize));
 
-	Point filmPoint = Point(filmPointX, filmPointY, 0);
+	Point filmPoint = Point(filmPointX, filmPointY, -1);
+	Point eyePoint = Point(0, 0, 0);
+	Matrix filmtoworld = transpose(invert(camera.GetScaleMatrix() * camera.GetModelViewMatrix()));
 
-	filmPoint = transpose(invert(camera.GetScaleMatrix() * camera.GetModelViewMatrix())) * filmPoint;
+	filmPoint = filmtoworld * filmPoint;
+	eyePoint = filmtoworld * eyePoint;
 
-	Vector ray = filmPoint - getEyePoint();
+	Vector ray = filmPoint - eyePoint;
 
 	ray.normalize();
 	return ray;
 }
 
 Point getEyePoint() {
-	Point cam_eye = camera.GetEyePoint();
-	return cam_eye;
+	return camera.GetEyePoint();
 }
 
 Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
@@ -88,7 +90,6 @@ double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 
 	eyePointP = invert(transformMatrix) * eyePointP;
 	rayV = invert(transformMatrix) * rayV;
-	rayV.normalize();	
 
 	double a = dot(rayV, rayV);
 
