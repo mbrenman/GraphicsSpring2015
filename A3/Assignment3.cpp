@@ -237,8 +237,6 @@ void applyMaterial(const SceneMaterial &material)
 
 /***************************************** myGlutDisplay() *****************/
 
-/* THIS SECTION NOT FINISHED */
-
 struct shapeData {
 	PrimitiveType type;
 	SceneMaterial material;
@@ -320,7 +318,7 @@ void myGlutDisplay(void)
 	}
 
 	SceneNode* root = parser->getRootNode();
-	Matrix compositeMatrix;
+	//Matrix compositeMatrix;
 	list_shapeData objects;
 	flattenScene(root, objects, Matrix());
 

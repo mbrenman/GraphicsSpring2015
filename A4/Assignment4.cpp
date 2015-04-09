@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <list>
 #include <GL/glui.h>
 #include "Shape.h"
 #include "Cube.h"
@@ -53,6 +54,60 @@ void setPixel(GLubyte* buf, int x, int y, int r, int g, int b) {
 	buf[(y*pixelWidth + x) * 3 + 2] = (GLubyte)b;
 }
 
+struct shapeData {
+	PrimitiveType type;
+	SceneMaterial material;
+	Matrix composite;
+};
+
+typedef std::list<shapeData> list_shapeData;
+
+void flattenScene(SceneNode *root, list_shapeData &list, Matrix cmtm) {
+	/*
+	iterators are initialized outside for loop for gcc compatibility. apparently
+	its an issue. Also, I intentionally used the prefix ++ operator, it allegedly
+	is more portable. If any of this doesn't work on your computer feel free to
+	modify it.
+	*/
+	std::vector<SceneTransformation*>::iterator it;
+	std::vector<ScenePrimitive*>::iterator itp;
+	std::vector<SceneNode*>::iterator itc;
+
+
+	for (it = root->transformations.begin(); it != root->transformations.end(); ++it) {
+		SceneTransformation *next = *it;
+
+		switch (next->type){
+		case TRANSFORMATION_TRANSLATE:
+			cmtm = cmtm * trans_mat(next->translate);
+			break;
+		case TRANSFORMATION_SCALE:
+			cmtm = cmtm * scale_mat(next->scale);
+			break;
+		case TRANSFORMATION_ROTATE:
+			cmtm = cmtm * rot_mat(next->rotate, next->angle);
+			break;
+		case TRANSFORMATION_MATRIX:
+			cmtm = cmtm * next->matrix;
+			break;
+		}
+	}
+
+	for (itp = root->primitives.begin(); itp != root->primitives.end(); ++itp) {
+		ScenePrimitive *next = *itp;
+		shapeData entry;
+		entry.composite = cmtm;
+		entry.material = next->material;
+		entry.type = next->type;
+		list.push_back(entry);
+	}
+
+	for (itc = root->children.begin(); itc != root->children.end(); ++itc){
+		SceneNode *next = *itc;
+		flattenScene(next, list, cmtm);
+	}
+}
+
 void callback_start(int id) {
 	cout << "start button clicked!" << endl;
 
@@ -74,20 +129,55 @@ void callback_start(int id) {
 
 	cout << "(w, h): " << pixelWidth << ", " << pixelHeight << endl;
 
+	SceneNode* root = parser->getRootNode();
+	//Matrix compositeMatrix;
+	list_shapeData objects;
+	flattenScene(root, objects, Matrix());
+
 	for (int i = 0; i < pixelWidth; i++) {
 		for (int j = 0; j < pixelHeight; j++) {
 			//replace the following code
+			
 			if ((i % 5 == 0) && (j % 5 == 0)) {
 				setPixel(pixels, i, j, 255, 0, 0);
 			}
 			else {
 				setPixel(pixels, i, j, 128, 128, 128);
 			}
+			
+
 		}
 	}
 	glutPostRedisplay();
 }
 
+Point getEyePoint();
+
+Vector generateRay(int pixelX, int pixelY) {
+	double filmPointX = -1 + (2 * pixelX / screenWidth);
+	double filmPointY = -1 * (-1 + (2 * pixelY / screenHeight));
+
+	Point filmPoint = Point(filmPointX, filmPointY, -1);
+	Point eyePoint = Point(0, 0, 0);
+	Matrix filmtoworld = transpose(invert(camera->GetScaleMatrix() * camera->GetModelViewMatrix()));
+
+	filmPoint = filmtoworld * filmPoint;
+	eyePoint = filmtoworld * eyePoint;
+
+	Vector ray = filmPoint - eyePoint;
+
+	ray.normalize();
+	return ray;
+}
+
+Point getEyePoint() {
+	return camera->GetEyePoint();
+}
+
+Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
+	Point p = eye + t * ray;
+	return p;
+}
 
 
 void callback_load(int id) {

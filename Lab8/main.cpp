@@ -58,7 +58,6 @@ Camera camera;
 
 Point getEyePoint();
 
-
 Vector generateRay(int pixelX, int pixelY) {
 	double filmPointX = -1 + (2*pixelX/windowXSize);
 	double filmPointY = -1 * (-1 + (2*pixelY/windowYSize));
