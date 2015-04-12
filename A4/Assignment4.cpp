@@ -49,6 +49,7 @@ void setupCamera();
 void updateCamera();
 Point getEyePoint();
 Vector generateRay(int pixelX, int pixelY);
+Point getIsectPointWorldCoord(Point eye, Vector ray, double t);
 
 void setPixel(GLubyte* buf, int x, int y, int r, int g, int b) {
 	buf[(y*pixelWidth + x) * 3 + 0] = (GLubyte)r;
@@ -133,6 +134,7 @@ void callback_start(int id) {
 	cout << "(w, h): " << pixelWidth << ", " << pixelHeight << endl;
 
 	SceneNode* root = parser->getRootNode();
+	
 	SceneGlobalData globalData;
 	parser->getGlobalData(globalData);
 
@@ -189,18 +191,41 @@ void callback_start(int id) {
 			}
 			if (min_t != -1) {
 				//Compute Normal
-				norm = min_shape->findIsectNormal(eyePt, ray, min_t, min_matrix);
+				norm = transpose(invert(min_matrix)) * min_shape->findIsectNormal(eyePt, ray, min_t, min_matrix);
+
+				double epsilon = 0.000001;
 
 				//Find color
-				double r = globalData.ka * (double)min_material.cAmbient.r * 255.0f;
-				double g = globalData.ka * (double)min_material.cAmbient.g * 255.0f;
-				double b = globalData.ka * (double)min_material.cAmbient.b * 255.0f;
+				double r = globalData.ka * (double)min_material.cAmbient.r;
+				double g = globalData.ka * (double)min_material.cAmbient.g;
+				double b = globalData.ka * (double)min_material.cAmbient.b;
 
-				Point i_final(r, g, b);
+				int numLights = parser->getNumLights();
+				for (int m = 0; m < numLights; m++) {
+					SceneLightData light;
+					parser->getLightData(m, light);
 
-				
+					//is light blocked by other side of object
+					double t_int = min_shape->Intersect(light.pos, light.dir, min_matrix);
+					if (t_int - min_t < epsilon) {
 
-				setPixel(pixels, i, pixelHeight-j-1, r, g, b);
+						Vector L = getIsectPointWorldCoord(eyePt, ray, min_t) - light.pos;
+						L.normalize();
+						norm.normalize();
+
+						double normLightDot = dot(norm, L);
+						if (normLightDot > 0) {
+							r += globalData.kd * min_material.cDiffuse.r * light.color.r * normLightDot;
+							g += globalData.kd * min_material.cDiffuse.g * light.color.g * normLightDot;
+							b += globalData.kd * min_material.cDiffuse.b * light.color.b * normLightDot;
+						}
+					}
+				}
+
+				if (min_type == SHAPE_SPHERE) {
+					cout << r << ", " << g << ", " << b << endl;
+				}
+				setPixel(pixels, i, pixelHeight-j-1, r * 255.0f, g * 255.0f, b * 255.0f);
 			}
 			else {
 				setPixel(pixels, i, pixelHeight-j-1, 0, 0, 0);
