@@ -157,6 +157,9 @@ void callback_start(int id) {
 				case SHAPE_CONE:
 					curr_shape = cone;
 					break;
+				case SHAPE_CUBE:
+					curr_shape = cube;
+					break;
 				default:
 					curr_shape = NULL;
 					break;

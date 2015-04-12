@@ -61,7 +61,8 @@ public:
 
 		double det = (b * b) - 4 * a * c;
 
-		return (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
+		double t = (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
+		return testBounds(eyePointP, rayV, t) ? t : -1;
 	}
 
 	Vector findIsectNormal(Point eyePoint, Vector ray, double dist) {
@@ -124,6 +125,11 @@ private:
 	std::vector< std::vector<point_info> > body;
 	std::vector< point_info > base;
 	Matrix m_rmatrix;
+
+	bool testBounds(Point eye, Vector ray, double t) {
+		double y = (eye + t*ray).at(1);
+		return (y >= -0.5) && (y <= 0.5) && (t > 0);
+	}
 };
 
 #endif
