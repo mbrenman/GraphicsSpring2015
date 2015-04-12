@@ -101,6 +101,7 @@ void flattenScene(SceneNode *root, list_shapeData &list, Matrix cmtm) {
 		entry.composite = cmtm;
 		entry.material = next->material;
 		entry.type = next->type;
+
 		list.push_back(entry);
 	}
 
@@ -191,15 +192,15 @@ void callback_start(int id) {
 				norm = min_shape->findIsectNormal(eyePt, ray, min_t, min_matrix);
 
 				//Find color
-				Point i_final = (double)globalData.ka * Point((double)min_material.cAmbient.channels[0] * 255.0f, (double)min_material.cAmbient.channels[1] * 255.0f, (double)min_material.cAmbient.channels[2] * 255.0f);
+				double r = globalData.ka * (double)min_material.cAmbient.r * 255.0f;
+				double g = globalData.ka * (double)min_material.cAmbient.g * 255.0f;
+				double b = globalData.ka * (double)min_material.cAmbient.b * 255.0f;
 
-				if (min_type == SHAPE_SPHERE) {
-					cout << globalData.ka << endl;
-					cout << min_material.cAmbient.channels[0] << min_material.cAmbient.channels[1] << min_material.cAmbient.channels[2] << endl;
-					cout << "color:" << i_final.at(0) << ", " << i_final.at(1) << ", " << i_final.at(2) << endl;
-				}
+				Point i_final(r, g, b);
 
-				setPixel(pixels, i, pixelHeight-j-1, i_final.at(0), i_final.at(1), i_final.at(2));
+				
+
+				setPixel(pixels, i, pixelHeight-j-1, r, g, b);
 			}
 			else {
 				setPixel(pixels, i, pixelHeight-j-1, 0, 0, 0);
