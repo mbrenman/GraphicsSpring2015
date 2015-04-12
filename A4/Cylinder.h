@@ -45,7 +45,32 @@ public:
 	}
 
 	double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
-		return -1;
+		eyePointP = invert(transformMatrix) * eyePointP;
+		rayV = invert(transformMatrix) * rayV;
+		double min_t = -1;
+
+		double a = rayV.at(0) * rayV.at(0) + rayV.at(2) * rayV.at(2);
+		double b = 2 * (eyePointP.at(0) * rayV.at(0) + eyePointP.at(2) * rayV.at(2));
+		double c = eyePointP.at(0) * eyePointP.at(0) + eyePointP.at(2) * eyePointP.at(2) - 0.25;
+
+		double det = (b * b) - 4 * a * c;
+
+		double t = (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
+		min_t = testBounds(eyePointP, rayV, t) ? t : min_t;
+
+		//plane (0,0.5,0)
+		if (rayV.at(1) != 0) {
+			t = (0.5 - eyePointP.at(1)) / rayV.at(1);
+			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t) ? t : min_t;
+		}
+
+		//plane (0,-0.5,0)
+		if (rayV.at(1) != 0) {
+			t = (-0.5 - eyePointP.at(1)) / rayV.at(1);
+			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t) ? t : min_t;
+		}
+		
+		return min_t;
 	}
 
 	Vector findIsectNormal(Point eyePoint, Vector ray, double dist) {
@@ -93,6 +118,16 @@ private:
 			rot_vec = m_rmatrix * rot_vec;
 		}
 	};
+
+	bool testBounds(Point eye, Vector ray, double t) {
+		double y = (eye + t*ray).at(1);
+		return (y >= -0.5) && (y <= 0.5) && (t > 0);
+	}
+
+	bool testCapBounds(Point eye, Vector ray, double t) {		
+		Point p = eye + t*ray;
+		return (p.at(0) * p.at(0) + p.at(2) * p.at(2) <= 0.25) && (t > 0);
+	}
 
 	std::vector< std::vector<point_info> > body;
 	std::vector< point_info > caps[NUM_CAPS];

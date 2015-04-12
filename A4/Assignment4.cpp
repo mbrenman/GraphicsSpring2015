@@ -160,6 +160,9 @@ void callback_start(int id) {
 				case SHAPE_CUBE:
 					curr_shape = cube;
 					break;
+				case SHAPE_CYLINDER:
+					curr_shape = cylinder;
+					break;
 				default:
 					curr_shape = NULL;
 					break;
