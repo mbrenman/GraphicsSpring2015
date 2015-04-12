@@ -51,8 +51,16 @@ public:
 		return (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
 	}
 
-	Vector findIsectNormal(Point eyePoint, Vector ray, double dist) {
-		return Vector(0, 0, 0);
+	Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) {
+		eyePoint = invert(transformMatrix) * eyePoint;
+		ray = invert(transformMatrix) * ray;
+
+		Point onBody = eyePoint + ray * dist;
+
+		Vector norm = onBody - Point(0, 0, 0);
+		norm.normalize();
+
+		return norm;
 	}
 
 private:

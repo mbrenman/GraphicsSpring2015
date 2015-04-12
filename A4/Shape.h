@@ -50,7 +50,7 @@ public:
 	virtual void drawNormal() {};
 	virtual void recompute() {};
 	virtual double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) = 0;
-	virtual Vector findIsectNormal(Point eyePoint, Vector ray, double dist) = 0;
+	virtual Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) = 0;
 
 protected:
 	void normalizeNormal(float x, float y, float z) {

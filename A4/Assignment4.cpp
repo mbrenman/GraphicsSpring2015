@@ -132,6 +132,9 @@ void callback_start(int id) {
 	cout << "(w, h): " << pixelWidth << ", " << pixelHeight << endl;
 
 	SceneNode* root = parser->getRootNode();
+	SceneGlobalData globalData;
+	parser->getGlobalData(globalData);
+
 	//Matrix compositeMatrix;
 	list_shapeData objects;
 	flattenScene(root, objects, Matrix());
@@ -143,8 +146,13 @@ void callback_start(int id) {
 			Vector ray = generateRay(i, j);
 
 			double min_t = -1;
+			Vector norm = Vector();
+			Shape *min_shape;
+
 			Matrix min_matrix;
 			PrimitiveType min_type;
+
+			SceneMaterial min_material;
 
 			std::list<shapeData>::iterator it;
 			for (it = objects.begin(); it != objects.end(); ++it){
@@ -173,11 +181,25 @@ void callback_start(int id) {
 						min_t = t;
 						min_matrix = obj.composite;
 						min_type = obj.type;
+						min_shape = curr_shape;
+						min_material = obj.material;
 					}
 				}
 			}
 			if (min_t != -1) {
-				setPixel(pixels, i, pixelHeight-j-1, 255, 255, 255);
+				//Compute Normal
+				norm = min_shape->findIsectNormal(eyePt, ray, min_t, min_matrix);
+
+				//Find color
+				Point i_final = (double)globalData.ka * Point((double)min_material.cAmbient.channels[0] * 255.0f, (double)min_material.cAmbient.channels[1] * 255.0f, (double)min_material.cAmbient.channels[2] * 255.0f);
+
+				if (min_type == SHAPE_SPHERE) {
+					cout << globalData.ka << endl;
+					cout << min_material.cAmbient.channels[0] << min_material.cAmbient.channels[1] << min_material.cAmbient.channels[2] << endl;
+					cout << "color:" << i_final.at(0) << ", " << i_final.at(1) << ", " << i_final.at(2) << endl;
+				}
+
+				setPixel(pixels, i, pixelHeight-j-1, i_final.at(0), i_final.at(1), i_final.at(2));
 			}
 			else {
 				setPixel(pixels, i, pixelHeight-j-1, 0, 0, 0);

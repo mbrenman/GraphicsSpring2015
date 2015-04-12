@@ -73,7 +73,7 @@ public:
 		return min_t;
 	}
 
-	Vector findIsectNormal(Point eyePoint, Vector ray, double dist) {
+	Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) {
 		return Vector(0, 0, 0);
 	}
 

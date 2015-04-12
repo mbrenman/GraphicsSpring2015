@@ -105,7 +105,7 @@ public:
 		return testBounds(eyePointP, rayV, min_t) ? min_t : -1;
 	}	
 
-	Vector findIsectNormal(Point eyePoint, Vector ray, double dist) {
+	Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) {
 		return Vector(0,0,0);
 	}
 
