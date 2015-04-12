@@ -150,7 +150,7 @@ void callback_start(int id) {
 
 			double min_t = -1;
 			Vector norm = Vector();
-			Shape *min_shape;
+			Shape *min_shape = NULL;
 
 			Matrix min_matrix;
 			PrimitiveType min_type;
@@ -205,26 +205,23 @@ void callback_start(int id) {
 					SceneLightData light;
 					parser->getLightData(m, light);
 
-					//is light blocked by other side of object
-					double t_int = min_shape->Intersect(light.pos, light.dir, min_matrix);
-					if (t_int - min_t < epsilon) {
+					Vector L = light.pos - getIsectPointWorldCoord(eyePt, ray, min_t);
+					L.normalize();
+					norm.normalize();
+					double normLightDot = dot(norm, L);
 
-						Vector L = getIsectPointWorldCoord(eyePt, ray, min_t) - light.pos;
-						L.normalize();
-						norm.normalize();
-
-						double normLightDot = dot(norm, L);
-						if (normLightDot > 0) {
-							r += globalData.kd * min_material.cDiffuse.r * light.color.r * normLightDot;
-							g += globalData.kd * min_material.cDiffuse.g * light.color.g * normLightDot;
-							b += globalData.kd * min_material.cDiffuse.b * light.color.b * normLightDot;
-						}
+					if (normLightDot > 0) {
+						r += globalData.kd * min_material.cDiffuse.r * light.color.r * normLightDot / (double) numLights;
+						g += globalData.kd * min_material.cDiffuse.g * light.color.g * normLightDot / (double) numLights;
+						b += globalData.kd * min_material.cDiffuse.b * light.color.b * normLightDot / (double) numLights;
 					}
-				}
 
+				}
+				/*
 				if (min_type == SHAPE_SPHERE) {
 					cout << r << ", " << g << ", " << b << endl;
 				}
+				*/
 				setPixel(pixels, i, pixelHeight-j-1, r * 255.0f, g * 255.0f, b * 255.0f);
 			}
 			else {
