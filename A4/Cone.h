@@ -40,10 +40,13 @@ public:
 		computeBase(Point(0.0, -0.5, 0.0), startp, nextp, base, Vector(0.0, -1.0, 0.0));
 	}
 
-	double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 		eyePointP = invert(transformMatrix) * eyePointP;
 		rayV = invert(transformMatrix) * rayV;
+		intersect_info info;
 		double min_t = -1;
+		Vector min_vector;
+		bool hit_cap = false;
 
 		double a = rayV.at(0) * rayV.at(0) + 
 				   rayV.at(2) * rayV.at(2) -
@@ -63,15 +66,31 @@ public:
 		double det = (b * b) - 4 * a * c;
 
 		double t = (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
-		min_t = testBounds(eyePointP, rayV, t) ? t : -1;
+		if (testBounds(eyePointP, rayV, t)) {
+			min_t = t;
+		}
 
 		//plane (0,-0.5,0)
 		if (rayV.at(1) != 0) {
 			t = (-0.5 - eyePointP.at(1)) / rayV.at(1);
-			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t) ? t : min_t;
+			if (((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t)) {
+				min_t = t;
+				hit_cap = 1;
+			}
 		}
 
-		return min_t;
+		if (min_t > 0) {
+			if (hit_cap) {
+				min_vector = Vector(0, -1, 0);
+			}
+			else {
+				min_vector = coneBodyVector(eyePointP + rayV * min_t);
+			}
+		}
+		
+		info.t = min_t;
+		info.normal = min_vector;
+		return info;
 	}
 
 	Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) {

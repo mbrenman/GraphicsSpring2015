@@ -148,6 +148,7 @@ void callback_start(int id) {
 		for (int j = 0; j < pixelHeight; j++) {
 			Vector ray = generateRay(i, j);
 
+			intersect_info info;
 			double min_t = -1;
 			Vector norm = Vector();
 			Shape *min_shape = NULL;
@@ -178,9 +179,10 @@ void callback_start(int id) {
 					break;
 				}
 				if (curr_shape != NULL) {
-					double t = curr_shape->Intersect(eyePt, ray, obj.composite);
-					if ((min_t < 0 || t < min_t) && (t > 0)) {
-						min_t = t;
+					info = curr_shape->Intersect(eyePt, ray, obj.composite);
+					if ((min_t < 0 || info.t < min_t) && (info.t > 0)) {
+						min_t = info.t;
+						norm = info.normal;
 						min_matrix = obj.composite;
 						min_type = obj.type;
 						min_shape = curr_shape;
@@ -194,7 +196,6 @@ void callback_start(int id) {
 				}	
 				else {
 					//Compute Normal
-					norm = min_shape->findIsectNormal(eyePt, ray, min_t, min_matrix);
 					norm = transpose(invert(min_matrix)) * norm;
 
 					//Find color

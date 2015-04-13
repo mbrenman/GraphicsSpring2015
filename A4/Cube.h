@@ -57,7 +57,7 @@ public:
 			Vector(-1.0 / m_segmentsX, 0.0, 0.0), faces[TOP]);
 	};
 
-	double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 		eyePointP = invert(transformMatrix) * eyePointP;
 		rayV = invert(transformMatrix) * rayV;
 		double min_t = -1;
@@ -101,7 +101,6 @@ public:
 		 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
 		 }
 		
-
 		return testBounds(eyePointP, rayV, min_t) ? min_t : -1;
 	}	
 
