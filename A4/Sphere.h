@@ -57,7 +57,7 @@ public:
 
 		Point onBody = eyePoint + ray * dist;
 
-		Vector norm = onBody - Point(0, 0, 0);
+		Vector norm = sphereBodyVector(onBody);
 
 		return norm;
 	}

@@ -75,6 +75,8 @@ public:
 	}
 
 	Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) {
+		eyePoint = invert(transformMatrix) * eyePoint;
+		ray = invert(transformMatrix) * ray;
 		Point onBody = eyePoint + ray * dist;
 
 		double min_t = -1;

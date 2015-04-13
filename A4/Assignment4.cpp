@@ -154,7 +154,6 @@ void callback_start(int id) {
 
 			Matrix min_matrix;
 			PrimitiveType min_type;
-
 			SceneMaterial min_material;
 
 			std::list<shapeData>::iterator it;
@@ -211,6 +210,10 @@ void callback_start(int id) {
 						Vector L = light.pos - getIsectPointWorldCoord(eyePt, ray, min_t);
 						L.normalize();
 						norm.normalize();
+						//if (min_type == SHAPE_CYLINDER) {
+						//	cout << L.at(0) << "," << L.at(1) << "," << L.at(2)
+						//		<< " " << norm.at(0) << "," << norm.at(1) << "," << norm.at(2) << endl;								
+						//}
 
 						double normLightDot = dot(norm, L);
 
@@ -225,9 +228,9 @@ void callback_start(int id) {
 					}
 
 					//cap at 1
-					r = (r < 1) ? r : 1;
-					g = (g < 1) ? g : 1;
-					b = (b < 1) ? b : 1;
+					r = (r > 1) ? 1 : r;
+					g = (g > 1) ? 1 : g;
+					b = (b > 1) ? 1 : b;
 
 					r = ((double)r * 255.0f);
 					g = ((double)g * 255.0f);
