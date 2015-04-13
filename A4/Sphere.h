@@ -31,7 +31,7 @@ public:
 		computeBody(body);
 	}
 
-	double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 		eyePointP = invert(transformMatrix) * eyePointP;
 		rayV = invert(transformMatrix) * rayV;
 
@@ -48,7 +48,18 @@ public:
 
 		double det = (b * b) - 4 * a * c;
 
-		return (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
+		intersect_info info;
+		info.t = -1;
+
+		if (det >= 0) {
+			double t = ((-1 * b) - sqrt(det)) / (2 * a);
+
+			Point p = eyePointP + rayV * t;
+
+			info.t = t;
+			info.normal = Vector(p.at(0), p.at(1), p.at(2));
+		}
+		return info;
 	}
 
 	Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) {

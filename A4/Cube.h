@@ -67,45 +67,57 @@ public:
 		 //plane (0.5,0,0)
 		 if (rayV.at(0) != 0) {
 		 	t = (0.5 - eyePointP.at(0)) / rayV.at(0);
-		 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-			normal = Vector(1.0, 0.0, 0.0);
+			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
+				min_t = t;
+				normal = Vector(1.0, 0.0, 0.0);
+			}
 		 }
 
 		 //plane (-0.5,0,0)
 		 if (rayV.at(0) != 0) {
 		 	t = (-0.5 - eyePointP.at(0)) / rayV.at(0);
-		 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-			normal = Vector(-1.0, 0.0, 0.0);
+			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
+				min_t = t;
+				normal = Vector(-1.0, 0.0, 0.0);
+			}
 		 }
 		
 
 		 //plane (0,0.5,0)
 		 if (rayV.at(1) != 0) {
 		 	t = (0.5 - eyePointP.at(1)) / rayV.at(1);
-		 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-			normal = Vector(0.0, 1.0, 0.0);
+			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
+				min_t = t;
+				normal = Vector(0.0, 1.0, 0.0);
+			}
 		 }
 
 		 //plane (0,-0.5,0)
 		 if (rayV.at(1) != 0) {
 		 	t = (-0.5 - eyePointP.at(1)) / rayV.at(1);
-		 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-			normal = Vector(0.0, -1.0, 0.0);
+			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
+				min_t = t;
+				normal = Vector(0.0, -1.0, 0.0);
+			}
 		 }
 
 		
 		//plane (0,0,0.5)
 		if (rayV.at(2) != 0) {
 			t = (0.5 - eyePointP.at(2)) / rayV.at(2);
-			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-			normal = Vector(0.0, 0.0, 1.0);
+			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
+				min_t = t;
+				normal = Vector(0.0, 0.0, 1.0);
+			}
 		}
 
 		//plane (0,0,-0.5)
 		 if (rayV.at(2) != 0) {
 		 	t = (-0.5 - eyePointP.at(2)) / rayV.at(2);
-		 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-			normal = Vector(0.0, 0.0, -1.0);
+			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
+				min_t = t;
+				normal = Vector(0.0, 0.0, -1.0);
+			}
 		 }
 
 		 intersect_info info;
