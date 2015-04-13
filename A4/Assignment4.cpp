@@ -180,7 +180,7 @@ void callback_start(int id) {
 				}
 				if (curr_shape != NULL) {
 					double t = curr_shape->Intersect(eyePt, ray, obj.composite);
-					if (t > 0) {
+					if ((min_t < 0 || t < min_t) && (t > 0)) {
 						min_t = t;
 						min_matrix = obj.composite;
 						min_type = obj.type;
@@ -190,43 +190,51 @@ void callback_start(int id) {
 				}
 			}
 			if (min_t != -1) {
-				//Compute Normal
-				norm = min_shape->findIsectNormal(eyePt, ray, min_t, min_matrix);
-				norm = transpose(invert(min_matrix)) * norm;
+				if (isectOnly) {
+					setPixel(pixels, i, pixelHeight - j - 1, 255, 255, 255);
+				}	
+				else {
+					//Compute Normal
+					norm = min_shape->findIsectNormal(eyePt, ray, min_t, min_matrix);
+					norm = transpose(invert(min_matrix)) * norm;
 
-				double epsilon = 0.0001;
+					//Find color
+					double r = globalData.ka * (double)min_material.cAmbient.r;
+					double g = globalData.ka * (double)min_material.cAmbient.g;
+					double b = globalData.ka * (double)min_material.cAmbient.b;
 
-				//Find color
-				double r = globalData.ka * (double)min_material.cAmbient.r;
-				double g = globalData.ka * (double)min_material.cAmbient.g;
-				double b = globalData.ka * (double)min_material.cAmbient.b;
+					int numLights = parser->getNumLights();
+					for (int m = 0; m < numLights; m++) {
+						SceneLightData light;
+						parser->getLightData(m, light);
 
-				int numLights = parser->getNumLights();
-				for (int m = 0; m < numLights; m++) {
-					SceneLightData light;
-					parser->getLightData(m, light);
+						Vector L = light.pos - getIsectPointWorldCoord(eyePt, ray, min_t);
+						L.normalize();
+						norm.normalize();
 
-					Vector L = light.pos - getIsectPointWorldCoord(eyePt, ray, min_t);
-					L.normalize();
-					norm.normalize();
+						double normLightDot = dot(norm, L);
 
-					double normLightDot = dot(norm, L);
+						double dr = (double)globalData.kd * (double)min_material.cDiffuse.r * (double)light.color.r * (double)normLightDot;
+						double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
+						double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
 
-					double dr = (double)globalData.kd * (double)min_material.cDiffuse.r * (double)light.color.r * (double)normLightDot;
-					double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
-					double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
-						
-					r += (dr > 0) ? dr : -dr;
-					g += (dg > 0) ? dg : -dg;
-					b += (db > 0) ? db : -db;
+						r += (dr > 0) ? dr : -dr;
+						g += (dg > 0) ? dg : -dg;
+						b += (db > 0) ? db : -db;
 
+					}
+
+					//cap at 1
+					r = (r < 1) ? r : 1;
+					g = (g < 1) ? g : 1;
+					b = (b < 1) ? b : 1;
+
+					r = ((double)r * 255.0f);
+					g = ((double)g * 255.0f);
+					b = ((double)b * 255.0f);
+
+					setPixel(pixels, i, pixelHeight - j - 1, r, g, b);
 				}
-
-				r = ((double)r * 255.0f) / (double)numLights;
-				g = ((double)g * 255.0f) / (double)numLights;
-				b = ((double)b * 255.0f) / (double)numLights;
-
-				setPixel(pixels, i, pixelHeight-j-1, r, g, b);
 			}
 			else {
 				setPixel(pixels, i, pixelHeight-j-1, 0, 0, 0);
@@ -244,7 +252,7 @@ Vector generateRay(int pixelX, int pixelY) {
 
 	Point filmPoint = Point(filmPointX, filmPointY, -1);
 	Point eyePoint = Point(0, 0, 0);
-	Matrix filmtoworld = transpose(invert(camera->GetScaleMatrix() * camera->GetModelViewMatrix()));
+	Matrix filmtoworld = invert(camera->GetScaleMatrix() * camera->GetModelViewMatrix());
 
 	filmPoint = filmtoworld * filmPoint;
 	eyePoint = filmtoworld * eyePoint;

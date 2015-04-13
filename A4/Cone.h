@@ -79,7 +79,7 @@ public:
 
 		//Need to test if on cap
 
-		return Vector(onBody.at(0), .5, onBody.at(2));
+		return coneBodyVector(onBody);
 	}
 
 private:
