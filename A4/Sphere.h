@@ -31,7 +31,7 @@ public:
 		computeBody(body);
 	}
 
-	double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 		eyePointP = invert(transformMatrix) * eyePointP;
 		rayV = invert(transformMatrix) * rayV;
 
@@ -48,7 +48,7 @@ public:
 
 		double det = (b * b) - 4 * a * c;
 
-		intersection_info info;
+		intersect_info info;
 		info.t = -1;
 
 		if (det >= 0) {

@@ -148,7 +148,7 @@ void callback_start(int id) {
 		for (int j = 0; j < pixelHeight; j++) {
 			Vector ray = generateRay(i, j);
 
-			intersect_info info;
+			Shape::intersect_info info;
 			double min_t = -1;
 			Vector norm = Vector();
 			Shape *min_shape = NULL;
