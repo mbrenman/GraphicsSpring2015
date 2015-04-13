@@ -58,7 +58,6 @@ public:
 		Point onBody = eyePoint + ray * dist;
 
 		Vector norm = onBody - Point(0, 0, 0);
-		norm.normalize();
 
 		return norm;
 	}

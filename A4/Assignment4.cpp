@@ -191,9 +191,10 @@ void callback_start(int id) {
 			}
 			if (min_t != -1) {
 				//Compute Normal
-				norm = transpose(invert(min_matrix)) * min_shape->findIsectNormal(eyePt, ray, min_t, min_matrix);
+				norm = min_shape->findIsectNormal(eyePt, ray, min_t, min_matrix);
+				norm = transpose(invert(min_matrix)) * norm;
 
-				double epsilon = 0.000001;
+				double epsilon = 0.0001;
 
 				//Find color
 				double r = globalData.ka * (double)min_material.cAmbient.r;
@@ -205,27 +206,46 @@ void callback_start(int id) {
 					SceneLightData light;
 					parser->getLightData(m, light);
 
-					//is light blocked by other side of object
-					double t_int = min_shape->Intersect(light.pos, light.dir, min_matrix);
-					if (t_int - min_t < epsilon) {
+					Vector L = light.pos - getIsectPointWorldCoord(eyePt, ray, min_t);
+					L.normalize();
+					norm.normalize();
 
-						Vector L = getIsectPointWorldCoord(eyePt, ray, min_t) - light.pos;
-						L.normalize();
-						norm.normalize();
+					double normLightDot = dot(norm, L);
+					// if (normLightDot > 0) {
+						double dr = (double)globalData.kd * (double)min_material.cDiffuse.r * (double)light.color.r * (double)normLightDot;
+						double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
+						double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
+						
+						// r += (dr > 0) ? dr : -dr;
+						// g += (dg > 0) ? dg : -dg;
+						// b += (db > 0) ? db : -db;
 
-						double normLightDot = dot(norm, L);
-						if (normLightDot > 0) {
-							r += globalData.kd * min_material.cDiffuse.r * light.color.r * normLightDot;
-							g += globalData.kd * min_material.cDiffuse.g * light.color.g * normLightDot;
-							b += globalData.kd * min_material.cDiffuse.b * light.color.b * normLightDot;
-						}
-					}
+						r += dr;
+						g += dg;
+						b += db;
+					// }
 				}
 
-				if (min_type == SHAPE_SPHERE) {
-					cout << r << ", " << g << ", " << b << endl;
-				}
-				setPixel(pixels, i, pixelHeight-j-1, r * 255.0f, g * 255.0f, b * 255.0f);
+				r = ((double)r * 255.0f) / (double)numLights;
+				g = ((double)g * 255.0f) / (double)numLights;
+				b = ((double)b * 255.0f) / (double)numLights;
+
+				// if (min_type == SHAPE_CUBE) {
+				// 	cout << r << ", " << g << ", " << b << endl;
+				// 	// r = 74;
+				// 	// g = 0;
+				// 	// b = 74;
+				// } else {
+				// 	r = 0;
+				// 	g = 0;
+				// 	b = 0;
+				// }
+
+				// r = (r > 1) ? 1 : r;
+				// g = (g > 1) ? 1 : g;
+				// b = (b > 1) ? 1 : b;
+
+				setPixel(pixels, i, pixelHeight-j-1, r, g, b);
 			}
 			else {
 				setPixel(pixels, i, pixelHeight-j-1, 0, 0, 0);

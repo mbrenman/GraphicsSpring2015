@@ -75,7 +75,11 @@ public:
 	}
 
 	Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) {
-		return Vector(0, 0, 0);
+		Point onBody = eyePoint + ray * dist;
+
+		//Need to test if on cap
+
+		return Vector(onBody.at(0), .5, onBody.at(2));
 	}
 
 private:

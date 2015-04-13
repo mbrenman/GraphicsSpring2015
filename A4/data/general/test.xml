@@ -10,7 +10,7 @@
 	<heightangle v="45"/>
     </cameradata>
 
-    <lightdata>
+<!--     <lightdata>
 	<id v="0"/>
 	<position x="0" y="0" z="0"/>
 	<color r="0.5" g="0.5" b="0.5"/>
@@ -39,6 +39,12 @@
     <lightdata>
 	<id v="4"/>
 	<position x="0" y="-4" z="0"/>
+	<color r="0.3" g="0.3" b="0.3"/>
+    </lightdata> -->
+
+    <lightdata>
+	<id v="0"/>
+	<position x="0" y="0" z="5"/>
 	<color r="0.3" g="0.3" b="0.3"/>
     </lightdata>
 

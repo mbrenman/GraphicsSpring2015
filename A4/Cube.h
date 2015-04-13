@@ -63,30 +63,30 @@ public:
 		double min_t = -1;
 		double t;
 		
-		//plane (0.5,0,0)
-		if (rayV.at(0) != 0) {
-			t = (0.5 - eyePointP.at(0)) / rayV.at(0);
-			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-		}
+		// //plane (0.5,0,0)
+		// if (rayV.at(0) != 0) {
+		// 	t = (0.5 - eyePointP.at(0)) / rayV.at(0);
+		// 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		// }
 
-		//plane (-0.5,0,0)
-		if (rayV.at(0) != 0) {
-			t = (-0.5 - eyePointP.at(0)) / rayV.at(0);
-			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-		}
+		// //plane (-0.5,0,0)
+		// if (rayV.at(0) != 0) {
+		// 	t = (-0.5 - eyePointP.at(0)) / rayV.at(0);
+		// 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		// }
 		
 
-		//plane (0,0.5,0)
-		if (rayV.at(1) != 0) {
-			t = (0.5 - eyePointP.at(1)) / rayV.at(1);
-			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-		}
+		// //plane (0,0.5,0)
+		// if (rayV.at(1) != 0) {
+		// 	t = (0.5 - eyePointP.at(1)) / rayV.at(1);
+		// 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		// }
 
-		//plane (0,-0.5,0)
-		if (rayV.at(1) != 0) {
-			t = (-0.5 - eyePointP.at(1)) / rayV.at(1);
-			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-		}
+		// //plane (0,-0.5,0)
+		// if (rayV.at(1) != 0) {
+		// 	t = (-0.5 - eyePointP.at(1)) / rayV.at(1);
+		// 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		// }
 
 		
 		//plane (0,0,0.5)
@@ -96,17 +96,86 @@ public:
 		}
 
 		//plane (0,0,-0.5)
-		if (rayV.at(2) != 0) {
-			t = (-0.5 - eyePointP.at(2)) / rayV.at(2);
-			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
-		}
+		// if (rayV.at(2) != 0) {
+		// 	t = (-0.5 - eyePointP.at(2)) / rayV.at(2);
+		// 	min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		// }
 		
 
 		return testBounds(eyePointP, rayV, min_t) ? min_t : -1;
 	}	
 
-	Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) {
-		return Vector(0,0,0);
+	Vector findIsectNormal(Point eyePointP, Vector rayV, double dist, Matrix transformMatrix) {
+		eyePointP = invert(transformMatrix) * eyePointP;
+		rayV = invert(transformMatrix) * rayV;
+		double min_t = -1;
+		double t;
+
+		double epsilon = 0.000000001;
+		
+		return Vector(0, 0, 1);
+
+		//plane (0.5,0,0)
+		if (rayV.at(0) != 0) {
+			t = (0.5 - eyePointP.at(0)) / rayV.at(0);
+			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		}
+
+		if ((min_t != -1) && abs(dist - min_t) < epsilon) {
+			return Vector(1, 0, 0);
+		}
+
+		//plane (-0.5,0,0)
+		if (rayV.at(0) != 0) {
+			t = (-0.5 - eyePointP.at(0)) / rayV.at(0);
+			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		}
+		
+		if ((min_t != -1) && abs(dist - min_t) < epsilon) {
+			return Vector(-1, 0, 0);
+		}
+
+		//plane (0,0.5,0)
+		if (rayV.at(1) != 0) {
+			t = (0.5 - eyePointP.at(1)) / rayV.at(1);
+			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		}
+
+		if ((min_t != -1) && abs(dist - min_t) < epsilon) {
+			return Vector(0, 1, 0);
+		}
+
+		//plane (0,-0.5,0)
+		if (rayV.at(1) != 0) {
+			t = (-0.5 - eyePointP.at(1)) / rayV.at(1);
+			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		}
+
+		if ((min_t != -1) && abs(dist - min_t) < epsilon) {
+			return Vector(0, -1, 0);
+		}
+		
+		//plane (0,0,0.5)
+		if (rayV.at(2) != 0) {
+			t = (0.5 - eyePointP.at(2)) / rayV.at(2);
+			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		}
+
+		if ((min_t != -1) && abs(dist - min_t) < epsilon) {
+			return Vector(0, 0, 1);
+		}
+
+		//plane (0,0,-0.5)
+		if (rayV.at(2) != 0) {
+			t = (-0.5 - eyePointP.at(2)) / rayV.at(2);
+			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t) ? t : min_t;
+		}
+		
+		if ((min_t != -1) && abs(dist - min_t) < epsilon) {
+			return Vector(0, 0, 1);
+		}
+
+		return Vector();
 	}
 
 private:
