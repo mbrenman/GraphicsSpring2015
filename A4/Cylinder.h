@@ -44,10 +44,11 @@ public:
 			nextp + Vector(0.0, 1.0, 0.0), caps[TOP], Vector(0.0, 1.0, 0.0));
 	}
 
-	double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 		eyePointP = invert(transformMatrix) * eyePointP;
 		rayV = invert(transformMatrix) * rayV;
 		double min_t = -1;
+		Vector min_vec;
 
 		double a = rayV.at(0) * rayV.at(0) + rayV.at(2) * rayV.at(2);
 		double b = 2 * (eyePointP.at(0) * rayV.at(0) + eyePointP.at(2) * rayV.at(2));
@@ -56,21 +57,35 @@ public:
 		double det = (b * b) - 4 * a * c;
 
 		double t = (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
-		min_t = testBounds(eyePointP, rayV, t) ? t : min_t;
+		if (testBounds(eyePointP, rayV, t)) {
+			min_t = t;
+
+			Point p = eyePointP + rayV * t;
+			min_vec = Vector(p.at(0), 0, p.at(2));
+		}
 
 		//plane (0,0.5,0)
 		if (rayV.at(1) != 0) {
 			t = (0.5 - eyePointP.at(1)) / rayV.at(1);
-			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t) ? t : min_t;
+			if (((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t)) {
+				min_t = t;
+				min_vec = Vector(0, 1, 0);
+			}
 		}
 
 		//plane (0,-0.5,0)
 		if (rayV.at(1) != 0) {
 			t = (-0.5 - eyePointP.at(1)) / rayV.at(1);
-			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t) ? t : min_t;
+			if (((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t)){
+				min_t = t;
+				min_vec = Vector(0, -1, 0);
+			}
 		}
 		
-		return min_t;
+		intersect_info info;
+		info.t = min_t;
+		info.normal = min_vec;
+		return info;
 	}
 
 	Vector findIsectNormal(Point eyePointP, Vector rayV, double dist, Matrix transformMatrix) {
