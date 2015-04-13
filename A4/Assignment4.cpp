@@ -150,7 +150,7 @@ void callback_start(int id) {
 
 			double min_t = -1;
 			Vector norm = Vector();
-			Shape *min_shape;
+			Shape *min_shape = NULL;
 
 			Matrix min_matrix;
 			PrimitiveType min_type;
@@ -211,39 +211,20 @@ void callback_start(int id) {
 					norm.normalize();
 
 					double normLightDot = dot(norm, L);
-					// if (normLightDot > 0) {
-						double dr = (double)globalData.kd * (double)min_material.cDiffuse.r * (double)light.color.r * (double)normLightDot;
-						double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
-						double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
-						
-						// r += (dr > 0) ? dr : -dr;
-						// g += (dg > 0) ? dg : -dg;
-						// b += (db > 0) ? db : -db;
 
-						r += dr;
-						g += dg;
-						b += db;
-					// }
+					double dr = (double)globalData.kd * (double)min_material.cDiffuse.r * (double)light.color.r * (double)normLightDot;
+					double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
+					double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
+						
+					r += (dr > 0) ? dr : -dr;
+					g += (dg > 0) ? dg : -dg;
+					b += (db > 0) ? db : -db;
+
 				}
 
 				r = ((double)r * 255.0f) / (double)numLights;
 				g = ((double)g * 255.0f) / (double)numLights;
 				b = ((double)b * 255.0f) / (double)numLights;
-
-				// if (min_type == SHAPE_CUBE) {
-				// 	cout << r << ", " << g << ", " << b << endl;
-				// 	// r = 74;
-				// 	// g = 0;
-				// 	// b = 74;
-				// } else {
-				// 	r = 0;
-				// 	g = 0;
-				// 	b = 0;
-				// }
-
-				// r = (r > 1) ? 1 : r;
-				// g = (g > 1) ? 1 : g;
-				// b = (b > 1) ? 1 : b;
 
 				setPixel(pixels, i, pixelHeight-j-1, r, g, b);
 			}
