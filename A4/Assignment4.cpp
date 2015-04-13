@@ -211,10 +211,6 @@ void callback_start(int id) {
 						Vector L = light.pos - getIsectPointWorldCoord(eyePt, ray, min_t);
 						L.normalize();
 						norm.normalize();
-						//if (min_type == SHAPE_CYLINDER) {
-						//	cout << L.at(0) << "," << L.at(1) << "," << L.at(2)
-						//		<< " " << norm.at(0) << "," << norm.at(1) << "," << norm.at(2) << endl;								
-						//}
 
 						double normLightDot = dot(norm, L);
 						normLightDot = normLightDot > 0 ? normLightDot : 0;
@@ -280,10 +276,10 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
 
 void callback_load(int id) {
 	char curDirName [2048];
-	// if (filenameTextField == NULL) {
-	// 	return;
-	// }
-	// printf ("%s\n", filenamePath);
+	 if (filenameTextField == NULL) {
+	 	return;
+	 }
+	 printf ("%s\n", filenamePath);
 
 	if (parser != NULL) {
 		delete parser;
@@ -431,8 +427,8 @@ int main(int argc, char* argv[])
 
 	GLUI* glui = GLUI_Master.create_glui("GLUI");
 
-	// filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
-	// filenameTextField->set_w(300);
+	 filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
+	 filenameTextField->set_w(300);
 	glui->add_button("Load", 0, callback_load);
 	glui->add_button("Start!", 0, callback_start);
 	glui->add_checkbox("Isect Only", &isectOnly);

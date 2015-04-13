@@ -88,43 +88,6 @@ public:
 		return info;
 	}
 
-	Vector findIsectNormal(Point eyePointP, Vector rayV, double dist, Matrix transformMatrix) {
-		eyePointP = invert(transformMatrix) * eyePointP;
-		rayV = invert(transformMatrix) * rayV;
-		Point onBody = eyePointP + rayV * dist;
-
-		//Need to test if on cap
-		double min_t = -1;
-		bool up = false;
-		//plane (0,0.5,0)
-		if (rayV.at(1) != 0) {
-			double t = (0.5 - eyePointP.at(1)) / rayV.at(1);
-			if (((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t)){
-				min_t = t;
-				up = true;
-			};
-		}
-
-		//plane (0,-0.5,0)
-		if (rayV.at(1) != 0) {
-			double t = (-0.5 - eyePointP.at(1)) / rayV.at(1);
-			if (((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t)){
-				min_t = t;
-				up = false;
-			};
-		}
-
-		if (min_t != -1 && min_t < dist) {
-			if (up) {
-				return Vector(0, 1, 0);
-			} else {
-				return Vector(0, -1, 0);
-			}
-		}
-
-		return Vector(onBody.at(0), 0, onBody.at(2));
-	}
-
 private:
 	enum CYL_CAPS { TOP, BOTTOM, NUM_CAPS };
 

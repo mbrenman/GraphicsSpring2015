@@ -62,17 +62,6 @@ public:
 		return info;
 	}
 
-	Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) {
-		eyePoint = invert(transformMatrix) * eyePoint;
-		ray = invert(transformMatrix) * ray;
-
-		Point onBody = eyePoint + ray * dist;
-
-		Vector norm = sphereBodyVector(onBody);
-
-		return norm;
-	}
-
 private:
 	void computeBody(std::vector< std::vector<point_info> > &body) {
 		for (int i = 0; i < m_segmentsX; i++) {

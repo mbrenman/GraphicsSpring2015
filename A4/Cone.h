@@ -93,24 +93,6 @@ public:
 		return info;
 	}
 
-	Vector findIsectNormal(Point eyePoint, Vector ray, double dist, Matrix transformMatrix) {
-		eyePoint = invert(transformMatrix) * eyePoint;
-		ray = invert(transformMatrix) * ray;
-		Point onBody = eyePoint + ray * dist;
-
-		double min_t = -1;
-		//Need to test if on cap
-		if (ray.at(1) != 0) {
-			double t = (-0.5 - eyePoint.at(1)) / ray.at(1);
-			min_t = ((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePoint, ray, t) ? t : min_t;
-		}
-
-		if (min_t != -1 && min_t < dist) {
-			return Vector(0, -1, 0);
-		}
-		return coneBodyVector(onBody);
-	}
-
 private:
 	void computeBody(Point startp, Point nextp, Point topp, std::vector< std::vector<point_info> > &body) {
 		Vector rot_vec = nextp - startp;
