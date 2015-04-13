@@ -111,7 +111,7 @@ public:
 		double min_t = -1;
 		double t;
 
-		double epsilon = 0.000000001;
+		double epsilon = 0.0000000000001;
 		
 		//plane (0.5,0,0)
 		if (rayV.at(0) != 0) {
