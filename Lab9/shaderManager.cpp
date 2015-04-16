@@ -14,7 +14,7 @@
 #include <fstream>
 #include "ppm.h"
 #include "shaderManager.h"
-#include "Glee.h"
+#include <GL/glew.h>
 
 using namespace std;
 
