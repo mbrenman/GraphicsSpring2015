@@ -32,7 +32,7 @@ float lookZ = -2;
 /** These are GLUI control panel objects ***/
 int  main_window;
 string filenamePath = "data/general/test.xml";
-GLUI_EditText* filenameTextField = NULL;
+// GLUI_EditText* filenameTextField = NULL;
 GLubyte* pixels = NULL;
 int pixelWidth = 0, pixelHeight = 0;
 int screenWidth = 0, screenHeight = 0;
@@ -276,10 +276,10 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
 
 void callback_load(int id) {
 	char curDirName [2048];
-	 if (filenameTextField == NULL) {
-	 	return;
-	 }
-	 printf ("%s\n", filenamePath);
+	 // if (filenameTextField == NULL) {
+	 // 	return;
+	 // }
+	 // printf ("%s\n", filenamePath);
 
 	if (parser != NULL) {
 		delete parser;
@@ -427,8 +427,8 @@ int main(int argc, char* argv[])
 
 	GLUI* glui = GLUI_Master.create_glui("GLUI");
 
-	 filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
-	 filenameTextField->set_w(300);
+	 // filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
+	 // filenameTextField->set_w(300);
 	glui->add_button("Load", 0, callback_load);
 	glui->add_button("Start!", 0, callback_start);
 	glui->add_checkbox("Isect Only", &isectOnly);

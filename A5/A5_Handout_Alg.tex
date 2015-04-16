@@ -63,15 +63,26 @@ Complete this assignment only with your teammate. When a numerical answer is req
 		\STATE $Canvas[pt] =$ background color
 	\ENDIF
 \ENDFOR
+
+\vspace{3em}
+
+After the nearest object is found, we need to calculate the ray that bounces off of that object (which depends on the surface normal and the ray that we sent) and incorporate the colors from that (which can recursively be called). The amount that this added portion affects the color depends on properties of the surface.
+
 \end{algorithmic}
 }
 
-\vskip 5em
 \end{framed}
 
 \begin{framed}
 \noindent{\bf[2 points]} Given a vector $\vec{v}$ and a surface normal $\vec{n}$, find the equation for the vector $\vec{r}$ which is the reflection of $\vec{v}$ about $\vec{n}$ (i.e. in the equal and opposite direction). Write your equation in terms of vector operations. How do you compute the color contributed by the reflected ray? Give a brief description.
-\includegraphics[width=2.8in]{reflection.png}
+% \includegraphics[width=2.8in]{reflection.png}
+
+The equation for the reflected ray is:\\
+$\hat{r} = \vec{d} - 2(\hat{d}\cdot\hat{n})\hat{n}$\\
+
+
+The color added is the color based on what that reflected ray hits (which may depend on recursive reflections) and the reflective properties about the surface.
+
 \vskip 13em
 \end{framed}
 
