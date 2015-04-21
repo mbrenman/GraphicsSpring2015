@@ -9,6 +9,8 @@
 
 void main()
 {
+	gl_FragColor = vec4 (1.0, 0.0, 0.0, 0.0);
+
 	// TODO Step 1:
 	// Extract normals from the normal map
 

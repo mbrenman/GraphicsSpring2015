@@ -258,6 +258,8 @@ int main(int argc, char* argv[])
 	/*       Set up OpenGL Shaders          */
 	/****************************************/
 
+	GLenum err = glewInit();
+
 	// Initialize our shader using our special shader manager class.
 	myShaderManager = new shaderManager();
 	
