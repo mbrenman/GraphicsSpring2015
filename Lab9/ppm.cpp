@@ -45,7 +45,7 @@ ppm::ppm(std::string _fileName){
       int iteration = 0;
       int pos = 0;
       while ( getline (ppmFile,line) ){
-          delimeter_pointer = strtok(NULL," ");       // Windows users comment out this line
+//          delimeter_pointer = strtok(NULL," ");       // Windows users comment out this line
           char* copy = new char[line.length()+1];
           strcpy(copy,line.c_str());
           delimeter_pointer = strtok(copy," ");

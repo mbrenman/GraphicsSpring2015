@@ -5,7 +5,9 @@
 // Make sure they are named exactly as they are in the cpp file
 // images are of type 'uniform sampler2D' and then the texture name.
 
-
+uniform sampler2D brick_image;
+uniform sampler2D bump_image;
+uniform vec3 lightVector;
 
 void main()
 {
