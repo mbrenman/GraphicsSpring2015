@@ -35,13 +35,13 @@
 %\subsection{}
 
 \begin{verbatim}
-Your Names: _____________________________
+Your Names: ___Matthew Cardarelli___
 
-            _____________________________
+            ___Matthew Brenman___
 
-Your CS Logins: _________________________
+Your CS Logins: ___mcarda01___
 
-                _________________________
+                ___mbrenm01___
 \end{verbatim}
 
 \section{Instructions}
@@ -93,24 +93,37 @@ The color added is the color based on what that reflected ray hits (which may de
 
 \begin{framed}
 \noindent{\bf[1 point]} For a particular ray that intersects with an object, when do you not consider contribution from a given light source? How do you computationally determine when this scenario occurs?
-\vskip 14em
+\vskip 7em
+You do not consider contribution when there is another object in the way. This can be computed be calling the intersection function, but changing the eye point from the camera position to the position of the previous intersection, and the ray to the vector from light source to the intersection point. This is where we want to use an epsilon to avoid errors due to floating point inaccuracies, which could place the intersection point inside the object if we are not careful.
 \end{framed}
 
 \begin{framed}
 \noindent{\bf[2 points]} Recall that we can think of texture mapping in two steps. First, mapping from the object to the unit square, and second, mapping from the unit square to the texture map. Let $a$ and $b$ be the $x$ and $y$ values in the unit square that a particular point on an object gets mapped to in the first step. Note that $a$ and $b$ are calculated differently depending on the object. From here, how do you find the coordinates $(s, t)$ to look up in a texture map in terms of $a, b, u, v, w$ and $h$, where $u$ and $v$ are the number of repetitions in the $x$ and $y$
 directions, respectively, $w$ is the texture width, and $h$ is the texture height?
 \vskip 12em
+
+The coordinates can be found using:\\
+
+$s = (u \cdot a \cdot w)\ \%\ w$\\
+
+$t = (v \cdot b \cdot h)\ \%\ h$
+
+
 \end{framed}
 \vskip 6em
 
 \begin{framed}
 \noindent{\bf[1 point]} How do you use the color from the texture map and the {\tt blend} value in the lighting equation?
-\vskip 12em
+\vskip 6em
+The color from the texture map is used as the object color for rays that intersect the object at that coordinate. When a ray intersects with the object, the mapping from object coordinates to texture map is made to retrieve the correct color for that pixel. Blend is used to determine the ratio that the texture color should be combined with the object's base color.
 \end{framed}
 
 \begin{framed}
 \noindent{\bf[1 point]}  What is the Phong lighting model used for? What is the purpose of its exponent?
-\vskip 12em
+\vskip 6em
+
+The Phong model is used for adding specular highlighting. It combines a reflection constant with the intensity of the light and a power of the cosine of the angle between viewing angle and reflected ray angle to produce a highlight at a point. The exponent is used to control the rate at which the highlight intensity dissipates as the angle between the view and reflected ray increases.
+
 \end{framed}
 
 \section{How to Submit}
