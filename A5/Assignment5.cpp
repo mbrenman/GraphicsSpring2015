@@ -31,7 +31,7 @@ float lookZ = -2;
 
 /** These are GLUI control panel objects ***/
 int  main_window;
-string filenamePath = "data/tests/work.xml";
+string filenamePath = "data/tests/mirror_test.xml";
 // GLUI_EditText* filenameTextField = NULL;
 GLubyte* pixels = NULL;
 int pixelWidth = 0, pixelHeight = 0;
@@ -149,7 +149,7 @@ void callback_start(int id) {
 		for (int j = 0; j < pixelHeight; j++) {
 			Vector ray = generateRay(i, j);
 
-			Point intensity = getIntensity(eyePt, ray, objects, globalData, 1);
+			Point intensity = getIntensity(eyePt, ray, objects, globalData, 0);
 			setPixel(pixels, i, pixelHeight - j - 1, intensity.at(0), intensity.at(1), intensity.at(2));
 
 		}
@@ -205,11 +205,11 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 			return Point(255, 255, 255);
 		}	
 		else {
-					//Compute Normal
+			//Compute Normal
 			norm = transpose(invert(min_matrix)) * norm;
 			norm.normalize();
 
-					//Find color
+			//Find color
 			double r = globalData.ka * (double)min_material.cAmbient.r;
 			double g = globalData.ka * (double)min_material.cAmbient.g;
 			double b = globalData.ka * (double)min_material.cAmbient.b;
@@ -242,7 +242,7 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 				Vector reflected = ray - 2 * dot(ray, norm) * norm;
 				reflected.normalize();
 
-				Point ref_color = getIntensity(intersectPoint, reflected, objects, globalData, numRec - 1);
+				Point ref_color = getIntensity(intersectPoint - (0.00001 * ray), reflected, objects, globalData, numRec - 1);
 
 				double reflected_r = (double)globalData.ks * (double)min_material.cReflective.r * ref_color.at(0);
 				double reflected_g = (double)globalData.ks * (double)min_material.cReflective.g * ref_color.at(1);
