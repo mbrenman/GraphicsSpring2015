@@ -33,7 +33,7 @@ int reflectionDepth = 0;
 
 /** These are GLUI control panel objects ***/
 int  main_window;
-string filenamePath = "data/tests/mirror_test.xml";
+string filenamePath = "data/tests/work.xml";
 // GLUI_EditText* filenameTextField = NULL;
 GLubyte* pixels = NULL;
 int pixelWidth = 0, pixelHeight = 0;
@@ -245,6 +245,17 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 				g += (dg > 0) ? dg : -dg;
 				b += (db > 0) ? db : -db;
 
+				//Specular Highlights
+				Vector reflected_light = (L - 2 * dot(L, norm) * norm);
+				reflected_light.normalize();
+				double spec_r = (double)globalData.ks * (double)min_material.cSpecular.r * pow(dot(reflected_light, ray), (double)min_material.shininess);
+				double spec_g = (double)globalData.ks * (double)min_material.cSpecular.g * pow(dot(reflected_light, ray), (double)min_material.shininess);
+				double spec_b = (double)globalData.ks * (double)min_material.cSpecular.b * pow(dot(reflected_light, ray), (double)min_material.shininess);
+
+				
+				r += (spec_r > 0) ? spec_r : -spec_r;
+				g += (spec_g > 0) ? spec_g : -spec_g;
+				b += (spec_b > 0) ? spec_b : -spec_b;
 			}
 
 			if (numRec > 0) {
