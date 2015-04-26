@@ -203,7 +203,7 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 	if (min_t != -1) {
 		if (isectOnly) {
 			return Point(255, 255, 255);
-		}	
+		}
 		else {
 					//Compute Normal
 			norm = transpose(invert(min_matrix)) * norm;
