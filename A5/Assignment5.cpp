@@ -33,7 +33,7 @@ int reflectionDepth = 0;
 
 /** These are GLUI control panel objects ***/
 int  main_window;
-string filenamePath = "data/tests/mirror_test.xml";
+string filenamePath = "data/tests/shadow_test.xml";
 // GLUI_EditText* filenameTextField = NULL;
 GLubyte* pixels = NULL;
 int pixelWidth = 0, pixelHeight = 0;
@@ -236,7 +236,13 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 				float distance = L.length();
 				L.normalize();
 
-				if (reflectLight((intersectPoint + 0.00001 * L), L, distance, objects)) {
+				if (light.type == LIGHT_DIRECTIONAL) {
+					distance = 999999;
+					L = -1 * light.dir;
+					L.normalize();
+				}
+
+				if (reflectLight((intersectPoint + 0.00000001 * L), L, distance, objects)) {
 					double normLightDot = dot(norm, L);
 					normLightDot = normLightDot > 0 ? normLightDot : 0;
 
@@ -251,9 +257,9 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 					//Specular Highlights
 					Vector reflected_light = (L - 2 * dot(L, norm) * norm);
 					reflected_light.normalize();
-					double spec_r = (double)globalData.ks * (double)min_material.cSpecular.r * pow(dot(reflected_light, ray), (double)min_material.shininess);
-					double spec_g = (double)globalData.ks * (double)min_material.cSpecular.g * pow(dot(reflected_light, ray), (double)min_material.shininess);
-					double spec_b = (double)globalData.ks * (double)min_material.cSpecular.b * pow(dot(reflected_light, ray), (double)min_material.shininess);
+					double spec_r = (double)globalData.ks * (double)min_material.cSpecular.r * pow(dot(reflected_light, ray), (double)min_material.shininess) * light.color.r;
+					double spec_g = (double)globalData.ks * (double)min_material.cSpecular.g * pow(dot(reflected_light, ray), (double)min_material.shininess) * light.color.g;
+					double spec_b = (double)globalData.ks * (double)min_material.cSpecular.b * pow(dot(reflected_light, ray), (double)min_material.shininess) * light.color.b;
 
 
 					r += (spec_r > 0) ? spec_r : 0;
