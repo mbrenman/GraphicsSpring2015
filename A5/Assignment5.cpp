@@ -31,7 +31,7 @@ float lookZ = -2;
 
 /** These are GLUI control panel objects ***/
 int  main_window;
-string filenamePath = "data/general/test.xml";
+string filenamePath = "data/tests/work.xml";
 // GLUI_EditText* filenameTextField = NULL;
 GLubyte* pixels = NULL;
 int pixelWidth = 0, pixelHeight = 0;
@@ -64,7 +64,7 @@ void updateCamera();
 Point getEyePoint();
 Vector generateRay(int pixelX, int pixelY);
 Point getIsectPointWorldCoord(Point eye, Vector ray, double t);
-Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalData globalData);
+Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalData globalData, int numRec);
 
 void flattenScene(SceneNode *root, list_shapeData &list, Matrix cmtm) {
 	/*
@@ -149,7 +149,7 @@ void callback_start(int id) {
 		for (int j = 0; j < pixelHeight; j++) {
 			Vector ray = generateRay(i, j);
 
-			Point intensity = getIntensity(eyePt, ray, objects, globalData);
+			Point intensity = getIntensity(eyePt, ray, objects, globalData, 1);
 			setPixel(pixels, i, pixelHeight - j - 1, intensity.at(0), intensity.at(1), intensity.at(2));
 
 		}
@@ -157,7 +157,7 @@ void callback_start(int id) {
 	glutPostRedisplay();
 }
 
-Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalData globalData){
+Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalData globalData, int numRec){
 	Shape::intersect_info info;
 	double min_t = -1;
 	Vector norm = Vector();
@@ -214,12 +214,14 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 			double g = globalData.ka * (double)min_material.cAmbient.g;
 			double b = globalData.ka * (double)min_material.cAmbient.b;
 
+			Point intersectPoint = getIsectPointWorldCoord(eyePt, ray, min_t);
+
 			int numLights = parser->getNumLights();
 			for (int m = 0; m < numLights; m++) {
 				SceneLightData light;
 				parser->getLightData(m, light);
 
-				Vector L = light.pos - getIsectPointWorldCoord(eyePt, ray, min_t);
+				Vector L = light.pos - intersectPoint;
 				L.normalize();
 
 				double normLightDot = dot(norm, L);
@@ -235,11 +237,21 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 
 			}
 
-			//Reflection
-			// Vector reflected = ray - 2 * dot(ray, norm) * norm;
-			// reflected.normalize();
+			if (numRec > 0) {
+				//Reflection
+				Vector reflected = ray - 2 * dot(ray, norm) * norm;
+				reflected.normalize();
 
+				Point ref_color = getIntensity(intersectPoint, reflected, objects, globalData, numRec - 1);
 
+				double reflected_r = (double)globalData.ks * (double)min_material.cReflective.r * ref_color.at(0);
+				double reflected_g = (double)globalData.ks * (double)min_material.cReflective.g * ref_color.at(1);
+				double reflected_b = (double)globalData.ks * (double)min_material.cReflective.b * ref_color.at(2);
+
+				r += (reflected_r > 0) ? reflected_r : -reflected_r;
+				g += (reflected_g > 0) ? reflected_g : -reflected_g;
+				b += (reflected_b > 0) ? reflected_b : -reflected_b;
+			}
 
 			//cap at 1
 			r = (r > 1) ? 1 : r;
