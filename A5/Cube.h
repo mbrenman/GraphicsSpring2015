@@ -57,7 +57,7 @@ public:
 			Vector(-1.0 / m_segmentsX, 0.0, 0.0), faces[TOP]);
 	};
 
-	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix, ppm *texture) {
 		eyePointP = invert(transformMatrix) * eyePointP;
 		rayV = invert(transformMatrix) * rayV;
 		double min_t = -1;
@@ -129,6 +129,7 @@ public:
 			 info.t = -1;
 			 info.normal = Vector(0, 0, 0);
 		 }
+		 info.color = getColorFromTexture(texture, .5, .5);
 
 		 return info;
 	}	
@@ -163,6 +164,16 @@ private:
 			(p.at(1) >= -0.5 - epsilon) && (p.at(1) <= 0.5 + epsilon) &&
 			(p.at(2) >= -0.5 - epsilon) && (p.at(2) <= 0.5 + epsilon) &&
 			(t > 0);
+	}
+
+	Point getColorFromTexture(ppm *tex, float u, float v) {
+		if (tex == NULL) {
+			return Point();
+		} else {
+			u = u * tex->getWidth();
+			u = u * tex->getHeight();
+			return Point(tex->getPixelR(u, v), tex->getPixelG(u, v), tex->getPixelB(u, v));
+		}
 	}
 
 	std::vector<point_info> faces[NUM_SIDES];

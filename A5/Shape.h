@@ -4,6 +4,9 @@
 #include <GL/glui.h>
 #include "Algebra.h"
 #include <iostream>
+#include "ppm.h"
+
+using namespace std;
 
 class Shape {
 public:
@@ -38,6 +41,7 @@ public:
 	struct intersect_info {
 		double t;
 		Vector normal;
+		Point color;
 	};
 
 	Shape() {};
@@ -54,7 +58,7 @@ public:
 	virtual void draw() {};
 	virtual void drawNormal() {};
 	virtual void recompute() {};
-	virtual intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) = 0;
+	virtual intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix, ppm *texture) = 0;
 
 protected:
 	void normalizeNormal(float x, float y, float z) {

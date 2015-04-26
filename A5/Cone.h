@@ -40,7 +40,7 @@ public:
 		computeBase(Point(0.0, -0.5, 0.0), startp, nextp, base, Vector(0.0, -1.0, 0.0));
 	}
 
-	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix, ppm *texture) {
 		eyePointP = invert(transformMatrix) * eyePointP;
 		rayV = invert(transformMatrix) * rayV;
 		intersect_info info;

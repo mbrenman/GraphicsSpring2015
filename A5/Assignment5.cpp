@@ -33,7 +33,7 @@ int reflectionDepth = 0;
 
 /** These are GLUI control panel objects ***/
 int  main_window;
-string filenamePath = "data/tests/shadow_test.xml";
+string filenamePath = "data/tests/mirror_test.xml";
 // GLUI_EditText* filenameTextField = NULL;
 GLubyte* pixels = NULL;
 int pixelWidth = 0, pixelHeight = 0;
@@ -68,6 +68,7 @@ Vector generateRay(int pixelX, int pixelY);
 Point getIsectPointWorldCoord(Point eye, Vector ray, double t);
 Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalData globalData, int numRec);
 bool reflectLight(Point lightpos, Vector ray, float obj_t, list_shapeData objects);
+float blend(float a, float b, float blend);
 
 void flattenScene(SceneNode *root, list_shapeData &list, Matrix cmtm) {
 	/*
@@ -169,6 +170,7 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 	Matrix min_matrix;
 	PrimitiveType min_type;
 	SceneMaterial min_material;
+	Point textureColor;
 
 	std::list<shapeData>::iterator it;
 	for (it = objects.begin(); it != objects.end(); ++it){
@@ -192,7 +194,9 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 			break;
 		}
 		if (curr_shape != NULL) {
-			info = curr_shape->Intersect(eyePt, ray, obj.composite);
+			string textureFilename = obj.material.textureMap->filename;
+			ppm *texture = NULL;
+			info = curr_shape->Intersect(eyePt, ray, obj.composite, texture);
 			if ((min_t < 0 || info.t < min_t) && (info.t > 0)) {
 				min_t = info.t;
 				norm = info.normal;
@@ -200,6 +204,7 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 				min_type = obj.type;
 				min_shape = curr_shape;
 				min_material = obj.material;
+				textureColor = info.color;
 			}
 		}
 	}
@@ -213,9 +218,9 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 			norm.normalize();
 
 			//Find color
-			double r = globalData.ka * (double)min_material.cAmbient.r;
-			double g = globalData.ka * (double)min_material.cAmbient.g;
-			double b = globalData.ka * (double)min_material.cAmbient.b;
+			double r = globalData.ka * blend(textureColor.at(0), (double)min_material.cAmbient.r, min_material.blend);
+			double g = globalData.ka * blend(textureColor.at(1), (double)min_material.cAmbient.g, min_material.blend);
+			double b = globalData.ka * blend(textureColor.at(2), (double)min_material.cAmbient.b, min_material.blend);
 
 			// cout << "ambient r: " << r << endl;
 			// cout << "ambient g: " << g << endl;
@@ -246,9 +251,9 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 					double normLightDot = dot(norm, L);
 					normLightDot = normLightDot > 0 ? normLightDot : 0;
 
-					double dr = (double)globalData.kd * (double)min_material.cDiffuse.r * (double)light.color.r * (double)normLightDot;
-					double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
-					double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
+					double dr = (double)globalData.kd * blend(textureColor.at(0), (double)min_material.cDiffuse.r, min_material.blend) * (double)light.color.r * (double)normLightDot;
+					double dg = (double)globalData.kd * blend(textureColor.at(1), (double)min_material.cDiffuse.g, min_material.blend) * (double)light.color.g * (double)normLightDot;
+					double db = (double)globalData.kd * blend(textureColor.at(2), (double)min_material.cDiffuse.b, min_material.blend) * (double)light.color.b * (double)normLightDot;
 
 					r += (dr > 0) ? dr : 0;
 					g += (dg > 0) ? dg : 0;
@@ -303,6 +308,10 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 	}
 }
 
+float blend(float a, float b, float blend){
+	return (a * blend) + (b * (1 - blend));
+}
+
 bool reflectLight(Point intersectionPt, Vector ray, float obj_t, list_shapeData objects) {
 	std::list<shapeData>::iterator it;
 	float min_t = -1;
@@ -327,7 +336,7 @@ bool reflectLight(Point intersectionPt, Vector ray, float obj_t, list_shapeData 
 			break;
 		}
 		if (curr_shape != NULL) {
-			Shape::intersect_info info = curr_shape->Intersect(intersectionPt, ray, obj.composite);
+			Shape::intersect_info info = curr_shape->Intersect(intersectionPt, ray, obj.composite, NULL);
 			if ((min_t < 0 || info.t < min_t) && (info.t > 0)) {
 				min_t = info.t;
 				if (min_t < obj_t) {

@@ -44,7 +44,7 @@ public:
 			nextp + Vector(0.0, 1.0, 0.0), caps[TOP], Vector(0.0, 1.0, 0.0));
 	}
 
-	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
+	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix, ppm *texture) {
 		eyePointP = invert(transformMatrix) * eyePointP;
 		rayV = invert(transformMatrix) * rayV;
 		double min_t = -1;
