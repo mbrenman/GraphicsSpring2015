@@ -45,12 +45,6 @@ Sphere* sphere = new Sphere();
 SceneParser* parser = NULL;
 Camera* camera = new Camera();
 
-void setupCamera();
-void updateCamera();
-Point getEyePoint();
-Vector generateRay(int pixelX, int pixelY);
-Point getIsectPointWorldCoord(Point eye, Vector ray, double t);
-
 void setPixel(GLubyte* buf, int x, int y, int r, int g, int b) {
 	buf[(y*pixelWidth + x) * 3 + 0] = (GLubyte)r;
 	buf[(y*pixelWidth + x) * 3 + 1] = (GLubyte)g;
@@ -64,6 +58,13 @@ struct shapeData {
 };
 
 typedef std::list<shapeData> list_shapeData;
+
+void setupCamera();
+void updateCamera();
+Point getEyePoint();
+Vector generateRay(int pixelX, int pixelY);
+Point getIsectPointWorldCoord(Point eye, Vector ray, double t);
+Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalData globalData);
 
 void flattenScene(SceneNode *root, list_shapeData &list, Matrix cmtm) {
 	/*
@@ -148,102 +149,118 @@ void callback_start(int id) {
 		for (int j = 0; j < pixelHeight; j++) {
 			Vector ray = generateRay(i, j);
 
-			Shape::intersect_info info;
-			double min_t = -1;
-			Vector norm = Vector();
-			Shape *min_shape = NULL;
+			Point intensity = getIntensity(eyePt, ray, objects, globalData);
+			setPixel(pixels, i, pixelHeight - j - 1, intensity.at(0), intensity.at(1), intensity.at(2));
 
-			Matrix min_matrix;
-			PrimitiveType min_type;
-			SceneMaterial min_material;
-
-			std::list<shapeData>::iterator it;
-			for (it = objects.begin(); it != objects.end(); ++it){
-				shapeData obj = *it;
-				Shape* curr_shape;
-				switch (obj.type) {
-				case SHAPE_SPHERE:
-					curr_shape = sphere;
-					break;
-				case SHAPE_CONE:
-					curr_shape = cone;
-					break;
-				case SHAPE_CUBE:
-					curr_shape = cube;
-					break;
-				case SHAPE_CYLINDER:
-					curr_shape = cylinder;
-					break;
-				default:
-					curr_shape = NULL;
-					break;
-				}
-				if (curr_shape != NULL) {
-					info = curr_shape->Intersect(eyePt, ray, obj.composite);
-					if ((min_t < 0 || info.t < min_t) && (info.t > 0)) {
-						min_t = info.t;
-						norm = info.normal;
-						min_matrix = obj.composite;
-						min_type = obj.type;
-						min_shape = curr_shape;
-						min_material = obj.material;
-					}
-				}
-			}
-			if (min_t != -1) {
-				if (isectOnly) {
-					setPixel(pixels, i, pixelHeight - j - 1, 255, 255, 255);
-				}	
-				else {
-					//Compute Normal
-					norm = transpose(invert(min_matrix)) * norm;
-
-					//Find color
-					double r = globalData.ka * (double)min_material.cAmbient.r;
-					double g = globalData.ka * (double)min_material.cAmbient.g;
-					double b = globalData.ka * (double)min_material.cAmbient.b;
-
-					int numLights = parser->getNumLights();
-					for (int m = 0; m < numLights; m++) {
-						SceneLightData light;
-						parser->getLightData(m, light);
-
-						Vector L = light.pos - getIsectPointWorldCoord(eyePt, ray, min_t);
-						L.normalize();
-						norm.normalize();
-
-						double normLightDot = dot(norm, L);
-						normLightDot = normLightDot > 0 ? normLightDot : 0;
-
-						double dr = (double)globalData.kd * (double)min_material.cDiffuse.r * (double)light.color.r * (double)normLightDot;
-						double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
-						double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
-
-						r += (dr > 0) ? dr : -dr;
-						g += (dg > 0) ? dg : -dg;
-						b += (db > 0) ? db : -db;
-
-					}
-
-					//cap at 1
-					r = (r > 1) ? 1 : r;
-					g = (g > 1) ? 1 : g;
-					b = (b > 1) ? 1 : b;
-
-					r = ((double)r * 255.0f);
-					g = ((double)g * 255.0f);
-					b = ((double)b * 255.0f);
-
-					setPixel(pixels, i, pixelHeight - j - 1, r, g, b);
-				}
-			}
-			else {
-				setPixel(pixels, i, pixelHeight-j-1, 0, 0, 0);
-			}
 		}
 	}
 	glutPostRedisplay();
 }
+
+Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalData globalData){
+	Shape::intersect_info info;
+	double min_t = -1;
+	Vector norm = Vector();
+	Shape *min_shape = NULL;
+
+	Matrix min_matrix;
+	PrimitiveType min_type;
+	SceneMaterial min_material;
+
+	std::list<shapeData>::iterator it;
+	for (it = objects.begin(); it != objects.end(); ++it){
+		shapeData obj = *it;
+		Shape* curr_shape;
+		switch (obj.type) {
+			case SHAPE_SPHERE:
+			curr_shape = sphere;
+			break;
+			case SHAPE_CONE:
+			curr_shape = cone;
+			break;
+			case SHAPE_CUBE:
+			curr_shape = cube;
+			break;
+			case SHAPE_CYLINDER:
+			curr_shape = cylinder;
+			break;
+			default:
+			curr_shape = NULL;
+			break;
+		}
+		if (curr_shape != NULL) {
+			info = curr_shape->Intersect(eyePt, ray, obj.composite);
+			if ((min_t < 0 || info.t < min_t) && (info.t > 0)) {
+				min_t = info.t;
+				norm = info.normal;
+				min_matrix = obj.composite;
+				min_type = obj.type;
+				min_shape = curr_shape;
+				min_material = obj.material;
+			}
+		}
+	}
+	if (min_t != -1) {
+		if (isectOnly) {
+			return Point(255, 255, 255);
+		}	
+		else {
+					//Compute Normal
+			norm = transpose(invert(min_matrix)) * norm;
+			norm.normalize();
+
+					//Find color
+			double r = globalData.ka * (double)min_material.cAmbient.r;
+			double g = globalData.ka * (double)min_material.cAmbient.g;
+			double b = globalData.ka * (double)min_material.cAmbient.b;
+
+			int numLights = parser->getNumLights();
+			for (int m = 0; m < numLights; m++) {
+				SceneLightData light;
+				parser->getLightData(m, light);
+
+				Vector L = light.pos - getIsectPointWorldCoord(eyePt, ray, min_t);
+				L.normalize();
+
+				double normLightDot = dot(norm, L);
+				normLightDot = normLightDot > 0 ? normLightDot : 0;
+
+				double dr = (double)globalData.kd * (double)min_material.cDiffuse.r * (double)light.color.r * (double)normLightDot;
+				double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
+				double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
+
+				r += (dr > 0) ? dr : -dr;
+				g += (dg > 0) ? dg : -dg;
+				b += (db > 0) ? db : -db;
+
+			}
+
+			//Reflection
+			// Vector reflected = ray - 2 * dot(ray, norm) * norm;
+			// reflected.normalize();
+
+
+
+			//cap at 1
+			r = (r > 1) ? 1 : r;
+			g = (g > 1) ? 1 : g;
+			b = (b > 1) ? 1 : b;
+
+			r = ((double)r * 255.0f);
+			g = ((double)g * 255.0f);
+			b = ((double)b * 255.0f);
+
+			return Point(r, g, b);
+			// setPixel(pixels, i, pixelHeight - j - 1, r, g, b);
+		}
+	}
+	else {
+		return Point(0, 0, 0);
+		// setPixel(pixels, i, pixelHeight-j-1, 0, 0, 0);
+	}
+}
+
+
 
 Point getEyePoint();
 
