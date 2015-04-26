@@ -230,21 +230,22 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 			for (int m = 0; m < numLights; m++) {
 				SceneLightData light;
 				parser->getLightData(m, light);
-
+					
 				Vector L = light.pos - intersectPoint;
 				L.normalize();
 
-				double normLightDot = dot(norm, L);
-				normLightDot = normLightDot > 0 ? normLightDot : 0;
+				if (reflectLight(light.pos, L, min_t, objects)) {
+					double normLightDot = dot(norm, L);
+					normLightDot = normLightDot > 0 ? normLightDot : 0;
 
-				double dr = (double)globalData.kd * (double)min_material.cDiffuse.r * (double)light.color.r * (double)normLightDot;
-				double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
-				double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
+					double dr = (double)globalData.kd * (double)min_material.cDiffuse.r * (double)light.color.r * (double)normLightDot;
+					double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
+					double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
 
-				r += (dr > 0) ? dr : -dr;
-				g += (dg > 0) ? dg : -dg;
-				b += (db > 0) ? db : -db;
-
+					r += (dr > 0) ? dr : -dr;
+					g += (dg > 0) ? dg : -dg;
+					b += (db > 0) ? db : -db;
+				}
 			}
 
 			if (numRec > 0) {
@@ -282,7 +283,41 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 	}
 }
 
-
+bool reflectLight(Point lightpos, Vector ray, float obj_t, list_shapeData objects) {
+	std::list<shapeData>::iterator it;
+	float min_t = -1;
+	for (it = objects.begin(); it != objects.end(); ++it){
+		shapeData obj = *it;
+		Shape* curr_shape;
+		switch (obj.type) {
+		case SHAPE_SPHERE:
+			curr_shape = sphere;
+			break;
+		case SHAPE_CONE:
+			curr_shape = cone;
+			break;
+		case SHAPE_CUBE:
+			curr_shape = cube;
+			break;
+		case SHAPE_CYLINDER:
+			curr_shape = cylinder;
+			break;
+		default:
+			curr_shape = NULL;
+			break;
+		}
+		if (curr_shape != NULL) {
+			Shape::intersect_info info = curr_shape->Intersect(lightpos, ray, obj.composite);
+			if ((min_t < 0 || info.t < min_t) && (info.t > 0)) {
+				min_t = info.t;
+			}	
+			if (min_t < obj_t && min_t - obj_t > 0.00001) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
 
 Point getEyePoint();
 
