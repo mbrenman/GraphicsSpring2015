@@ -129,7 +129,8 @@ public:
 			 info.t = -1;
 			 info.normal = Vector(0, 0, 0);
 		 }
-		 info.color = getColorFromTexture(texture, .5, .5);
+		 Point hitpoint = eyePointP + min_t * rayV;
+		 info.color = getColorFromTexture(texture, hitpoint.at(0), hitpoint.at(2));
 
 		 return info;
 	}	

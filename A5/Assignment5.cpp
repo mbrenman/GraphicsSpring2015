@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <list>
+#include <map>
 #include <GL/glui.h>
 #include "Shape.h"
 #include "Cube.h"
@@ -47,6 +48,8 @@ Sphere* sphere = new Sphere();
 SceneParser* parser = NULL;
 Camera* camera = new Camera();
 
+std::map < string, ppm* > textures;
+
 void setPixel(GLubyte* buf, int x, int y, int r, int g, int b) {
 	buf[(y*pixelWidth + x) * 3 + 0] = (GLubyte)r;
 	buf[(y*pixelWidth + x) * 3 + 1] = (GLubyte)g;
@@ -69,6 +72,7 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t);
 Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalData globalData, int numRec);
 bool reflectLight(Point lightpos, Vector ray, float obj_t, list_shapeData objects);
 float blend(float a, float b, float blend);
+ppm *lookupTexture(string texname);
 
 void flattenScene(SceneNode *root, list_shapeData &list, Matrix cmtm) {
 	/*
@@ -195,7 +199,7 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 		}
 		if (curr_shape != NULL) {
 			string textureFilename = obj.material.textureMap->filename;
-			ppm *texture = NULL;
+			ppm *texture = lookupTexture(textureFilename);
 			info = curr_shape->Intersect(eyePt, ray, obj.composite, texture);
 			if ((min_t < 0 || info.t < min_t) && (info.t > 0)) {
 				min_t = info.t;
@@ -310,6 +314,17 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 
 float blend(float a, float b, float blend){
 	return (a * blend) + (b * (1 - blend));
+}
+
+ppm *lookupTexture(string texname) {
+	if (texname != "") {
+		if (textures.count(texname) == 0) {
+			textures[texname] = new ppm(texname);
+		}
+
+		return textures[texname];
+	}
+	return NULL;
 }
 
 bool reflectLight(Point intersectionPt, Vector ray, float obj_t, list_shapeData objects) {
