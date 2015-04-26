@@ -236,7 +236,7 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 				float distance = L.length();
 				L.normalize();
 
-				if (reflectLight(intersectPoint, L, distance, objects)) {
+				if (reflectLight((intersectPoint + 0.00001 * L), L, distance, objects)) {
 					double normLightDot = dot(norm, L);
 					normLightDot = normLightDot > 0 ? normLightDot : 0;
 
@@ -297,7 +297,7 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 	}
 }
 
-bool reflectLight(Point lightpos, Vector ray, float obj_t, list_shapeData objects) {
+bool reflectLight(Point intersectionPt, Vector ray, float obj_t, list_shapeData objects) {
 	std::list<shapeData>::iterator it;
 	float min_t = -1;
 	for (it = objects.begin(); it != objects.end(); ++it){
@@ -321,12 +321,12 @@ bool reflectLight(Point lightpos, Vector ray, float obj_t, list_shapeData object
 			break;
 		}
 		if (curr_shape != NULL) {
-			Shape::intersect_info info = curr_shape->Intersect(lightpos, ray, obj.composite);
+			Shape::intersect_info info = curr_shape->Intersect(intersectionPt, ray, obj.composite);
 			if ((min_t < 0 || info.t < min_t) && (info.t > 0)) {
 				min_t = info.t;
-			}	
-			if (min_t < obj_t && min_t - obj_t > 0.00001) {
-				return false;
+				if (min_t < obj_t) {
+					return false;
+				}
 			}
 		}
 	}
