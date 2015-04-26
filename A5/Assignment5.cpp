@@ -67,6 +67,7 @@ Point getEyePoint();
 Vector generateRay(int pixelX, int pixelY);
 Point getIsectPointWorldCoord(Point eye, Vector ray, double t);
 Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalData globalData, int numRec);
+bool reflectLight(Point lightpos, Vector ray, float obj_t, list_shapeData objects);
 
 void flattenScene(SceneNode *root, list_shapeData &list, Matrix cmtm) {
 	/*
@@ -230,11 +231,12 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 			for (int m = 0; m < numLights; m++) {
 				SceneLightData light;
 				parser->getLightData(m, light);
-					
+
 				Vector L = light.pos - intersectPoint;
+				float distance = L.length();
 				L.normalize();
 
-				if (reflectLight(light.pos, L, min_t, objects)) {
+				if (reflectLight(intersectPoint, L, distance, objects)) {
 					double normLightDot = dot(norm, L);
 					normLightDot = normLightDot > 0 ? normLightDot : 0;
 
@@ -245,6 +247,18 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 					r += (dr > 0) ? dr : -dr;
 					g += (dg > 0) ? dg : -dg;
 					b += (db > 0) ? db : -db;
+
+					//Specular Highlights
+					Vector reflected_light = (L - 2 * dot(L, norm) * norm);
+					reflected_light.normalize();
+					double spec_r = (double)globalData.ks * (double)min_material.cSpecular.r * pow(dot(reflected_light, ray), (double)min_material.shininess);
+					double spec_g = (double)globalData.ks * (double)min_material.cSpecular.g * pow(dot(reflected_light, ray), (double)min_material.shininess);
+					double spec_b = (double)globalData.ks * (double)min_material.cSpecular.b * pow(dot(reflected_light, ray), (double)min_material.shininess);
+
+
+					r += (spec_r > 0) ? spec_r : -spec_r;
+					g += (spec_g > 0) ? spec_g : -spec_g;
+					b += (spec_b > 0) ? spec_b : -spec_b;
 				}
 			}
 
