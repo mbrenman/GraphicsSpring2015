@@ -29,6 +29,8 @@ float lookX = -2;
 float lookY = -2;
 float lookZ = -2;
 
+int reflectionDepth = 0;
+
 /** These are GLUI control panel objects ***/
 int  main_window;
 string filenamePath = "data/tests/mirror_test.xml";
@@ -149,7 +151,7 @@ void callback_start(int id) {
 		for (int j = 0; j < pixelHeight; j++) {
 			Vector ray = generateRay(i, j);
 
-			Point intensity = getIntensity(eyePt, ray, objects, globalData, 0);
+			Point intensity = getIntensity(eyePt, ray, objects, globalData, reflectionDepth);
 			setPixel(pixels, i, pixelHeight - j - 1, intensity.at(0), intensity.at(1), intensity.at(2));
 
 		}
@@ -213,6 +215,14 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 			double r = globalData.ka * (double)min_material.cAmbient.r;
 			double g = globalData.ka * (double)min_material.cAmbient.g;
 			double b = globalData.ka * (double)min_material.cAmbient.b;
+
+			// cout << "ambient r: " << r << endl;
+			// cout << "ambient g: " << g << endl;
+			// cout << "ambient b: " << b << endl;
+
+			// cout << "ambient_coef r: " << min_material.cAmbient.r << endl;
+			// cout << "ambient_coef g: " << min_material.cAmbient.g << endl;
+			// cout << "ambient_coef b: " << min_material.cAmbient.b   << endl;
 
 			Point intersectPoint = getIsectPointWorldCoord(eyePt, ray, min_t);
 
@@ -462,6 +472,8 @@ int main(int argc, char* argv[])
 	glui->add_button("Start!", 0, callback_start);
 	glui->add_checkbox("Isect Only", &isectOnly);
 	
+	glui->add_spinner("Recursive Depth:", GLUI_SPINNER_INT, &reflectionDepth);
+
 	GLUI_Panel *camera_panel = glui->add_panel("Camera");
 	(new GLUI_Spinner(camera_panel, "RotateV:", &camRotV))
 		->set_int_limits(-179, 179);
