@@ -245,9 +245,18 @@ void ply::buildArrays(unsigned int programID){
 
 	//*****************This is for you to fill in!!!  ****************************//
 
+	glGenBuffers(1, &normalVBO_id);
+	// Once we know how many buffers to generate, then hook up the buffer to the normalVBO_id.
+	glBindBuffer(GL_ARRAY_BUFFER, normalVBO_id);
+	// Now we finally copy data into the buffer object
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*vertexCount * 3, normals_vao, GL_STATIC_DRAW);
 
-
-
+	// Get the location of the attributes that enters in the vertex shader
+	GLint normal_attribute = glGetAttribLocation(programID, "normal");
+	// Specify how the data for position can be accessed
+	glVertexAttribPointer(normal_attribute, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	// Enable the attribute
+	glEnableVertexAttribArray(normal_attribute);
 
     cout << "Created vbo successfully" << endl;
 }
