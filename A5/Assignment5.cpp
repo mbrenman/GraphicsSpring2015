@@ -244,9 +244,9 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 					double dg = (double)globalData.kd * (double)min_material.cDiffuse.g * (double)light.color.g * (double)normLightDot;
 					double db = (double)globalData.kd * (double)min_material.cDiffuse.b * (double)light.color.b * (double)normLightDot;
 
-					r += (dr > 0) ? dr : -dr;
-					g += (dg > 0) ? dg : -dg;
-					b += (db > 0) ? db : -db;
+					r += (dr > 0) ? dr : 0;
+					g += (dg > 0) ? dg : 0;
+					b += (db > 0) ? db : 0;
 
 					//Specular Highlights
 					Vector reflected_light = (L - 2 * dot(L, norm) * norm);
@@ -256,9 +256,9 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 					double spec_b = (double)globalData.ks * (double)min_material.cSpecular.b * pow(dot(reflected_light, ray), (double)min_material.shininess);
 
 
-					r += (spec_r > 0) ? spec_r : -spec_r;
-					g += (spec_g > 0) ? spec_g : -spec_g;
-					b += (spec_b > 0) ? spec_b : -spec_b;
+					r += (spec_r > 0) ? spec_r : 0;
+					g += (spec_g > 0) ? spec_g : 0;
+					b += (spec_b > 0) ? spec_b : 0;
 				}
 			}
 
@@ -269,13 +269,13 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 
 				Point ref_color = getIntensity(intersectPoint - (0.00001 * ray), reflected, objects, globalData, numRec - 1);
 
-				double reflected_r = (double)globalData.ks * (double)min_material.cReflective.r * ref_color.at(0);
-				double reflected_g = (double)globalData.ks * (double)min_material.cReflective.g * ref_color.at(1);
-				double reflected_b = (double)globalData.ks * (double)min_material.cReflective.b * ref_color.at(2);
+				double reflected_r = (double)globalData.ks * (double)min_material.cReflective.r * (ref_color.at(0) / 255.0f);
+				double reflected_g = (double)globalData.ks * (double)min_material.cReflective.g * (ref_color.at(1) / 255.0f);
+				double reflected_b = (double)globalData.ks * (double)min_material.cReflective.b * (ref_color.at(2) / 255.0f);
 
-				r += (reflected_r > 0) ? reflected_r : -reflected_r;
-				g += (reflected_g > 0) ? reflected_g : -reflected_g;
-				b += (reflected_b > 0) ? reflected_b : -reflected_b;
+				r += (reflected_r > 0) ? reflected_r : 0;
+				g += (reflected_g > 0) ? reflected_g : 0;
+				b += (reflected_b > 0) ? reflected_b : 0;
 			}
 
 			//cap at 1
