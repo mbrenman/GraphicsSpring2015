@@ -63,6 +63,8 @@ public:
 		double min_t = -1;
 		Vector normal;
 		double t;
+
+		float u, v;
 		
 		 //plane (0.5,0,0)
 		 if (rayV.at(0) != 0) {
@@ -70,6 +72,10 @@ public:
 			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
 				min_t = t;
 				normal = Vector(1.0, 0.0, 0.0);
+
+				Point p = eyePointP + t * rayV;
+				u = p.at(1);
+				v = p.at(2);
 			}
 		 }
 
@@ -79,6 +85,10 @@ public:
 			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
 				min_t = t;
 				normal = Vector(-1.0, 0.0, 0.0);
+
+				Point p = eyePointP + t * rayV;
+				u = p.at(1);
+				v = p.at(2);
 			}
 		 }
 		
@@ -89,6 +99,10 @@ public:
 			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
 				min_t = t;
 				normal = Vector(0.0, 1.0, 0.0);
+
+				Point p = eyePointP + t * rayV;
+				u = p.at(0);
+				v = p.at(2);
 			}
 		 }
 
@@ -98,6 +112,10 @@ public:
 			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
 				min_t = t;
 				normal = Vector(0.0, -1.0, 0.0);
+
+				Point p = eyePointP + t * rayV;
+				u = p.at(0);
+				v = p.at(2);
 			}
 		 }
 
@@ -108,6 +126,10 @@ public:
 			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
 				min_t = t;
 				normal = Vector(0.0, 0.0, 1.0);
+
+				Point p = eyePointP + t * rayV;
+				u = p.at(0);
+				v = p.at(1);
 			}
 		}
 
@@ -117,6 +139,10 @@ public:
 			if (((t < min_t) || (min_t < 0)) && (t > 0) && testBounds(eyePointP, rayV, t)){
 				min_t = t;
 				normal = Vector(0.0, 0.0, -1.0);
+
+				Point p = eyePointP + t * rayV;
+				u = p.at(0);
+				v = p.at(1);
 			}
 		 }
 
@@ -124,13 +150,16 @@ public:
 		 if (testBounds(eyePointP, rayV, min_t)) {
 			 info.t = min_t;
 			 info.normal = normal;
+
+			 u += 0.5;
+			 v += 0.5;
+
+		 	 info.color = getColorFromTexture(texture, u, v);
 		 }
 		 else {
 			 info.t = -1;
 			 info.normal = Vector(0, 0, 0);
 		 }
-		 Point hitpoint = eyePointP + min_t * rayV;
-		 info.color = getColorFromTexture(texture, hitpoint.at(0), hitpoint.at(2));
 
 		 return info;
 	}	
@@ -165,16 +194,6 @@ private:
 			(p.at(1) >= -0.5 - epsilon) && (p.at(1) <= 0.5 + epsilon) &&
 			(p.at(2) >= -0.5 - epsilon) && (p.at(2) <= 0.5 + epsilon) &&
 			(t > 0);
-	}
-
-	Point getColorFromTexture(ppm *tex, float u, float v) {
-		if (tex == NULL) {
-			return Point();
-		} else {
-			u = u * tex->getWidth();
-			u = u * tex->getHeight();
-			return Point(tex->getPixelR(u, v), tex->getPixelG(u, v), tex->getPixelB(u, v));
-		}
 	}
 
 	std::vector<point_info> faces[NUM_SIDES];

@@ -58,6 +58,12 @@ public:
 
 			info.t = t;
 			info.normal = Vector(p.at(0), p.at(1), p.at(2));
+
+			float theta = atan2(p.at(2), p.at(0));
+			float u = (theta >= 0) ? (1 - (theta / (2.0f * PI))) : -1 * (theta / (2.0f * PI));
+			float v = 0.5 + (asin(p.at(1)) / PI);
+
+			info.color = getColorFromTexture(texture, u, v);
 		}
 		return info;
 	}

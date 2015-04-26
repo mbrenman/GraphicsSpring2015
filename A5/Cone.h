@@ -48,6 +48,9 @@ public:
 		Vector min_vector;
 		bool hit_cap = false;
 
+		float u = 0;
+		float v = 0;
+
 		double a = rayV.at(0) * rayV.at(0) + 
 				   rayV.at(2) * rayV.at(2) -
 				   (0.25 * rayV.at(1) * rayV.at(1));
@@ -68,6 +71,12 @@ public:
 		double t = (det >= 0) ? ((-1 * b) - sqrt(det)) / (2 * a) : -1;
 		if (testBounds(eyePointP, rayV, t)) {
 			min_t = t;
+			
+			Point p = eyePointP + rayV * t;
+
+			float theta = atan2(p.at(2), p.at(0));
+			u = (theta >= 0) ? (1 - (theta / (2.0f * PI))) : -1 * (theta / (2.0f * PI));
+			v = p.at(1) + 0.5;
 		}
 
 		//plane (0,-0.5,0)
@@ -76,6 +85,10 @@ public:
 			if (((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t)) {
 				min_t = t;
 				hit_cap = 1;
+
+				Point p = eyePointP + rayV * t;
+				u = p.at(0) + 0.5;
+				v = p.at(2) + 0.5;
 			}
 		}
 
@@ -90,6 +103,7 @@ public:
 		
 		info.t = min_t;
 		info.normal = min_vector;
+		info.color = getColorFromTexture(texture, u, v);
 		return info;
 	}
 

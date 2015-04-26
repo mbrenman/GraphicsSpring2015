@@ -148,8 +148,9 @@ void ppm::setPixel(int x, int y, int r, int g, int b){
 }
 
 int ppm::getPixelR(int x, int y){
-  if(x > width || y > height){
-    return 0;
+  if(x > width || y > height || x < 0 || y < 0){
+    std::cout << "out of bounds";
+    return -1;
   }
   else{
     return color[(x*3)+height*(y*3)];
@@ -157,19 +158,21 @@ int ppm::getPixelR(int x, int y){
 }
 
 int ppm::getPixelG(int x, int y){
-  if(x > width || y > height){
-    return 0;
+  if(x > width || y > height || x < 0 || y < 0){
+    std::cout << "out of bounds";
+    return -1;
   }
   else{
-    return color[(x*3)+height*(y*3) + 1];
+    return color[(x*3)+height*(y*3)+1];
   }
 }
 
 int ppm::getPixelB(int x, int y){
-  if(x > width || y > height){
-    return 0;
+  if(x > width || y > height || x < 0 || y < 0){
+    std::cout << "out of bounds";
+    return -1;
   }
   else{
-    return color[(x*3)+height*(y*3) + 2];
+    return color[(x*3)+height*(y*3)+2];
   }
 }

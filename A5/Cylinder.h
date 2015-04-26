@@ -50,6 +50,9 @@ public:
 		double min_t = -1;
 		Vector min_vec;
 
+		float u = 0; 
+		float v = 0;
+
 		double a = rayV.at(0) * rayV.at(0) + rayV.at(2) * rayV.at(2);
 		double b = 2 * (eyePointP.at(0) * rayV.at(0) + eyePointP.at(2) * rayV.at(2));
 		double c = eyePointP.at(0) * eyePointP.at(0) + eyePointP.at(2) * eyePointP.at(2) - 0.25;
@@ -62,6 +65,10 @@ public:
 
 			Point p = eyePointP + rayV * t;
 			min_vec = Vector(p.at(0), 0, p.at(2));
+
+			float theta = atan2(p.at(2), p.at(0));
+			u = (theta >= 0) ? (1 - (theta / (2.0f * PI))) : -1 * (theta / (2.0f * PI));
+			v = p.at(1) + 0.5;
 		}
 
 		//plane (0,0.5,0)
@@ -70,6 +77,10 @@ public:
 			if (((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t)) {
 				min_t = t;
 				min_vec = Vector(0, 1, 0);
+				
+				Point p = eyePointP + rayV * t;
+				u = p.at(0) + 0.5;
+				v = p.at(2) + 0.5;
 			}
 		}
 
@@ -79,12 +90,17 @@ public:
 			if (((t < min_t) || (min_t < 0)) && (t > 0) && testCapBounds(eyePointP, rayV, t)){
 				min_t = t;
 				min_vec = Vector(0, -1, 0);
+
+				Point p = eyePointP + rayV * t;
+				u = p.at(0) + 0.5;
+				v = p.at(2) + 0.5;
 			}
 		}
 		
 		intersect_info info;
 		info.t = min_t;
 		info.normal = min_vec;
+		info.color = getColorFromTexture(texture, u, v);
 		return info;
 	}
 

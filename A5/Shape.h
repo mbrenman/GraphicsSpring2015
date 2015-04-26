@@ -120,6 +120,31 @@ protected:
 		glVertex3f(p.at(0), p.at(1), p.at(2));
 	};
 
+	Point getColorFromTexture(ppm *tex, float u, float v) {
+		if (tex == NULL) {
+			return Point();
+		} else {
+			//Bounds Check
+			u -= floor(u);
+			v -= floor(v);
+
+			u = (u > 1) ? 1 : u;
+			u = (u < 0) ? 0 : u;
+
+			v = (v > 1) ? 1 : v;
+			v = (v < 0) ? 0 : v;
+
+			//Translate into picture coords
+			u = (u * tex->getWidth());
+			v = (v * tex->getHeight());
+
+			u = floor(u);
+			v = floor(v);
+
+			return Point((float)tex->getPixelR(u, v) / 255.0f, (float)tex->getPixelG(u, v) / 255.0f, (float)tex->getPixelB(u, v) / 255.0f);
+		}
+	}
+
 	int m_segmentsX, m_segmentsY;
 };
 

@@ -60,15 +60,15 @@
     <object type="primitive" name="cylinder">
       <diffuse r="1.0" g="1.0" b="1.0"/>
       <specular r="1.0" g="1.0" b="1.0"/>
-      <reflective r="0.9" g="0.9" b="0.9"/>
-      <shininess value="30"/>
+      <reflective r="1" g="1" b="1"/>
+      <shininess value="100"/>
     </object>
   </transblock>
 
   <transblock>
     <translate x="-0.8" y="0" z="0.8"/>
     <object type="primitive" name="cone" >
-      <texture file="./data/tests/image/boccioni.ppm" u="2" v="1"/>
+      <texture file="./data/tests/image/earth.ppm" u="2" v="1"/>
       <blend value="1.0"/>
     </object>
   </transblock>
