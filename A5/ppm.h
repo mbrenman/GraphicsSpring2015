@@ -59,7 +59,7 @@ class ppm{
 		// Getter functions
 		int getWidth() { return width;}
 		int getHeight() { return height;}
-		char* getPixels() { return color;}
+		// char* getPixels() { return color;}
 
 		int getPixelR(int x, int y);
 		int getPixelG(int x, int y);
@@ -69,7 +69,7 @@ class ppm{
 									// how to parse this file. Example, P3, P6, etc.
 		int width;		
 		int height;
-		char* color;				// dynamic Array that stores color values.
+		int* color;				// dynamic Array that stores color values.
 									// This is a single dimensional array storing a tuple
 									// of color values.  We make it a char, because we need to
 									// store values of 0-255 (Thus a char, which is generally 1 byte).

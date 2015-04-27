@@ -61,7 +61,7 @@ public:
 
 			float theta = atan2(p.at(2), p.at(0));
 			float u = (theta >= 0) ? (1 - (theta / (2.0f * PI))) : -1 * (theta / (2.0f * PI));
-			float v = 0.5 + (asin(p.at(1)) / PI);
+			float v = 1 - (0.5 + (asin(p.at(1) / 0.5) / PI));
 
 			info.color = getColorFromTexture(texture, u, v);
 		}

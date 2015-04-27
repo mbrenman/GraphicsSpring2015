@@ -132,19 +132,20 @@ protected:
 			b = (b < 0) ? 0 : b;
 
 			//Translate into picture coords
-			int s = (int)(a * tex->getWidth())  % tex->getWidth();
-			int t = (int)(b * tex->getHeight()) % tex->getHeight();
+			int s = (int)(a * tex->getWidth());
+			int t = (int)(b * tex->getHeight());
 
 			float final_r = (float)tex->getPixelR(s, t);
 			float final_g = (float)tex->getPixelG(s, t);
 			float final_b = (float)tex->getPixelB(s, t);
 
-			// cout << r << "    " << g << "    " << b << endl;
+			// cout << final_r << "    " << final_g << "    " << final_b << endl;
 
-			final_r = a * 255;
-			final_g = b * 255;
-			final_b = 100;
-
+			// final_r = ((float)s) / (float)tex->getWidth() * 255;
+			// final_g = ((float)t) / (float)tex->getHeight() * 255;
+			// final_b = 100;
+			cout << final_r << "    " << final_g << "    " << final_b << endl;
+			// return Point(a, b, (a + b) / 2);
 			return Point(final_r / 255.0f, final_g / 255.0f, final_b / 255.0f);
 		}
 	}

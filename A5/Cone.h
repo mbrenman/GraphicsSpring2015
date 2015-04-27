@@ -87,7 +87,7 @@ public:
 				hit_cap = 1;
 
 				Point p = eyePointP + rayV * t;
-				u = p.at(0) + 0.5;
+				u = 1 - (p.at(0) + 0.5);
 				v = p.at(2) + 0.5;
 			}
 		}

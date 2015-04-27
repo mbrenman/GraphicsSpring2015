@@ -29,7 +29,7 @@
     <translate x="0" y="-0.6" z="0"/>
     <scale x="6" y="0.2" z="6"/>
     <object type="primitive" name="cube" >
-      <texture file="./data/tests/image/boccioni.ppm" u="1" v="1"/>
+      <texture file="./data/tests/image/smile.ppm" u="1" v="1"/>
       <blend value="0.5"/>
       <diffuse r="0.5" g="0.5" b="0.5"/>
     </object>
@@ -39,33 +39,35 @@
     <translate x="-0.8" y="0" z="-0.6"/>
     <rotate x="0" y="1" z="0" a="-90"/>
     <object type="primitive" name="sphere" >
-      <texture file="./data/tests/image/boccioni.ppm" u="3" v="3"/>
+      <texture file="./data/tests/image/smile.ppm" u="3" v="3"/>
       <blend value="0.8"/>
-      <reflective r="0.3" g="0.3" b="0.3"/>
+      <!-- <reflective r="0.3" g="0.3" b="0.3"/>
       <diffuse r="1" g="1" b="0.5"/>
       <specular r="0" g="0" b="0"/>
       <shininess value="20"/>
-      <transparent r="0.7" g="0.7" b="0.7"/>
+      <transparent r="0.7" g="0.7" b="0.7"/> -->
     </object>
   </transblock>
 
   <transblock>
     <translate x="0.8" y="0" z="-0.8"/>
-    <object type="primitive" name="cube" >
-      <texture file="./data/tests/image/sun.ppm" u="1" v="1"/>
-      <reflective r="0.1" g="0.1" b="0.1"/>
-      <blend value="0.1"/>
+    <object type="primitive" name="cone" >
+      <texture file="./data/tests/image/smile.ppm" u="1" v="1"/>
+       <blend value="0.8"/>
     </object>
   </transblock>
 
   <transblock>
-    <translate x="0.8" y="0" z="0.8"/>
-    <scale x="1" y="1.5" z="1"/>
-    <object type="primitive" name="cylinder" >
+    <translate x="0.8" y="1" z="0.8"/>
+    <scale x="1" y="2" z="1"/>
+    <rotate x="0" y="1" z="0" a="90"/>
+    <object type="primitive" name="cone" >
+      <!-- <texture file="./data/tests/image/smile.ppm" u="1" v="1"/> -->
+       <!-- <blend value="0.8"/> -->
       <reflective r="0.9" g="0.9" b="0.9"/>
-      <diffuse r="0.8" g="0.8" b="0.8"/>
-      <specular r="1" g="1" b="1"/>
-      <shininess value="30"/>
+      <!-- <diffuse r="0.8" g="0.8" b="0.8"/> -->
+      <!-- <specular r="1" g="1" b="1"/> -->
+      <shininess value="90"/>
     </object>
   </transblock>
 
@@ -73,7 +75,7 @@
     <translate x="-0.8" y="0" z="1"/>
     <rotate x="0" y="1" z="0" a="90"/>
     <object type="primitive" name="cube" >
-      <texture file="./data/tests/image/earth.ppm" u="1" v="1"/>
+      <texture file="./data/tests/image/smile.ppm" u="1" v="1"/>
       <blend value="0.8"/>
       <diffuse r="0.6" g="0.1" b="0"/>
     </object>

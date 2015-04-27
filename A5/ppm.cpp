@@ -67,7 +67,7 @@ ppm::ppm(std::string _fileName){
               std::cout << "height: " << height << std::endl;
               // Allocate memory for the color array
                     if(width > 0 && height > 0){
-                        color = new char[width*height*3];
+                        color = new int[width*height*3];
                         if(color==NULL){
                             std::cout << "Unable to allocate memory for ppm" << std::endl;
                             exit(1);
@@ -86,9 +86,9 @@ ppm::ppm(std::string _fileName){
               while(delimeter_pointer != NULL){
                 //std::cout << delimeter_pointer << " ";
                 color[pos] = atoi(delimeter_pointer);
-                // if ((int)(color[pos]) < 0) {
-                //   std::cout << "negative.." << std::endl;
-                // }
+                while ((int)(color[pos]) < 0) {
+                  color[pos] += 255;
+                }
                 pos++;
                 delimeter_pointer = strtok(NULL," ");
               }
@@ -97,10 +97,16 @@ ppm::ppm(std::string _fileName){
           iteration++;
       }
       ppmFile.close();
+
+      std::cout << "first ten" << std::endl;
+      for (int i = 0; i < 10; i++) {
+        std::cout << (int)color[i] << std::endl;
+      }
   }
   else{
       std::cout << "Unable to open ppm file" << std::endl;
   } 
+
 }
 
 
@@ -155,7 +161,7 @@ int ppm::getPixelR(int x, int y){
     return -1;
   }
   else{
-    return (int)(color[3 * (x + (height * y))]);
+    return (int)(color[(x*3)+height*(y*3)]);
   }
 }
 
@@ -165,7 +171,7 @@ int ppm::getPixelG(int x, int y){
     return -1;
   }
   else{
-    return (int)(color[3 * (x + (height * y)) + 1]);
+    return (int)(color[(x*3)+height*(y*3) + 1]);
   }
 }
 
@@ -175,6 +181,6 @@ int ppm::getPixelB(int x, int y){
     return -1;
   }
   else{
-    return (int)(color[3 * (x + (height * y)) + 2]);
+    return (int)(color[(x*3)+height*(y*3) + 2]);
   }
 }
