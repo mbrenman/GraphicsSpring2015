@@ -144,7 +144,7 @@ protected:
 			// final_r = ((float)s) / (float)tex->getWidth() * 255;
 			// final_g = ((float)t) / (float)tex->getHeight() * 255;
 			// final_b = 100;
-			cout << final_r << "    " << final_g << "    " << final_b << endl;
+			//cout << final_r << "    " << final_g << "    " << final_b << endl;
 			// return Point(a, b, (a + b) / 2);
 			return Point(final_r / 255.0f, final_g / 255.0f, final_b / 255.0f);
 		}

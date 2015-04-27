@@ -34,7 +34,7 @@ int reflectionDepth = 0;
 
 /** These are GLUI control panel objects ***/
 int  main_window;
-string filenamePath = "data/tests/all_effects.xml";
+string filenamePath = "data/tests/mirror_test.xml";
 // GLUI_EditText* filenameTextField = NULL;
 GLubyte* pixels = NULL;
 int pixelWidth = 0, pixelHeight = 0;
@@ -226,14 +226,6 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 			double g = globalData.ka * blend(textureColor.at(1), (double)min_material.cAmbient.g, min_material.blend);
 			double b = globalData.ka * blend(textureColor.at(2), (double)min_material.cAmbient.b, min_material.blend);
 
-			// cout << "ambient r: " << r << endl;
-			// cout << "ambient g: " << g << endl;
-			// cout << "ambient b: " << b << endl;
-
-			// cout << "ambient_coef r: " << min_material.cAmbient.r << endl;
-			// cout << "ambient_coef g: " << min_material.cAmbient.g << endl;
-			// cout << "ambient_coef b: " << min_material.cAmbient.b   << endl;
-
 			Point intersectPoint = getIsectPointWorldCoord(eyePt, ray, min_t);
 
 			int numLights = parser->getNumLights();
@@ -303,12 +295,10 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 			b = ((double)b * 255.0f);
 
 			return Point(r, g, b);
-			// setPixel(pixels, i, pixelHeight - j - 1, r, g, b);
 		}
 	}
 	else {
 		return Point(0, 0, 0);
-		// setPixel(pixels, i, pixelHeight-j-1, 0, 0, 0);
 	}
 }
 
