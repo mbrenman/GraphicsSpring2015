@@ -120,28 +120,28 @@ protected:
 		glVertex3f(p.at(0), p.at(1), p.at(2));
 	};
 
-	Point getColorFromTexture(ppm *tex, float u, float v) {
+	Point getColorFromTexture(ppm *tex, float a, float b) {
 		if (tex == NULL) {
 			return Point();
 		} else {
 			//Bounds Check
-			u -= floor(u);
-			v -= floor(v);
+			a = (a > 1) ? 1 : a;
+			a = (a < 0) ? 0 : a;
 
-			u = (u > 1) ? 1 : u;
-			u = (u < 0) ? 0 : u;
-
-			v = (v > 1) ? 1 : v;
-			v = (v < 0) ? 0 : v;
+			b = (b > 1) ? 1 : b;
+			b = (b < 0) ? 0 : b;
 
 			//Translate into picture coords
-			u = (u * tex->getWidth());
-			v = (v * tex->getHeight());
+			int s = (int)(a * tex->getWidth())  % tex->getWidth();
+			int t = (int)(b * tex->getHeight()) % tex->getHeight();
 
-			u = floor(u);
-			v = floor(v);
+			float r = (float)tex->getPixelR(s, t);
+			float g = (float)tex->getPixelG(s, t);
+			float b = (float)tex->getPixelB(s, t);
 
-			return Point((float)tex->getPixelR(u, v) / 255.0f, (float)tex->getPixelG(u, v) / 255.0f, (float)tex->getPixelB(u, v) / 255.0f);
+			cout << r << "    " << g << "    " << b << endl;
+
+			return Point(r / 255.0f, g / 255.0f, b / 255.0f);
 		}
 	}
 
