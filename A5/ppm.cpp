@@ -86,6 +86,9 @@ ppm::ppm(std::string _fileName){
               while(delimeter_pointer != NULL){
                 //std::cout << delimeter_pointer << " ";
                 color[pos] = atoi(delimeter_pointer);
+                // if ((int)(color[pos]) < 0) {
+                //   std::cout << "negative.." << std::endl;
+                // }
                 pos++;
                 delimeter_pointer = strtok(NULL," ");
               }
@@ -152,7 +155,7 @@ int ppm::getPixelR(int x, int y){
     return -1;
   }
   else{
-    return color[3 * (x + (height * y))];
+    return (int)(color[3 * (x + (height * y))]);
   }
 }
 
@@ -162,7 +165,7 @@ int ppm::getPixelG(int x, int y){
     return -1;
   }
   else{
-    return color[3 * (x + (height * y)) + 1];
+    return (int)(color[3 * (x + (height * y)) + 1]);
   }
 }
 
@@ -172,6 +175,6 @@ int ppm::getPixelB(int x, int y){
     return -1;
   }
   else{
-    return color[3 * (x + (height * y)) + 2];
+    return (int)(color[3 * (x + (height * y)) + 2]);
   }
 }

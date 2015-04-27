@@ -135,13 +135,17 @@ protected:
 			int s = (int)(a * tex->getWidth())  % tex->getWidth();
 			int t = (int)(b * tex->getHeight()) % tex->getHeight();
 
-			float r = (float)tex->getPixelR(s, t);
-			float g = (float)tex->getPixelG(s, t);
-			float b = (float)tex->getPixelB(s, t);
+			float final_r = (float)tex->getPixelR(s, t);
+			float final_g = (float)tex->getPixelG(s, t);
+			float final_b = (float)tex->getPixelB(s, t);
 
-			cout << r << "    " << g << "    " << b << endl;
+			// cout << r << "    " << g << "    " << b << endl;
 
-			return Point(r / 255.0f, g / 255.0f, b / 255.0f);
+			final_r = a * 255;
+			final_g = b * 255;
+			final_b = 100;
+
+			return Point(final_r / 255.0f, final_g / 255.0f, final_b / 255.0f);
 		}
 	}
 
