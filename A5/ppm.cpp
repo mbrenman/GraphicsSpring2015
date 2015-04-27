@@ -161,7 +161,7 @@ int ppm::getPixelR(int x, int y){
     return -1;
   }
   else{
-    return (int)(color[(x*3)+height*(y*3)]);
+    return (int)(color[(x*3)+width*(y*3)]);
   }
 }
 
@@ -171,7 +171,7 @@ int ppm::getPixelG(int x, int y){
     return -1;
   }
   else{
-    return (int)(color[(x*3)+height*(y*3) + 1]);
+    return (int)(color[(x*3)+width*(y*3) + 1]);
   }
 }
 
@@ -181,6 +181,6 @@ int ppm::getPixelB(int x, int y){
     return -1;
   }
   else{
-    return (int)(color[(x*3)+height*(y*3) + 2]);
+    return (int)(color[(x*3)+width*(y*3) + 2]);
   }
 }
