@@ -16,6 +16,8 @@
 
 using namespace std;
 
+int superSample = 1;
+
 /** These are the live variables passed into GLUI ***/
 int  isectOnly = 1;
 
@@ -73,6 +75,7 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 bool reflectLight(Point lightpos, Vector ray, float obj_t, list_shapeData objects);
 float blend(float a, float b, float blend);
 ppm *lookupTexture(string texname);
+Point avgIntensity(Point intensity, Point intensity1, Point intensity2, Point intensity3, Point intensity4);
 
 void flattenScene(SceneNode *root, list_shapeData &list, Matrix cmtm) {
 	/*
@@ -158,11 +161,46 @@ void callback_start(int id) {
 			Vector ray = generateRay(i, j);
 
 			Point intensity = getIntensity(eyePt, ray, objects, globalData, reflectionDepth);
+
+			if (superSample) {
+				//corners
+				Vector ray1 = generateRay(i - 0.5, j - 0.5);
+				Vector ray2 = generateRay(i - 0.5, j + 0.5);
+				Vector ray3 = generateRay(i + 0.5, j - 0.5);
+				Vector ray4 = generateRay(i + 0.5, j + 0.5);
+				
+				// Vector ray5 = generateRay(i - 0.25, j);
+				// Vector ray6 = generateRay(i + 0.25, j);
+				// Vector ray7 = generateRay(i, j - 0.25);
+				// Vector ray8 = generateRay(i, j + 0.25);				
+
+				//corners
+				Point intensity1 = getIntensity(eyePt, ray1, objects, globalData, reflectionDepth);
+				Point intensity2 = getIntensity(eyePt, ray2, objects, globalData, reflectionDepth);
+				Point intensity3 = getIntensity(eyePt, ray3, objects, globalData, reflectionDepth);
+				Point intensity4 = getIntensity(eyePt, ray4, objects, globalData, reflectionDepth);
+
+				// Point intensity5 = getIntensity(eyePt, ray5, objects, globalData, reflectionDepth);
+				// Point intensity6 = getIntensity(eyePt, ray6, objects, globalData, reflectionDepth);
+				// Point intensity7 = getIntensity(eyePt, ray7, objects, globalData, reflectionDepth);
+				// Point intensity8 = getIntensity(eyePt, ray8, objects, globalData, reflectionDepth);
+
+				intensity = avgIntensity(intensity, intensity1, intensity2, intensity3, intensity4);
+			}
+
 			setPixel(pixels, i, pixelHeight - j - 1, intensity.at(0), intensity.at(1), intensity.at(2));
 
 		}
 	}
 	glutPostRedisplay();
+}
+
+Point avgIntensity(Point intensity, Point intensity1, Point intensity2, Point intensity3, Point intensity4){
+	return Point(
+		(intensity.at(0) + intensity1.at(0) + intensity2.at(0) + intensity3.at(0) + intensity4.at(0)) / 5.0f,
+		(intensity.at(1) + intensity1.at(1) + intensity2.at(1) + intensity3.at(1) + intensity4.at(1)) / 5.0f,
+		(intensity.at(2) + intensity1.at(2) + intensity2.at(2) + intensity3.at(2) + intensity4.at(2)) / 5.0f
+		);
 }
 
 Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalData globalData, int numRec){
@@ -542,6 +580,7 @@ int main(int argc, char* argv[])
 	glui->add_button("Load", 0, callback_load);
 	glui->add_button("Start!", 0, callback_start);
 	glui->add_checkbox("Isect Only", &isectOnly);
+	glui->add_checkbox("superSample", &superSample);
 	
 	glui->add_spinner("Recursive Depth:", GLUI_SPINNER_INT, &reflectionDepth);
 
