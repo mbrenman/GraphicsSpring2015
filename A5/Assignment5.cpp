@@ -150,7 +150,6 @@ void callback_start(int id) {
 	SceneGlobalData globalData;
 	parser->getGlobalData(globalData);
 
-	//Matrix compositeMatrix;
 	list_shapeData objects;
 	flattenScene(root, objects, Matrix());
 
@@ -167,23 +166,12 @@ void callback_start(int id) {
 				Vector ray1 = generateRay(i - 0.5, j - 0.5);
 				Vector ray2 = generateRay(i - 0.5, j + 0.5);
 				Vector ray3 = generateRay(i + 0.5, j - 0.5);
-				Vector ray4 = generateRay(i + 0.5, j + 0.5);
-				
-				// Vector ray5 = generateRay(i - 0.25, j);
-				// Vector ray6 = generateRay(i + 0.25, j);
-				// Vector ray7 = generateRay(i, j - 0.25);
-				// Vector ray8 = generateRay(i, j + 0.25);				
+				Vector ray4 = generateRay(i + 0.5, j + 0.5);			
 
-				//corners
 				Point intensity1 = getIntensity(eyePt, ray1, objects, globalData, reflectionDepth);
 				Point intensity2 = getIntensity(eyePt, ray2, objects, globalData, reflectionDepth);
 				Point intensity3 = getIntensity(eyePt, ray3, objects, globalData, reflectionDepth);
 				Point intensity4 = getIntensity(eyePt, ray4, objects, globalData, reflectionDepth);
-
-				// Point intensity5 = getIntensity(eyePt, ray5, objects, globalData, reflectionDepth);
-				// Point intensity6 = getIntensity(eyePt, ray6, objects, globalData, reflectionDepth);
-				// Point intensity7 = getIntensity(eyePt, ray7, objects, globalData, reflectionDepth);
-				// Point intensity8 = getIntensity(eyePt, ray8, objects, globalData, reflectionDepth);
 
 				intensity = avgIntensity(intensity, intensity1, intensity2, intensity3, intensity4);
 			}
