@@ -31,7 +31,7 @@ public:
 		computeBody(body);
 	}
 
-	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix, ppm *texture) {
+	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix, ppm *texture, float repeatU, float repeatV) {
 		eyePointP = invert(transformMatrix) * eyePointP;
 		rayV = invert(transformMatrix) * rayV;
 
@@ -60,10 +60,14 @@ public:
 			info.normal = Vector(p.at(0), p.at(1), p.at(2));
 
 			float theta = atan2(p.at(2), p.at(0));
-			float u = (theta >= 0) ? (1 - (theta / (2.0f * PI))) : -1 * (theta / (2.0f * PI));
-			float v = 1 - (0.5 + (asin(p.at(1) / 0.5) / PI));
+			theta = (theta >= 0) ? theta : theta + 2.0f * PI;
+			theta += PI;
+			theta = (theta > 2.0f * PI) ? theta - 2.0f * PI : theta;
+			float u = 1 - theta / (2.0f * PI);
+//			float u = (theta >= 0) ? (1 - (theta / (2.0f * PI))) : -1 * (theta / (2.0f * PI));
+			float v = 1-(0.5 + (asin(p.at(1) / 0.5) / PI));
 
-			info.color = getColorFromTexture(texture, u, v);
+			info.color = getColorFromTexture(texture, u, v, repeatU, repeatV);
 		}
 		return info;
 	}
