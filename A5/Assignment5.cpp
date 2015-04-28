@@ -34,8 +34,8 @@ int reflectionDepth = 0;
 
 /** These are GLUI control panel objects ***/
 int  main_window;
-string filenamePath = "data/tests/mirror_test.xml";
-// GLUI_EditText* filenameTextField = NULL;
+string filenamePath = "data/tests/earthcube.xml";
+GLUI_EditText* filenameTextField = NULL;
 GLubyte* pixels = NULL;
 int pixelWidth = 0, pixelHeight = 0;
 int screenWidth = 0, screenHeight = 0;
@@ -200,7 +200,9 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 		if (curr_shape != NULL) {
 			string textureFilename = obj.material.textureMap->filename;
 			ppm *texture = lookupTexture(textureFilename);
-			info = curr_shape->Intersect(eyePt, ray, obj.composite, texture);
+			float repeatU = obj.material.textureMap->repeatU;
+			float repeatV = obj.material.textureMap->repeatV;
+			info = curr_shape->Intersect(eyePt, ray, obj.composite, texture, repeatU, repeatV);
 			if ((min_t < 0 || info.t < min_t) && (info.t > 0)) {
 				min_t = info.t;
 				norm = info.normal;
@@ -341,7 +343,7 @@ bool reflectLight(Point intersectionPt, Vector ray, float obj_t, list_shapeData 
 			break;
 		}
 		if (curr_shape != NULL) {
-			Shape::intersect_info info = curr_shape->Intersect(intersectionPt, ray, obj.composite, NULL);
+			Shape::intersect_info info = curr_shape->Intersect(intersectionPt, ray, obj.composite, NULL, 1, 1);
 			if ((min_t < 0 || info.t < min_t) && (info.t > 0)) {
 				min_t = info.t;
 				if (min_t < obj_t) {
@@ -384,10 +386,10 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
 
 void callback_load(int id) {
 	char curDirName [2048];
-	 // if (filenameTextField == NULL) {
-	 // 	return;
-	 // }
-	 // printf ("%s\n", filenamePath);
+	  if (filenameTextField == NULL) {
+	  	return;
+	  }
+	  printf ("%s\n", filenamePath);
 
 	if (parser != NULL) {
 		delete parser;
@@ -535,8 +537,8 @@ int main(int argc, char* argv[])
 
 	GLUI* glui = GLUI_Master.create_glui("GLUI");
 
-	 // filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
-	 // filenameTextField->set_w(300);
+	filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
+	filenameTextField->set_w(300);
 	glui->add_button("Load", 0, callback_load);
 	glui->add_button("Start!", 0, callback_start);
 	glui->add_checkbox("Isect Only", &isectOnly);

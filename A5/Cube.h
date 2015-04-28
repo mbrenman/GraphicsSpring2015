@@ -57,7 +57,7 @@ public:
 			Vector(-1.0 / m_segmentsX, 0.0, 0.0), faces[TOP]);
 	};
 
-	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix, ppm *texture) {
+	intersect_info Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix, ppm *texture, float repeatU, float repeatV) {
 		eyePointP = invert(transformMatrix) * eyePointP;
 		rayV = invert(transformMatrix) * rayV;
 		double min_t = -1;
@@ -74,8 +74,8 @@ public:
 				normal = Vector(1.0, 0.0, 0.0);
 
 				Point p = eyePointP + t * rayV;
-				u = p.at(1);
-				v = p.at(2);
+				u = -p.at(2);
+				v = -p.at(1);
 			}
 		 }
 
@@ -87,8 +87,8 @@ public:
 				normal = Vector(-1.0, 0.0, 0.0);
 
 				Point p = eyePointP + t * rayV;
-				u = p.at(1);
-				v = p.at(2);
+				u = p.at(2);
+				v = -p.at(1);
 			}
 		 }
 		
@@ -102,7 +102,7 @@ public:
 
 				Point p = eyePointP + t * rayV;
 				u = p.at(0);
-				v = p.at(2);
+				v = -p.at(2);
 			}
 		 }
 
@@ -129,7 +129,7 @@ public:
 
 				Point p = eyePointP + t * rayV;
 				u = p.at(0);
-				v = p.at(1);
+				v = -p.at(1);
 			}
 		}
 
@@ -141,8 +141,8 @@ public:
 				normal = Vector(0.0, 0.0, -1.0);
 
 				Point p = eyePointP + t * rayV;
-				u = p.at(0);
-				v = p.at(1);
+				u = -p.at(0);
+				v = -p.at(1);
 			}
 		 }
 
@@ -154,7 +154,7 @@ public:
 			 u += 0.5;
 			 v += 0.5;
 
-		 	 info.color = getColorFromTexture(texture, u, v);
+		 	 info.color = getColorFromTexture(texture, u, v, repeatU, repeatV);
 		 }
 		 else {
 			 info.t = -1;
