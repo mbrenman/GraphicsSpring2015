@@ -36,8 +36,8 @@ int reflectionDepth = 0;
 
 /** These are GLUI control panel objects ***/
 int  main_window;
-string filenamePath = "data/tests/earthcube.xml";
-GLUI_EditText* filenameTextField = NULL;
+string filenamePath = "data/tests/shadow_test.xml";
+// GLUI_EditText* filenameTextField = NULL;
 GLubyte* pixels = NULL;
 int pixelWidth = 0, pixelHeight = 0;
 int screenWidth = 0, screenHeight = 0;
@@ -284,7 +284,7 @@ Point getIntensity(Point eyePt, Vector ray, list_shapeData objects, SceneGlobalD
 					b += (db > 0) ? db : 0;
 
 					//Specular Highlights
-					Vector reflected_light = (L - 2 * dot(L, norm) * norm);
+					Vector reflected_light = (L - 2 * normLightDot * norm);
 					reflected_light.normalize();
 					double spec_r = (double)globalData.ks * (double)min_material.cSpecular.r * pow(dot(reflected_light, ray), (double)min_material.shininess) * light.color.r;
 					double spec_g = (double)globalData.ks * (double)min_material.cSpecular.g * pow(dot(reflected_light, ray), (double)min_material.shininess) * light.color.g;
@@ -412,10 +412,10 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
 
 void callback_load(int id) {
 	char curDirName [2048];
-	  if (filenameTextField == NULL) {
-	  	return;
-	  }
-	  printf ("%s\n", filenamePath);
+	  // if (filenameTextField == NULL) {
+	  	// return;
+	  // }
+	  // printf ("%s\n", filenamePath);
 
 	if (parser != NULL) {
 		delete parser;
@@ -563,8 +563,8 @@ int main(int argc, char* argv[])
 
 	GLUI* glui = GLUI_Master.create_glui("GLUI");
 
-	filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
-	filenameTextField->set_w(300);
+	// filenameTextField = new GLUI_EditText( glui, "Filename:", filenamePath);
+	// filenameTextField->set_w(300);
 	glui->add_button("Load", 0, callback_load);
 	glui->add_button("Start!", 0, callback_start);
 	glui->add_checkbox("Isect Only", &isectOnly);
